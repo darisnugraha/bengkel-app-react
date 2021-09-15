@@ -7,7 +7,7 @@ let mainWindow;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
-        title: "Sambas Motor",
+        title: "Bengkel App",
         transparent: true,
         width: 900,
         height: 680,

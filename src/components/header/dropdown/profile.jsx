@@ -27,7 +27,7 @@ const logout = () => {
       .then(()=>{
         var base_url = window.location.origin;
         console.log(base_url);
-        window.location.href = base_url+"/sambasmotor.com/";
+        window.location.href = base_url;
       })
       .then(()=>{localStorage.clear()})
       .then(()=>{localStorage.setItem("islogin", "false")})

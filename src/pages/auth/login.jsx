@@ -103,15 +103,15 @@ class Login extends React.Component {
           ></div>
           <div className="news-caption">
             <h4 className="caption-title">
-              <b>Sambas</b> Motor
+              <b>Bengkel</b> App
             </h4>
-            <p>Sambas Motor Admin Website <small>V.1.1</small></p>
+            <p>Bengkel App Admin Website <small>V.1.1</small></p>
           </div>
         </div>
         <div className="right-content">
           <div className="login-header">
             <div className="brand">
-              <span className="logo"></span> <b>Sambas</b> Motor
+              <span className="logo"></span> <b>Bengkel</b> App
             </div>
             <div className="icon">
               <i className="fa fa-sign-in"></i>

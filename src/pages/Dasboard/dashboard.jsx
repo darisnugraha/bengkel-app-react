@@ -214,7 +214,7 @@ width=0,height=0,left=-500,top=-1000`;
 
     var base_url = window.location.origin;
     console.log(base_url);
-    window.open(`${base_url}/sambasmotor.com/service-progress`, "test", params);
+    window.open(`${base_url}/bengkelapp.com/service-progress`, "test", params);
   }
   render() {
     return (

@@ -12,7 +12,7 @@ class Footer extends React.Component {
   render() {
     return (
       <div id="footer" className="footer">
-        &copy; {this.state.year} Sambas Motor Responsive Admin Template - Sean
+        &copy; {this.state.year} Bengkel App Responsive Admin Template - Sean
         Ngu All Rights Reserved
       </div>
     );

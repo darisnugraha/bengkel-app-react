@@ -43,7 +43,7 @@ class RegisterV3 extends React.Component {
               <b>Color</b> Admin App
             </h4>
             <p>
-              As a Sambas Motor app administrator, you use the Sambas Motor
+              As a Bengkel App administrator, you use the Bengkel App
               console to manage your organization’s account, such as add new
               users, manage security settings, and turn on the services you want
               your team to access.
@@ -54,7 +54,7 @@ class RegisterV3 extends React.Component {
           <h1 className="register-header">
             Sign Up
             <small>
-              Create your Sambas Motor Account. It’s free and always will be.
+              Create your Bengkel App Account. It’s free and always will be.
             </small>
           </h1>
           <div className="register-content">
@@ -145,7 +145,7 @@ class RegisterV3 extends React.Component {
               </div>
               <hr />
               <p className="text-center">
-                &copy; Sambas Motor All Right Reserved 2019
+                &copy; Bengkel App All Right Reserved 2019
               </p>
             </form>
           </div>

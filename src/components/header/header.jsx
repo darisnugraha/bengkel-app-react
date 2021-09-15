@@ -45,7 +45,7 @@ class Header extends React.Component {
                 </button>
               )}
               <Link to="/" className="navbar-brand">
-                <span className="navbar-logo"></span> <b>Sambas Motor</b>
+                <span className="navbar-logo"></span> <b>Bengkel App</b>
               </Link>
 
               {pageHeaderMegaMenu && (

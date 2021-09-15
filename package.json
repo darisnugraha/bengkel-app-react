@@ -1,5 +1,5 @@
 {
-    "name": "sambasmotor",
+    "name": "bengkelapp",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
@@ -76,8 +76,8 @@
         "web-vitals": "^1.1.0"
     },
     "build": {
-        "appId": "com.nagatech.sambasMotor",
-        "productName": "Sambas Motor",
+        "appId": "com.bengkel.app",
+        "productName": "Bengkel App",
         "win": {
             "icon": "public/icons/win/icon.ico"
         },

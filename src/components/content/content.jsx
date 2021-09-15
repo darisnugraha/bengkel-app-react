@@ -12,10 +12,10 @@ function setTitle(path, routeArray) {
   var pageTitle;
   for (var i = 0; i < routeArray.length; i++) {
     if (routeArray[i].path === path) {
-      pageTitle = "Sambas Motor | " + routeArray[i].title;
+      pageTitle = "Bengkel App | " + routeArray[i].title;
     }
   }
-  document.title = pageTitle ? pageTitle : "Sambas Motor | React App";
+  document.title = pageTitle ? pageTitle : "Bengkel App | React App";
 }
 
 class Content extends React.Component {
