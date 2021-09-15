@@ -1,0 +1,12 @@
+@import "https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700";
+@import "https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1/nv.d3.min.css";
+@import "https://unpkg.com/ionicons@4.2.2/dist/css/ionicons.min.css";
+@import "./assets/app.min.css";
+@import "./assets/react_select_search.css";
+
+.customDatePickerWidth, 
+.customDatePickerWidth > div.react-datepicker-wrapper, 
+.customDatePickerWidth > div > div.react-datepicker__input-container
+.customDatePickerWidth > div > div.react-datepicker__input-container input {
+   width: 100%;
+};
