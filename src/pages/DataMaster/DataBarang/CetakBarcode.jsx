@@ -1,11 +1,4 @@
-import React, { lazy, Suspense } from "react";
-import { Link } from "react-router-dom";
-import {
-  Panel,
-  PanelBody,
-  PanelFooter,
-  PanelHeader,
-} from "../../../components/panel/panel.jsx";
+import React from "react";
 import { connect } from "react-redux";
 import {
   ReanderField,
@@ -223,7 +216,7 @@ class CetakBarcode extends React.Component {
                   </div>
                   <div className="col-lg-4"></div>
                   <div className="col-lg-4 d-none">
-                    <img id="barcode" />
+                    <img id="barcode" alt="barcode" />
                   </div>
                 </div>
               </div>
@@ -319,7 +312,7 @@ class CetakBarcode extends React.Component {
                   </div>
                   <div className="col-lg-4"></div>
                   <div className="col-lg-4 d-none">
-                    <img id="barcode" />
+                    <img id="barcode" alt="barcode" />
                   </div>
                 </div>
               </div>

@@ -15,15 +15,23 @@ import {
 } from "../../../components/panel/panel.jsx";
 import HeadHancurBarang from "./HeadHancurBarang.jsx";
 import {
+  getSelfing,
+  getSupplier,
   hideModal,
   onFinish,
   onProgress,
 } from "../../../actions/datamaster_action.jsx";
 import CetakNota from "../CetakNota.jsx";
-import { getHancurTemp } from "../../../actions/stocking_action.jsx";
-import { AxiosMasterGet, AxiosMasterPost } from "../../../axios.js";
+import {
+  getHancurTemp,
+  getNoHancur,
+} from "../../../actions/stocking_action.jsx";
+import { AxiosMasterPost } from "../../../axios.js";
 import Tabel from "../../../components/Tabel/tabel.jsx";
-import { multipleDeleteLocal } from "../../../components/notification/function.jsx";
+import {
+  getToday,
+  multipleDeleteLocal,
+} from "../../../components/notification/function.jsx";
 import { reset } from "redux-form";
 
 const ModalHancurBarang = lazy(() => import("./ModalHancurBarang.jsx"));
@@ -63,6 +71,7 @@ class HancurBarang extends React.Component {
       isEdit: false,
       modalDialog: false,
       isLoading: false,
+      listSupplier: [],
       columns: [
         {
           dataField: "kode_barcode",
@@ -105,7 +114,7 @@ class HancurBarang extends React.Component {
               harga_satuan: row.harga_satuan,
               total: row.total,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -136,9 +145,8 @@ class HancurBarang extends React.Component {
 
   componentDidMount() {
     this.props.dispatch(getHancurTemp());
-    AxiosMasterGet("hancur-barang/generate/no-trx").then((res) =>
-      localStorage.setItem("kode_hancur", res.data[0].no_hancur)
-    );
+    this.props.dispatch(getSelfing());
+    this.props.dispatch(getSupplier());
   }
   handleSubmit(hasil) {
     let supplier = hasil.kode_supplier && hasil.kode_supplier.split("||");
@@ -173,13 +181,13 @@ class HancurBarang extends React.Component {
       .then(() => this.props.dispatch(getHancurTemp()))
       .then(() => this.props.dispatch(hideModal()));
   }
-  
+
   sendData(hasil) {
     this.props.dispatch(onProgress());
     let data = {
-      no_hancur: localStorage.getItem("kode_hancur") || undefined,
+      no_hancur: hasil.no_hancur,
       tanggal: hasil.tanggal,
-      kode_lokasi_gudang: hasil.lokasi,
+      kode_lokasi_shelving: hasil.lokasi,
       detail_barang:
         JSON.parse(localStorage.getItem("HancurBarang_temp_kirim")) || [],
     };
@@ -219,11 +227,11 @@ class HancurBarang extends React.Component {
           "Lokasi",
           hasil.lokasi,
           "No Bukti",
-          hasil.no_pindah,
+          hasil.no_hancur,
           "",
           "",
           "ADMIN",
-          "01-28-2021",
+          getToday(true),
           "ADMIN",
           columnTabel,
           "BUKTI HANCUR STOK",
@@ -241,8 +249,9 @@ class HancurBarang extends React.Component {
           "lokasi_hancur",
         ])
       )
-      .then(() => this.props.dispatch(reset("permintaanBarang")))
+      .then(() => this.props.dispatch(reset("hancurBarang")))
       .then(() => this.props.dispatch(getHancurTemp()))
+      .then(() => this.props.dispatch(getNoHancur()))
       .then(() => this.props.dispatch(onFinish()))
       .catch((err) =>
         NotifError(`Error: ${err}`).then(() => this.props.dispatch(onFinish()))
@@ -291,6 +300,7 @@ class HancurBarang extends React.Component {
                   fallback={<Skeleton width={"100%"} height={50} count={2} />}
                 >
                   <ModalHancurBarang
+                    listSupplier={this.state.listSupplier}
                     onSubmit={(data) => this.handleSubmit(data)}
                     onSend={this.props.onSend}
                     isEdit={this.state.isEdit}

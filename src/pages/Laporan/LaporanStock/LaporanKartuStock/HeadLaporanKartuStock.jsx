@@ -1,65 +1,35 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
-import { AxiosMasterGet } from "../../../../axios";
+import { ReanderSelect } from "../../../../components/notification/notification";
 import {
-  ReanderField,
-  ReanderSelect,
-} from "../../../../components/notification/notification";
+  getDiskon,
+  getInfoBarang,
+  getJenis,
+  getSelfing,
+} from "../../../../actions/datamaster_action";
 
 class HeadLaporanKartuStock extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      selectedKategori: "",
       listJenis: [],
-      listKategori: [],
-      listGudang: [],
     };
   }
   componentDidMount() {
-    AxiosMasterGet("kategori/get/all").then((res) =>
-      this.setState({
-        listKategori:
-          res &&
-          res.data.map((list) => {
-            let data = {
-              value: list.kode_kategori,
-              name: list.nama_kategori,
-            };
-            return data;
-          }),
-      })
-    );
-
-    AxiosMasterGet("lokasi-gudang/get/all").then((res) =>
-      this.setState({
-        listGudang:
-          res &&
-          res.data.map((list) => {
-            let data = {
-              value: list.kode_lokasi_gudang,
-              name: list.nama_lokasi_gudang,
-            };
-            return data;
-          }),
-      })
-    );
+    this.props.dispatch(getDiskon());
+    this.props.dispatch(getSelfing());
+    this.props.dispatch(getJenis());
+    this.props.dispatch(getInfoBarang());
   }
-  getJenis(hasil) {
-    this.props.change("kode_jenis", "");
-    AxiosMasterGet("jenis/get/by-kode-kategori/" + hasil).then((res) =>
-      this.setState({
-        listJenis:
-          res &&
-          res.data.map((list) => {
-            let data = {
-              value: list.kode_jenis,
-              name: list.nama_jenis,
-            };
-            return data;
-          }),
-      })
-    );
+
+  getJenis(data) {
+    this.setState({
+      listJenis: this.props.listJenis.filter(
+        (fil) => fil.kode_kategori === data
+      ),
+    });
   }
   render() {
     return (
@@ -74,7 +44,12 @@ class HeadLaporanKartuStock extends Component {
             <Field
               name="kode_kategori"
               component={ReanderSelect}
-              options={this.state.listKategori}
+              options={this.props.listDiskon.map((data) => {
+                return {
+                  value: data.kode_kategori,
+                  name: data.nama_kategori,
+                };
+              })}
               type="text"
               label="Kategori"
               placeholder="Masukan Kategori"
@@ -85,7 +60,12 @@ class HeadLaporanKartuStock extends Component {
             <Field
               name="kode_jenis"
               component={ReanderSelect}
-              options={this.state.listJenis}
+              options={this.state.listJenis.map((data) => {
+                return {
+                  value: data.kode_jenis,
+                  name: data.nama_jenis,
+                };
+              })}
               type="text"
               label="Jenis"
               placeholder="Masukan Jenis"
@@ -93,12 +73,32 @@ class HeadLaporanKartuStock extends Component {
           </div>
           <div className="col-lg-3">
             <Field
-              name="kode_lokasi"
+              name="kode_lokasi_shelving"
               component={ReanderSelect}
-              options={this.state.listGudang}
+              options={this.props.listSelfing.map((data) => {
+                return {
+                  value: data.kode_lokasi_selving,
+                  name: data.nama_lokasi_selving,
+                };
+              })}
               type="text"
               label="Lokasi"
               placeholder="Masukan Lokasi"
+            />
+          </div>
+          <div className="col-lg-3">
+            <Field
+              name="kode_barcode"
+              component={ReanderSelect}
+              options={this.props.listInfoBarang.map((data) => {
+                return {
+                  value: data.kode_barcode,
+                  name: data.kode_barcode,
+                };
+              })}
+              type="text"
+              label="Kode Barcode"
+              placeholder="Masukan Kode Barcode"
             />
           </div>
           {/* <div className="col-lg-3">
@@ -139,5 +139,9 @@ HeadLaporanKartuStock = reduxForm({
 export default connect((state) => {
   return {
     onSend: state.datamaster.onSend,
+    listJenis: state.datamaster.listjenis,
+    listSelfing: state.datamaster.listselfing,
+    listDiskon: state.datamaster.listDiskon,
+    listInfoBarang: state.datamaster.listInfoBarang,
   };
 })(HeadLaporanKartuStock);

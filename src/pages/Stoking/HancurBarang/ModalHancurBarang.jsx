@@ -7,6 +7,7 @@ import {
   ReanderField,
   ReanderSelect,
 } from "../../../components/notification/notification";
+import { debounce } from "../../../config/Helper";
 
 const validate = (values) => {
   const errors = {};
@@ -21,8 +22,11 @@ class ModalHancurBarang extends Component {
     this.state = {
       listSupplier: [],
     };
+    this.loadData = this.loadData.bind(this);
+    this.debouncedLoadData = debounce(this.loadData, 500);
   }
-  getBarcode(e) {
+  // Fungsi untuk memuat data, didefinisikan di luar getBarcode
+  loadData(e) {
     this.props.dispatch(onProgress());
     let lokasi_hancur = localStorage.getItem("lokasi_hancur") || "";
     AxiosMasterGet(
@@ -30,8 +34,16 @@ class ModalHancurBarang extends Component {
         `${e.target.value}&${lokasi_hancur}`
     )
       .then((res) => this.setBarang(res.data))
-      .then(() => this.props.dispatch(onFinish()));
+      .then(() => this.props.dispatch(onFinish()))
+      .catch(() => this.props.dispatch(onFinish()));
   }
+
+  // Membuat fungsi debounce
+  debouncedLoadData = debounce(this.loadData, 500);
+
+  getBarcode = (e) => {
+    this.debouncedLoadData(e);
+  };
   setBarang(res) {
     console.log(res);
     this.props.change("kode_barang", res[0].kode_barang);
@@ -39,21 +51,7 @@ class ModalHancurBarang extends Component {
     // this.props.change("merk", res[0].merk_barang);
     // this.props.change("kwalitas", res[0].kwalitas);
     this.props.change("satuan", res[0].satuan);
-    this.setState({
-      listSupplier:
-        res &&
-        res[0].data_supplier.map((list) => {
-          let data = {
-            value: `${list.kode_supplier}||${list.stock}`,
-            name: list.nama_supplier,
-          };
-          return data;
-        }),
-    });
-  }
-  setStock(hasil) {
-    let data = hasil.split("||");
-    this.props.change("stock", data[1]);
+    this.props.change("stock", res[0].stock);
   }
   render() {
     return (
@@ -73,8 +71,7 @@ class ModalHancurBarang extends Component {
                   type="text"
                   label="Kode Barcode"
                   placeholder="Masukan Kode Barcode"
-                  onChange={(e) => this.getBarcode(e)}
-                  onBlur={(e) => this.getBarcode(e)}
+                  onChange={this.getBarcode}
                 />
               </div>
               <div className="col-lg-3 d-none">
@@ -134,11 +131,15 @@ class ModalHancurBarang extends Component {
                 <Field
                   name="kode_supplier"
                   component={ReanderSelect}
-                  options={this.state.listSupplier}
+                  options={this.props.listSupplier.map((data) => {
+                    return {
+                      value: data.kode_supplier,
+                      name: data.nama_supplier,
+                    };
+                  })}
                   type="text"
                   label="Kode Supplier"
                   placeholder="Masukan Kode Supplier"
-                  onChange={(e) => this.setStock(e)}
                 />
               </div>
               <div className="col-lg-2">
@@ -192,6 +193,7 @@ ModalHancurBarang = reduxForm({
 })(ModalHancurBarang);
 export default connect((state) => {
   return {
+    listSupplier: state.datamaster.listsupplier,
     onSend: state.datamaster.onSend,
   };
 })(ModalHancurBarang);

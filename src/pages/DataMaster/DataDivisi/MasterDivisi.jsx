@@ -6,7 +6,6 @@ import {
   PanelHeader,
 } from "../../../components/panel/panel.jsx";
 import { connect } from "react-redux";
-import Swal from "sweetalert2";
 import {
   NotifError,
   NotifSucces,
@@ -21,7 +20,6 @@ import {
 import ModalGlobal from "../../ModalGlobal.jsx";
 import Skeleton from "react-loading-skeleton";
 import {
-  AxiosMasterDelete,
   AxiosMasterPost,
   AxiosMasterPut,
 } from "../../../axios.js";
@@ -36,27 +34,27 @@ const maptostate = (state) => {
     listdivisi: state.datamaster.listdivisi,
   };
 };
-const hapusDataKategori = (params, dispatch) => {
-  Swal.fire({
-    title: "Anda Yakin !!",
-    text: "Ingin Menghapus Data Ini ?",
-    icon: "warning",
-    position: "top-center",
-    cancelButtonText: "Tidak",
-    showCancelButton: true,
-    confirmButtonText: "OK",
-    showConfirmButton: true,
-  }).then((result) => {
-    if (result.isConfirmed) {
-      AxiosMasterDelete(
-        "divisi/delete/by-kode-divisi/" + params
-      )
-        .then(() => dispatch(hideModal()))
-        .then(() => dispatch(getDivisi()))
-        .then(() => NotifSucces("Berhasil Dihapus"));
-    }
-  });
-};
+// const hapusDataKategori = (params, dispatch) => {
+//   Swal.fire({
+//     title: "Anda Yakin !!",
+//     text: "Ingin Menghapus Data Ini ?",
+//     icon: "warning",
+//     position: "top-center",
+//     cancelButtonText: "Tidak",
+//     showCancelButton: true,
+//     confirmButtonText: "OK",
+//     showConfirmButton: true,
+//   }).then((result) => {
+//     if (result.isConfirmed) {
+//       AxiosMasterDelete(
+//         "divisi/delete/by-kode-divisi/" + params
+//       )
+//         .then(() => dispatch(hideModal()))
+//         .then(() => dispatch(getDivisi()))
+//         .then(() => NotifSucces("Berhasil Dihapus"));
+//     }
+//   });
+// };
 class MasterDivisi extends React.Component {
   constructor(props) {
     super(props);
@@ -85,7 +83,7 @@ class MasterDivisi extends React.Component {
         //       kode_divisi: row.kode_divisi,
         //       nama_divisi: row.nama_divisi,
         //     };
-        //     this.setState({});
+        //     
         //     return (
         //       <div className="row text-center">
         //         <div className="col-12">
@@ -143,31 +141,31 @@ class MasterDivisi extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          "divisi/update/by-kode-divisi/" + hasil.kode_divisi || "-",
-          {
-            nama_divisi: hasil.nama_divisi || "-",
-          }
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("dataDivisi")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getDivisi()))
-          .catch((err) =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-              
-            )
+        "divisi/update/by-kode-divisi/" + hasil.kode_divisi || "-",
+        {
+          nama_divisi: hasil.nama_divisi || "-",
+        }
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("dataDivisi")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getDivisi()))
+        .catch((err) =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
+
           )
+        )
       : AxiosMasterPost("divisi/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataDivisi")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getDivisi()))
-          .catch((err) =>
-            this.handleReactive(err, hasil.kode_divisi, {
-              nama_divisi: hasil.nama_divisi,
-            })
-          );
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataDivisi")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getDivisi()))
+        .catch((err) =>
+          this.handleReactive(err, hasil.kode_divisi, {
+            nama_divisi: hasil.nama_divisi,
+          })
+        );
   }
   handleReactive(err, kode, data) {
     this.props.dispatch(hideModal());
@@ -175,12 +173,12 @@ class MasterDivisi extends React.Component {
     let check = error.includes("Deleted");
     check
       ? reactive(
-          err,
-          kode,
-          "divisi/reactive/by-kode-divisi/",
-          data,
-          "divisi/update/by-kode-divisi/"
-        ).then(() => this.props.dispatch(getDivisi()))
+        err,
+        kode,
+        "divisi/reactive/by-kode-divisi/",
+        data,
+        "divisi/update/by-kode-divisi/"
+      ).then(() => this.props.dispatch(getDivisi()))
       : NotifError("Data Gagal Ditambahkan");
   }
   render() {

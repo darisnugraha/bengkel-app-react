@@ -4,6 +4,7 @@ import { Field, reduxForm } from "redux-form";
 import { onFinish, onProgress } from "../../../actions/datamaster_action";
 import { AxiosMasterGet } from "../../../axios";
 import { ReanderField } from "../../../components/notification/notification";
+import { debounce } from "../../../config/Helper";
 
 class ModalKonversiBarang extends Component {
   constructor(props) {
@@ -12,51 +13,51 @@ class ModalKonversiBarang extends Component {
       listBarang: [],
       hasilBarcode: [],
     };
+    this.loadData = this.loadData.bind(this);
+    this.debouncedLoadData = debounce(this.loadData, 500);
   }
 
-  getBarcode(hasil) {
+  loadData(hasil) {
     this.props.dispatch(onProgress());
     let lokasi = localStorage.getItem("lokasi_pilihan") || "";
-    let supplier = localStorage.getItem("supplier_pilihan") || "";
     AxiosMasterGet(
       "konversi-barang/get/ByLokasiSupplier/" +
-        `${supplier}&${lokasi}&${hasil.target.value}`
+        `${lokasi}&${hasil.target.value}`
     )
-      .then((res) => this.setState({ hasilBarcode: res.data }))
-      .then(() => this.setDetail())
+      .then((res) => this.setDetail(res.data))
       .then(() => this.props.dispatch(onFinish()))
-      .catch((err) => console.log(err));
+      .catch((err) => this.props.dispatch(onFinish()));
   }
 
-  setDetail() {
-    console.log(this.state.hasilBarcode[0].kode_jenis);
-    this.props.change(
-      "kode_jenis_asal",
-      this.state.hasilBarcode[0].nama_barang
-    );
-    this.props.change("stock_asal", this.state.hasilBarcode[0].stock);
+  debouncedLoadData = debounce(this.loadData, 500);
+
+  getBarcode(e) {
+    this.debouncedLoadData(e);
+  }
+
+  setDetail(data) {
+    if (data.length > 0) {
+      this.props.change("kode_jenis_asal", data[0].nama_barang);
+      this.props.change("stock_asal", data[0].stock);
+    }
   }
   getBarcodeTujuan(hasil) {
     this.props.dispatch(onProgress());
     let lokasi = localStorage.getItem("lokasi_pilihan") || "";
-    let supplier = localStorage.getItem("supplier_pilihan") || "";
     AxiosMasterGet(
       "konversi-barang/get/ByLokasiSupplier/" +
-        `${supplier}&${lokasi}&${hasil.target.value}`
+        `${lokasi}&${hasil.target.value}`
     )
-      .then((res) => this.setState({ hasilBarcode: res.data }))
-      .then(() => this.setDetailTujuan())
+      .then((res) => this.setDetailTujuan(res.data))
       .then(() => this.props.dispatch(onFinish()))
-      .catch((err) => console.log(err));
+      .catch((err) => this.props.dispatch(onFinish()));
   }
 
-  setDetailTujuan() {
-    console.log(this.state.hasilBarcode[0].kode_jenis);
-    this.props.change(
-      "kode_jenis_tujuan",
-      this.state.hasilBarcode[0].nama_barang
-    );
-    this.props.change("stock_tujuan", this.state.hasilBarcode[0].stock);
+  setDetailTujuan(data) {
+    if (data.length > 0) {
+      this.props.change("kode_jenis_tujuan", data[0].nama_barang);
+      this.props.change("stock_tujuan", data[0].stock);
+    }
   }
   render() {
     return (
@@ -82,7 +83,6 @@ class ModalKonversiBarang extends Component {
                   label="Kode Asal"
                   placeholder="Masukan Kode Asal"
                   onChange={(e) => this.getBarcode(e)}
-                  onBlur={(e) => this.getBarcode(e)}
                 />
               </div>
               <div className="col-lg-3">
@@ -129,7 +129,6 @@ class ModalKonversiBarang extends Component {
                   label="Kode Tujuan"
                   placeholder="Masukan Kode Tujuan"
                   onChange={(e) => this.getBarcodeTujuan(e)}
-                  onBlur={(e) => this.getBarcodeTujuan(e)}
                 />
               </div>
               <div className="col-lg-3">

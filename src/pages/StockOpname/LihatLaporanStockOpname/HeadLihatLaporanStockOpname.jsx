@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
 import { getGudang } from "../../../actions/datamaster_action";
 import { ReanderField } from "../../../components/notification/notification";
+import { getToday } from "../../../components/notification/function";
 
 class HeadLihatLaporanStockOpname extends Component {
   constructor(props) {
@@ -11,7 +12,10 @@ class HeadLihatLaporanStockOpname extends Component {
   }
   componentDidMount() {
     this.props.dispatch(getGudang());
+    this.props.change("tanggal_awal", getToday());
+    this.props.change("tanggal_akhir", getToday());
   }
+
   render() {
     return (
       <form

@@ -10,11 +10,18 @@ import {
 import { showModal } from "../../../actions/datamaster_action";
 import { createNumberMask } from "redux-form-input-masks";
 import { AxiosMasterGet } from "../../../axios";
-import { formatDateISO } from "../../../components/notification/function";
-import { getListBarangReturSupplier, getListReturnSupplier } from "../../../actions/transaksi_action";
+import {
+  formatDateISO,
+  getToday,
+} from "../../../components/notification/function";
+import {
+  getListBarangReturSupplier,
+  getListReturnSupplier,
+} from "../../../actions/transaksi_action";
 import Swal from "sweetalert2";
 import Tabel from "../../../components/Tabel/tabel";
 import { required } from "../../../validasi/normalize";
+import { debounce } from "../../../config/Helper";
 
 const currencyMask = createNumberMask({
   prefix: "Rp. ",
@@ -26,6 +33,8 @@ const currencyMask = createNumberMask({
 class HeadReturnSupplier extends Component {
   constructor(props) {
     super(props);
+    this.loadData = this.loadData.bind(this);
+    this.debouncedLoadData = debounce(this.loadData, 500);
     this.state = {
       listSupplier: [],
       hasilTerimaBarang: [],
@@ -41,6 +50,10 @@ class HeadReturnSupplier extends Component {
         {
           dataField: "qty",
           text: "Qty",
+        },
+        {
+          dataField: "kode_lokasi_shelving",
+          text: "Lokasi Shelving",
         },
         {
           dataField: "harga_satuan",
@@ -62,7 +75,6 @@ class HeadReturnSupplier extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row) => {
-            this.setState({});
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -127,36 +139,45 @@ class HeadReturnSupplier extends Component {
       showConfirmButton: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.removeItem("return_kode")
-        localStorage.removeItem("kode_barcode")
-        localStorage.removeItem("ListBarangSPL")
-        localStorage.removeItem("ReturnSupplier_temp_kirim")
-        localStorage.removeItem("return_supplier")
-        localStorage.removeItem("return_keterangan")
-        localStorage.removeItem("ReturnSupplier_temp")
-        window.location.reload()
-
+        localStorage.removeItem("return_kode");
+        localStorage.removeItem("kode_barcode");
+        localStorage.removeItem("ListBarangSPL");
+        localStorage.removeItem("ReturnSupplier_temp_kirim");
+        localStorage.removeItem("return_supplier");
+        localStorage.removeItem("return_keterangan");
+        localStorage.removeItem("ReturnSupplier_temp");
+        window.location.reload();
       }
     });
   }
 
+  loadData(hasil) {
+    if (hasil !== "") {
+      AxiosMasterGet(
+        "terima-barang-supplier/lihat-bukti-terima/" + hasil.target.value
+      )
+        .then((res) => this.setLocal(res))
+        .then(() => localStorage.setItem("return_kode", hasil.target.value))
+        .then(() => this.setPenjualan())
+        .then(() => this.props.dispatch(getListBarangReturSupplier()))
+        .catch((err) => console.log(err));
+    }
+  }
+
+  debouncedLoadData = debounce(this.loadData, 500);
+
   getTerimaBarang(hasil) {
-    AxiosMasterGet(
-      "terima-barang-supplier/lihat-bukti-terima/" + hasil.target.value
-    )
-      .then((res) => this.setLocal(res))
-      .then(() => localStorage.setItem("return_kode", hasil.target.value))
-      .then(() => this.setPenjualan())
-      .catch((err) => console.log(err));
-      this.props.dispatch(getListBarangReturSupplier());
+    this.debouncedLoadData(hasil);
   }
   setLocal(res) {
-    console.log("INI LOCAL", res);
     this.setState({
       hasilTerimaBarang: res.data,
     });
     localStorage.setItem("return_supplier", res.data.kode_supplier);
-    localStorage.setItem("ListBarangSPL", JSON.stringify(res.data.detail_barang));
+    localStorage.setItem(
+      "ListBarangSPL",
+      JSON.stringify(res.data.detail_barang)
+    );
     localStorage.setItem(
       "return_tanggal_bon",
       formatDateISO(res.data.tanggal_bon)
@@ -164,7 +185,6 @@ class HeadReturnSupplier extends Component {
     localStorage.setItem("return_keterangan", res.data.keterangan);
   }
   setPenjualan() {
-    console.log(this.state.hasilTerimaBarang);
     this.props.change(
       "kode_supplier",
       this.state.hasilTerimaBarang.kode_supplier
@@ -197,8 +217,7 @@ class HeadReturnSupplier extends Component {
               type="text"
               label="Nomor Faktur Penerimaan"
               placeholder="Masukan Nomor Faktur Penerimaan"
-              // onChange={(hasil) => this.getTerimaBarang(hasil)}
-              onBlur={(hasil) => this.getTerimaBarang(hasil)}
+              onChange={(hasil) => this.getTerimaBarang(hasil)}
             />
           </div>
           <div className="col-lg-3">
@@ -296,7 +315,11 @@ class HeadReturnSupplier extends Component {
           </div>
           <div className="col-lg-6">
             <div className="text-left">
-              <button className="btn btn-danger" onClick={() => this.batal()} type="button">
+              <button
+                className="btn btn-danger"
+                onClick={() => this.batal()}
+                type="button"
+              >
                 Batal <i className="fa fa-times ml-3"></i>
               </button>
             </div>
@@ -339,7 +362,7 @@ export default connect((state) => {
       kode_return: localStorage.getItem("kode_return") || "",
       kode_supplier: localStorage.getItem("return_supplier") || "",
       keterangan: localStorage.getItem("return_keterangan") || "",
-      tanggal: localStorage.getItem("return_tanggal_bon") || "",
+      tanggal: localStorage.getItem("return_tanggal_bon") || getToday(),
     },
   };
 })(HeadReturnSupplier);

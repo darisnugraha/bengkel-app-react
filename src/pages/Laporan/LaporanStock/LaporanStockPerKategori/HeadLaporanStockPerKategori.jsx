@@ -25,36 +25,25 @@ class HeadLaporanPengeluaranBarang extends Component {
     this.props.change("tanggal_akhir", getToday());
     this.props.dispatch(getSupplier());
     this.props.dispatch(getBarang());
-
-    let spl = { kode_supplier: "ALL", nama_supplier: "SEMUA" };
-
-    AxiosMasterGet("supplier/get/all")
-      .then((res) => this.setState({ listSpl: res.data }))
-      .then(() => this.setState({ spl: this.state.listSpl.push(spl) }));
-
     let brg = { kode_barcode: "ALL", nama_barang: "SEMUA" };
     AxiosMasterGet("barang/get/all")
       .then((res) => this.setState({ listbrg: res.data }))
       .then(() => this.setState({ brg: this.state.listbrg.push(brg) }));
   }
 
-  // handleCheck(data) {
-  //   this.setState({ isAll: data.target.checked });
-  //   this.props.change("kode_supplier", "");
-  //   this.props.change("kode_barcode", "");
-  // }
-
   setNamaBarang(data) {
     if (data === "ALL") {
-      this.props.change("nama_barang", data)
-    }else{
+      this.props.change("nama_barang", data);
+    } else {
       let nmbarang;
-    AxiosMasterGet("barang/get/all")
-    .then((res) =>
-      this.setState({ brgnama: res.data.find(fill=>fill.kode_barcode === data) })
-    )
-    .then(()=>nmbarang = this.state.brgnama.nama_barang)
-    .then(()=>this.props.change("nama_barang", nmbarang))
+      AxiosMasterGet("barang/get/all")
+        .then((res) =>
+          this.setState({
+            brgnama: res.data.find((fill) => fill.kode_barcode === data),
+          })
+        )
+        .then(() => (nmbarang = this.state.brgnama.nama_barang))
+        .then(() => this.props.change("nama_barang", nmbarang));
     }
   }
 
@@ -78,7 +67,7 @@ class HeadLaporanPengeluaranBarang extends Component {
               onChange={(data) => this.handleCheck(data)}
             />
           </div>
-          <div className="col-lg-3">
+          <div className="col-lg-4">
             <Field
               name="tanggal_awal"
               component={ReanderField}
@@ -87,30 +76,13 @@ class HeadLaporanPengeluaranBarang extends Component {
               placeholder="Masukan Tanggal Awal"
             />
           </div>
-          <div className="col-lg-3">
+          <div className="col-lg-4">
             <Field
               name="tanggal_akhir"
               component={ReanderField}
               type="date"
               label="Sampai Tanggal"
               placeholder="Masukan Sampai Tanggal"
-            />
-          </div>
-          <div className="col-lg-4">
-            <Field
-              name="kode_supplier"
-              component={ReanderSelect}
-              options={this.state.listSpl.map((list) => {
-                let data = {
-                  value: list.kode_supplier,
-                  name: `${list.kode_supplier} - ${list.nama_supplier}`,
-                };
-                return data;
-              })}
-              type="text"
-              label="Supplier"
-              placeholder="SEMUA"
-              readOnly={this.state.isAll}
             />
           </div>
           <div className="col-lg-4">

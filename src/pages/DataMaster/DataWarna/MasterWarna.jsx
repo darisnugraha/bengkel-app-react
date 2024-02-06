@@ -87,7 +87,7 @@ class MasterWarna extends React.Component {
               kode_warna: row.kode_warna,
               nama_warna: row.nama_warna,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -149,28 +149,28 @@ class MasterWarna extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          "warna/update/by-kode-warna/" + hasil.kode_warna,
-          dataEdit
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("dataWarna")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getWarna()))
-          .catch((err) =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+        "warna/update/by-kode-warna/" + hasil.kode_warna,
+        dataEdit
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("dataWarna")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getWarna()))
+        .catch((err) =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("warna/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataWarna")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getWarna()))
-          .catch((err) =>
-            this.handleReactive(err, hasil.kode_warna, {
-              nama_warna: hasil.nama_warna,
-            })
-          );
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataWarna")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getWarna()))
+        .catch((err) =>
+          this.handleReactive(err, hasil.kode_warna, {
+            nama_warna: hasil.nama_warna,
+          })
+        );
   }
 
   handleReactive(err, kode, data) {
@@ -179,12 +179,12 @@ class MasterWarna extends React.Component {
     let check = error.includes("hapus");
     check
       ? reactive(
-          err,
-          kode,
-          "warna/reactive/by-kode-warna/",
-          data,
-          "warna/update/by-kode-warna/"
-        ).then(() => this.props.dispatch(getWarna()))
+        err,
+        kode,
+        "warna/reactive/by-kode-warna/",
+        data,
+        "warna/update/by-kode-warna/"
+      ).then(() => this.props.dispatch(getWarna()))
       : NotifError("Data Gagal Ditambahkan");
   }
 

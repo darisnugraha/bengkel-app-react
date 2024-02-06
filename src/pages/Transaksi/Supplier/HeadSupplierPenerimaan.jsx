@@ -12,6 +12,7 @@ import { getListTerimaSupplier } from "../../../actions/transaksi_action";
 import Swal from "sweetalert2";
 import Tabel from "../../../components/Tabel/tabel";
 import { required } from "../../../validasi/normalize";
+import { getToday } from "../../../components/notification/function";
 
 const currencyMask = createNumberMask({
   prefix: "Rp. ",
@@ -50,6 +51,10 @@ class HeadSupplierPenerimaan extends Component {
           text: "Qty",
         },
         {
+          dataField: "kode_lokasi_shelving",
+          text: "Lokasi",
+        },
+        {
           dataField: "harga_satuan",
           text: "Harga Satuan",
           formatter: (data) => {
@@ -69,7 +74,6 @@ class HeadSupplierPenerimaan extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row) => {
-            this.setState({});
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -124,15 +128,14 @@ class HeadSupplierPenerimaan extends Component {
       showConfirmButton: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.removeItem("penerimaan_tanggal_invoice")
-        localStorage.removeItem("penerimaan_tanggal_barang")
-        localStorage.removeItem("penerimaan_kode_supplier")
-        localStorage.removeItem("penerimaan_keterangan")
-        localStorage.removeItem("penerimaan_no_bon")
-        localStorage.removeItem("penerimaan_kode_terima")
-        localStorage.removeItem("type_pembayaran")
-        window.location.reload()
-
+        localStorage.removeItem("penerimaan_tanggal_invoice");
+        localStorage.removeItem("penerimaan_tanggal_barang");
+        localStorage.removeItem("penerimaan_kode_supplier");
+        localStorage.removeItem("penerimaan_keterangan");
+        localStorage.removeItem("penerimaan_no_bon");
+        localStorage.removeItem("penerimaan_kode_terima");
+        localStorage.removeItem("type_pembayaran");
+        window.location.reload();
       }
     });
   }
@@ -323,7 +326,11 @@ class HeadSupplierPenerimaan extends Component {
           </div>
           <div className="col-lg-6">
             <div className="text-left">
-              <button className="btn btn-danger" onClick={() => this.batal()} type="button">
+              <button
+                className="btn btn-danger"
+                onClick={() => this.batal()}
+                type="button"
+              >
                 Batal <i className="fa fa-times ml-3"></i>
               </button>
             </div>
@@ -359,8 +366,9 @@ export default connect((state) => {
           "penerimaan_kode_supplier"
         )}||${localStorage.getItem("type_pembayaran")}` || null,
       tanggal_invoice:
-        localStorage.getItem("penerimaan_tanggal_invoice") || null,
-      tanggal_barang: localStorage.getItem("penerimaan_tanggal_barang") || null,
+        localStorage.getItem("penerimaan_tanggal_invoice") || getToday(),
+      tanggal_barang:
+        localStorage.getItem("penerimaan_tanggal_barang") || getToday(),
       keterangan: localStorage.getItem("penerimaan_keterangan") || null,
       no_bon: localStorage.getItem("penerimaan_no_bon") || null,
       discount: localStorage.getItem("penerimaan_discount") || 0,

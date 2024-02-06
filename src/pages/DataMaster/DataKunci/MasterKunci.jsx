@@ -45,10 +45,10 @@ const hapusDataKategori = (params, dispatch) => {
     showConfirmButton: true,
   }).then((result) => {
     if (result.isConfirmed) {
-      AxiosMasterDelete("kunci/delete/by-kode-kunci/"+params)
-      .then(()=> NotifSucces("Data Berhasil Di Hapus"))
-      .then(()=> window.location.reload())
-      
+      AxiosMasterDelete("kunci/delete/by-kode-kunci/" + params)
+        .then(() => NotifSucces("Data Berhasil Di Hapus"))
+        .then(() => window.location.reload())
+
     }
   });
 };
@@ -96,7 +96,7 @@ class MasterKunci extends React.Component {
               merk_kunci: row.merk_kunci,
               ukuran: row.ukuran,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -167,24 +167,24 @@ class MasterKunci extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          "kunci/update/by-kode-kunci/" + hasil.kode_kunci || "-",
-          dataEdit
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("dataKunci")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getKunci()))
-          .catch(() =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+        "kunci/update/by-kode-kunci/" + hasil.kode_kunci || "-",
+        dataEdit
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("dataKunci")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getKunci()))
+        .catch(() =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("kunci/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataKunci")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getKunci()))
-          .catch((err) => this.handleReactive(err, hasil.kode_kunci, dataEdit));
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataKunci")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getKunci()))
+        .catch((err) => this.handleReactive(err, hasil.kode_kunci, dataEdit));
   }
   handleReactive(err, kode, data) {
     this.props.dispatch(hideModal());
@@ -192,12 +192,12 @@ class MasterKunci extends React.Component {
     let check = error.includes("hapus");
     check
       ? reactive(
-          err,
-          kode,
-          "kunci/reactive/by-kode-kunci/",
-          data,
-          "kunci/update/by-kode-kunci/"
-        ).then(() => this.props.dispatch(getKunci()))
+        err,
+        kode,
+        "kunci/reactive/by-kode-kunci/",
+        data,
+        "kunci/update/by-kode-kunci/"
+      ).then(() => this.props.dispatch(getKunci()))
       : NotifError("Data Gagal Ditambahkan");
   }
   render() {

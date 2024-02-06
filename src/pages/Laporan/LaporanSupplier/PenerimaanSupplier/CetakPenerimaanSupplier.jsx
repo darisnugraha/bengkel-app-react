@@ -19,7 +19,6 @@ const CetakPenerimaanSupplier = (
   let footRows = [];
   let finalY = 40;
   let sub_total = 0;
-  let grand_total = 0;
   let sub_qty = 0;
   let tgl = Moment(row2isi).format('DD/MM/YYYY');
 
@@ -122,7 +121,6 @@ const CetakPenerimaanSupplier = (
     footRows = [];
     sub_total = 0;
     sub_qty = 0;
-    grand_total= 0;
   });
   // const date = Date().split(" ");
   // we use a date string to generate our filename.

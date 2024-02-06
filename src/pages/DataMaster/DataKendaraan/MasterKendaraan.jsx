@@ -90,7 +90,7 @@ class MasterKendaraan extends React.Component {
               merk_kendaraan: row.kode_merk_kendaraan,
               nama_kendaraan: row.nama_merk_kendaraan,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -152,29 +152,29 @@ class MasterKendaraan extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          "merk-kendaraan/update/by-kode-merk-kendaraan/" +
-            hasil.merk_kendaraan,
-          { nama_merk_kendaraan: hasil.nama_kendaraan }
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("dataKendaraan")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getKendaraan()))
-          .catch(() =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+        "merk-kendaraan/update/by-kode-merk-kendaraan/" +
+        hasil.merk_kendaraan,
+        { nama_merk_kendaraan: hasil.nama_kendaraan }
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("dataKendaraan")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getKendaraan()))
+        .catch(() =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("merk-kendaraan/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataKendaraan")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getKendaraan()))
-          .catch((err) =>
-            this.handleReactive(err, hasil.merk_kendaraan, {
-              nama_merk_kendaraan: hasil.nama_kendaraan,
-            })
-          );
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataKendaraan")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getKendaraan()))
+        .catch((err) =>
+          this.handleReactive(err, hasil.merk_kendaraan, {
+            nama_merk_kendaraan: hasil.nama_kendaraan,
+          })
+        );
   }
   handleReactive(err, kode, data) {
     this.props.dispatch(hideModal());
@@ -183,12 +183,12 @@ class MasterKendaraan extends React.Component {
 
     check
       ? reactive(
-          err,
-          kode,
-          "merk-kendaraan/reactive/",
-          data,
-          "merk-kendaraan/update/by-kode-merk-kendaraan/"
-        ).then(() => this.props.dispatch(getKendaraan()))
+        err,
+        kode,
+        "merk-kendaraan/reactive/",
+        data,
+        "merk-kendaraan/update/by-kode-merk-kendaraan/"
+      ).then(() => this.props.dispatch(getKendaraan()))
       : NotifError("Data Gagal Ditambahkan");
   }
 

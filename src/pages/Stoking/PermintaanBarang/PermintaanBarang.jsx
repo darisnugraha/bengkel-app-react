@@ -11,12 +11,19 @@ import {
 import { Panel, PanelHeader } from "../../../components/panel/panel.jsx";
 import HeadPermintaanBarang from "./HeadPermintaanBarang.jsx";
 import CetakNota from "../CetakNota.jsx";
-import { getPermintaanTemp } from "../../../actions/stocking_action.jsx";
+import {
+  getNoPermintaanBarang,
+  getPermintaanTemp,
+} from "../../../actions/stocking_action.jsx";
 import { simpanLocal } from "../../../config/Helper.jsx";
 import { reset } from "redux-form";
-import { AxiosMasterGet, AxiosMasterPost } from "../../../axios.js";
+import { AxiosMasterPost } from "../../../axios.js";
 import { multipleDeleteLocal } from "../../../components/notification/function.jsx";
-import { onFinish, onProgress } from "../../../actions/datamaster_action.jsx";
+import {
+  getSelfing,
+  onFinish,
+  onProgress,
+} from "../../../actions/datamaster_action.jsx";
 
 const ModalPermintaanBarang = lazy(() => import("./ModalPermintaanBarang.jsx"));
 
@@ -44,12 +51,10 @@ class PermintaanBarang extends React.Component {
   }
 
   componentDidMount() {
+    this.props.dispatch(getSelfing());
     localStorage.removeItem("PermintaanBarang_temp");
     localStorage.removeItem("PermintaanBarang_temp_kirim");
     this.props.dispatch(getPermintaanTemp());
-    AxiosMasterGet("permintaan-barang/generate/no-trx").then((res) =>
-      localStorage.setItem("kode_permintaan_barang", res.data[0].no_permintaan)
-    );
   }
 
   handleModal(hasil) {
@@ -119,6 +124,7 @@ class PermintaanBarang extends React.Component {
       kode_pegawai: hasil.pegawai,
       no_daftar_service: hasil.no_spk,
       tanggal: hasil.tanggal,
+      kode_lokasi_shelving: hasil.kode_lokasi_shelving,
       detail_barang: JSON.parse(
         localStorage.getItem("PermintaanBarang_temp_kirim")
       ),
@@ -136,7 +142,7 @@ class PermintaanBarang extends React.Component {
       ];
       tableRows.push(rows);
     });
-    let columnTabel = ["NO", "BARCODE", "JENIS BARANG","KODE SUPPLIER", "QTY"];
+    let columnTabel = ["NO", "BARCODE", "JENIS BARANG", "KODE SUPPLIER", "QTY"];
     // INISIALISASI SELESAI -> PANGGIL AXIOS DAN PANGGIL PRINT SAAT AXIOS BERHASIL
     AxiosMasterPost("permintaan-barang/post-transaksi", kirim)
       .then(() => NotifSucces("Berhasil Menyimpan Data"))
@@ -164,11 +170,11 @@ class PermintaanBarang extends React.Component {
         multipleDeleteLocal([
           "PermintaanBarang_temp_kirim",
           "PermintaanBarang_temp",
-          "kode_permintaan_barang",
         ])
       )
       .then(() => this.props.dispatch(reset("permintaanBarang")))
       .then(() => this.props.dispatch(getPermintaanTemp()))
+      .then(() => this.props.dispatch(getNoPermintaanBarang()))
       .then(() => this.props.dispatch(onFinish()))
       .catch((err) =>
         NotifError(err.response.data).then(() =>

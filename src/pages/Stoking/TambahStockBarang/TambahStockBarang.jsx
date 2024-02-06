@@ -14,6 +14,8 @@ import {
   PanelHeader,
 } from "../../../components/panel/panel.jsx";
 import {
+  getSelfing,
+  getSupplier,
   hideModal,
   onFinish,
   onProgress,
@@ -21,11 +23,15 @@ import {
 import CetakNota from "../CetakNota.jsx";
 import {
   getHancurTemp,
+  getNoTambahStock,
   getTambahStockTemp,
 } from "../../../actions/stocking_action.jsx";
-import { AxiosMasterGet, AxiosMasterPost } from "../../../axios.js";
+import { AxiosMasterPost } from "../../../axios.js";
 import Tabel from "../../../components/Tabel/tabel.jsx";
-import { multipleDeleteLocal } from "../../../components/notification/function.jsx";
+import {
+  getToday,
+  multipleDeleteLocal,
+} from "../../../components/notification/function.jsx";
 import { reset } from "redux-form";
 import HeadTambahStockBarang from "./HeadTambahStockBarang.jsx";
 
@@ -68,6 +74,7 @@ class TambahBarang extends React.Component {
       isEdit: false,
       modalDialog: false,
       isLoading: false,
+      listSupplier: [],
       columns: [
         {
           dataField: "kode_barcode",
@@ -110,7 +117,7 @@ class TambahBarang extends React.Component {
               harga_satuan: row.harga_satuan,
               total: row.total,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -141,9 +148,8 @@ class TambahBarang extends React.Component {
 
   componentDidMount() {
     this.props.dispatch(getTambahStockTemp());
-    AxiosMasterGet("import-barang/generate/no-trx").then((res) =>
-      localStorage.setItem("kode_tambah_stock", res.data[0].no_import_barang)
-    );
+    this.props.dispatch(getSelfing());
+    this.props.dispatch(getSupplier());
   }
   handleSubmit(hasil) {
     let supplier = hasil.kode_supplier && hasil.kode_supplier.split("||");
@@ -179,9 +185,11 @@ class TambahBarang extends React.Component {
   }
   sendData(hasil) {
     this.props.dispatch(onProgress());
+    console.log(hasil);
     let data = {
-      no_import_barang: localStorage.getItem("kode_tambah_stock") || "-",
+      no_import_barang: hasil.no_tambah,
       tanggal: hasil.tanggal,
+      kode_lokasi_shelving: hasil.kode_lokasi_shelving,
       detail_barang:
         JSON.parse(localStorage.getItem("TambahBarang_temp_kirim")) || [],
     };
@@ -217,13 +225,13 @@ class TambahBarang extends React.Component {
           "Tanggal",
           hasil.tanggal,
           "Lokasi",
-          hasil.lokasi,
+          hasil.kode_lokasi_shelving,
           "No Bukti",
-          hasil.no_pindah,
+          hasil.no_tambah,
           "",
           "",
           "ADMIN",
-          "01-28-2021",
+          getToday(),
           "ADMIN",
           columnTabel,
           "BUKTI TAMBAH STOK",
@@ -244,6 +252,7 @@ class TambahBarang extends React.Component {
       .then(() => this.props.dispatch(reset("permintaanBarang")))
       .then(() => this.props.dispatch(getHancurTemp()))
       .then(() => this.props.dispatch(getTambahStockTemp()))
+      .then(() => this.props.dispatch(getNoTambahStock()))
       .then(() => this.props.dispatch(onFinish()))
       .catch((err) =>
         NotifError(`Gagal Mengirim Data, Detail: ${err}`).then(() =>

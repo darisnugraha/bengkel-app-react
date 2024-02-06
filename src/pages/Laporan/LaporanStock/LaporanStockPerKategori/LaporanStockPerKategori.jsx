@@ -2,10 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { AxiosMasterGet } from "../../../../axios";
 import { getToday } from "../../../../components/notification/function";
-import {
-  getUserData,
-  ToastError,
-} from "../../../../components/notification/notification";
+import { getUserData } from "../../../../components/notification/notification";
 import {
   Panel,
   PanelBody,
@@ -13,7 +10,6 @@ import {
 } from "../../../../components/panel/panel";
 import CetakKartuStock from "../LaporanKartuStock/CetakKartuStock";
 import HeadLaporanStockPerKategori from "./HeadLaporanStockPerKategori";
-import TabelLaporanKartuStock from "./TabelLaporanKartuStock";
 
 class LaporanStockPerKategori extends Component {
   constructor(props) {
@@ -24,14 +20,14 @@ class LaporanStockPerKategori extends Component {
   }
 
   getLaporan(hasil) {
-    let spl = hasil.kode_supplier || "ALL";
     let brg = hasil.kode_barcode || "ALL";
-    localStorage.setItem("kode_spl", spl);
     localStorage.setItem("kode_barcode", brg);
-    localStorage.setItem("nama_barang", hasil.nama_barang)
-    AxiosMasterGet(
-      `laporan/stocking/lap-kartu-barang/${spl}&${hasil.tanggal_awal}&${hasil.tanggal_akhir}&${brg}`
-    )
+    localStorage.setItem("nama_barang", hasil.nama_barang);
+    AxiosMasterGet(`laporan/stocking/lap-kartu-barang`, {
+      tanggal_awal: hasil.tanggal_awal,
+      tanggal_akhir: hasil.tanggal_akhir,
+      kode_barcode: brg,
+    })
       .then((res) => {
         // if (res.data.length === 0) {
         //   ToastError("Data Laporan Kosong");
@@ -43,7 +39,7 @@ class LaporanStockPerKategori extends Component {
 
         //     if(p1 < p2)return -1
         //       return 1
-            
+
         //   });
         //   console.log(data);
         //   this.setState({
@@ -56,14 +52,14 @@ class LaporanStockPerKategori extends Component {
         });
       })
       .then(() =>
-         CetakKartuStock(
-              hasil.tanggal_awal,
-              hasil.tanggal_akhir,
-              getUserData().user_name,
-              getToday(),
-              getUserData().user_name,
-              this.state.listLaporan
-            )
+        CetakKartuStock(
+          hasil.tanggal_awal,
+          hasil.tanggal_akhir,
+          getUserData().user_name,
+          getToday(),
+          getUserData().user_name,
+          this.state.listLaporan
+        )
       );
   }
   render() {

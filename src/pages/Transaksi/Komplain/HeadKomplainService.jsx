@@ -65,7 +65,7 @@ class HeadKomplainService extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row) => {
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -149,25 +149,25 @@ class HeadKomplainService extends Component {
   }
   getKendaraanCustomer(e) {
     AxiosMasterGet("kendaraan-customer/get/by-nopol/" + e).then((res) =>
-      // this.setState({
-      //   listkendaraan:
-      //     res &&
-      //     res.data.map((list) => {
-      //       let data = {
-      //         value: `${list.nopol_kendaraan}||${list.nomesin_kendaraan}||${list.merk_kendaraan}||${list.warna_kendaraan}||${list.type_kendaraan}||${list.id_customer}`,
-      //         name: list.nama_customer,
-      //       };
-      //       console.log("data",data);
-      //       return data;
-      //     }),
-      // }
-      {
-        let data = res && res.data;
-        this.props.change("type", data[0].type_kendaraan);
-        this.props.change("warna", data[0].warna_kendaraan);
-        this.props.change("merk", data[0].merk_kendaraan);
-        this.props.change("no_mesin", data[0].nomesin_kendaraan);
-      }
+    // this.setState({
+    //   listkendaraan:
+    //     res &&
+    //     res.data.map((list) => {
+    //       let data = {
+    //         value: `${list.nopol_kendaraan}||${list.nomesin_kendaraan}||${list.merk_kendaraan}||${list.warna_kendaraan}||${list.type_kendaraan}||${list.id_customer}`,
+    //         name: list.nama_customer,
+    //       };
+    //       console.log("data",data);
+    //       return data;
+    //     }),
+    // }
+    {
+      let data = res && res.data;
+      this.props.change("type", data[0].type_kendaraan);
+      this.props.change("warna", data[0].warna_kendaraan);
+      this.props.change("merk", data[0].merk_kendaraan);
+      this.props.change("no_mesin", data[0].nomesin_kendaraan);
+    }
     );
   }
   render() {
@@ -282,14 +282,14 @@ class HeadKomplainService extends Component {
                     placeholder="Masukan Nomor Polisi"
                     options={this.state.listNopol}
                     onChange={(e) => this.getKendaraanCustomer(e)}
-                    // options={this.state.listCustomer.map((list)=>{
-                    //   let data={
-                    //     value:JSON.stringify(list.nopol_kendaraan),
-                    //     name:list.nopol_kendaraan
-                    //   };
-                    //   console.log("iki ganteng", list)
-                    //   return data
-                    // })}
+                  // options={this.state.listCustomer.map((list)=>{
+                  //   let data={
+                  //     value:JSON.stringify(list.nopol_kendaraan),
+                  //     name:list.nopol_kendaraan
+                  //   };
+                  //   console.log("iki ganteng", list)
+                  //   return data
+                  // })}
                   />
                 </div>
                 <div className="col-lg-12">
@@ -435,16 +435,16 @@ class HeadKomplainService extends Component {
           <div className="col-lg-12 mt-3">
             <div className="text-right">
               <button type="submit" className="btn btn-primary">
-              {this.props.onSend ? (
-                <>
-                  <i className="fas fa-spinner fa-spin"></i> &nbsp; Sedang
-                  Menyimpan
-                </>
-              ) : (
-                <>
-                  Bayar <i className="fa fa-paper-plane ml-3 "></i>
-                </>
-              )}
+                {this.props.onSend ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin"></i> &nbsp; Sedang
+                    Menyimpan
+                  </>
+                ) : (
+                  <>
+                    Bayar <i className="fa fa-paper-plane ml-3 "></i>
+                  </>
+                )}
               </button>
             </div>
           </div>

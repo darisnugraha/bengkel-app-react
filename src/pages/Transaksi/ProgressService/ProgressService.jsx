@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { reset } from "redux-form";
 import { getServiceProgress } from "../../../actions/transaksi_action";
-import { AxiosMasterGet } from "../../../axios";
-import { ToastError } from "../../../components/notification/notification";
 import { Panel, PanelBody, PanelHeader } from "../../../components/panel/panel";
 import Tabel from "../../../components/Tabel/tabel";
 import { PageSettings } from "../../../config/page-settings.js";

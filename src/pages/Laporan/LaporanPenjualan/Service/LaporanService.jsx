@@ -9,7 +9,6 @@ import {
 } from "../../../../components/panel/panel";
 import CetakService from "./CetakService";
 import HeadLaporanService from "./HeadLaporanService";
-import TabeLaporanService from "./TabelLaporanService";
 
 class LaporanService extends Component {
   constructor(props) {
@@ -20,8 +19,7 @@ class LaporanService extends Component {
   }
   getLaporan(hasil) {
     AxiosMasterGet(
-      `laporan/service/lap-service/${hasil.tanggal_awal}&${
-        hasil.tanggal_akhir
+      `laporan/service/lap-service/${hasil.tanggal_awal}&${hasil.tanggal_akhir
       }&${hasil.kode_jenis || "SEMUA"}`
     )
       .then((res) => {
@@ -37,10 +35,10 @@ class LaporanService extends Component {
       .then(() =>
         this.state.listLaporan.length
           ? CetakService(
-              hasil.tanggal_awal,
-              hasil.kode_jenis,
-              this.state.listLaporan
-            )
+            hasil.tanggal_awal,
+            hasil.kode_jenis,
+            this.state.listLaporan
+          )
           : ToastError("Data Laporan Kosong")
       );
   }

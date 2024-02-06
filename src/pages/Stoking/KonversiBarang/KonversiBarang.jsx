@@ -15,15 +15,23 @@ import {
 } from "../../../components/panel/panel.jsx";
 import HeadKonversiBarang from "./HeadKonversiBarang.jsx";
 import {
+  getSelfing,
+  getSupplier,
   hideModal,
   onFinish,
   onProgress,
 } from "../../../actions/datamaster_action.jsx";
 import CetakNota from "../CetakNota.jsx";
-import { getKonversiTemp } from "../../../actions/stocking_action.jsx";
-import { AxiosMasterGet, AxiosMasterPost } from "../../../axios.js";
+import {
+  getKonversiTemp,
+  getNoKonversi,
+} from "../../../actions/stocking_action.jsx";
+import { AxiosMasterPost } from "../../../axios.js";
 import Tabel from "../../../components/Tabel/tabel.jsx";
-import { multipleDeleteLocal } from "../../../components/notification/function.jsx";
+import {
+  getToday,
+  multipleDeleteLocal,
+} from "../../../components/notification/function.jsx";
 import { reset } from "redux-form";
 
 const ModalKonversiBarang = lazy(() => import("./ModalKonversiBarang.jsx"));
@@ -91,7 +99,7 @@ class KonversiBarang extends React.Component {
               qty_tujuan: row.qty,
               satuan_tujuan: row.satuan,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -141,9 +149,8 @@ class KonversiBarang extends React.Component {
   }
   componentDidMount() {
     this.props.dispatch(getKonversiTemp());
-    AxiosMasterGet("konversi-barang/generate/no-trx").then((res) =>
-      localStorage.setItem("no_pindah", res.data[0].no_pindah)
-    );
+    this.props.dispatch(getSelfing());
+    this.props.dispatch(getSupplier());
   }
   handleSubmit(hasil) {
     let array = JSON.parse(localStorage.getItem("KonversiBarang_temp")) || [];
@@ -169,7 +176,7 @@ class KonversiBarang extends React.Component {
     let data = {
       no_pindah: hasil.no_pindah,
       tanggal: hasil.tanggal,
-      kode_lokasi_gudang: hasil.lokasi,
+      kode_lokasi_shelving: hasil.lokasi,
       kode_supplier: hasil.supplier,
       detail_barang:
         JSON.parse(localStorage.getItem("KonversiBarang_temp")) || [],
@@ -212,11 +219,11 @@ class KonversiBarang extends React.Component {
           "",
           "",
           "No Bukti",
-          hasil.no_pindah,
+          hasil.no_konversi,
           "",
           "",
           "ADMIN",
-          "01-28-2021",
+          getToday(true),
           "ADMIN",
           columnTabel,
           "KONVERSI BARANG",
@@ -235,7 +242,8 @@ class KonversiBarang extends React.Component {
         ])
       )
       .then(() => this.props.dispatch(getKonversiTemp()))
-      .then(() => this.props.dispatch(reset("permintaanBarang")))
+      .then(() => this.props.dispatch(reset("konversiBarang")))
+      .then(() => this.props.dispatch(getNoKonversi()))
       .then(() => this.props.dispatch(onFinish()))
       .catch((err) =>
         ToastError(`Error : ${err}`).then(() => this.props.dispatch(onFinish()))

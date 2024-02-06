@@ -56,7 +56,7 @@ class HeadTukarPoint extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, hasil, rowIndex) => {
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">

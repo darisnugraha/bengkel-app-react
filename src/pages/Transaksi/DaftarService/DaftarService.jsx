@@ -63,18 +63,15 @@ class BookingService extends React.Component {
       nopol_kendaraan: hasil.nopol_kendaraan || hasil.booking_nopol,
       tgl_masuk: hasil.tanggal_masuk,
       km_masuk: hasil.km_masuk,
-      // tgl_keluar: hasil.tanggal_keluar,
-      // km_keluar: hasil.km_keluar,
-      // jdw_service: hasil.service_selanjutnya,
-      // km_service: hasil.km_service_berikutnya,
+      // tgl_keluar: hasil.tanggal_masuk,
+      // km_keluar: hasil.km_masuk,
+      // jdw_service: hasil.tanggal_masuk,
+      // km_service: hasil.km_masuk,
       keluhan: hasil.keluhan_konsumen,
       // id_mekanik: [hasil.kode_kepala_montir, hasil.kode_mekanik, hasil.kode_helper],
       id_mekanik: hasil.kode_mekanik,
       status_booking: hasil.booking === undefined ? false : true,
       detail_barang: JSON.parse(
-        localStorage.getItem("list_service_daftar_temp")
-      ),
-      tambah_barang:JSON.parse(
         localStorage.getItem("list_service_daftar_temp")
       ),
     };
@@ -110,9 +107,8 @@ class BookingService extends React.Component {
     this.props.dispatch(showModal());
   }
   tambahSparepart(hasil) {
-    console.log("kode",hasil);
+    console.log("kode", hasil);
     let service = {
-      kode_supplier: "-",
       kode: hasil.kategori_service,
       nama: hasil.nama_service,
       qty: 1,
@@ -122,7 +118,6 @@ class BookingService extends React.Component {
       jenis_barang: "JASA SERVICE",
     };
     let barang = {
-      kode_supplier: hasil.kode_supplier1,
       kode: hasil.kode_barcode,
       nama: hasil.sparepart,
       qty: 1,

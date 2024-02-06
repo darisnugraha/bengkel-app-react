@@ -13,7 +13,6 @@ import {
 } from "../../../../components/panel/panel";
 import CetakPermintaanBarang from "./CetakPermintaanBarang";
 import HeadLaporanPermintaanBarang from "./HeadLaporanPermintaanBarang";
-import TabelLaporanPermintaanBarang from "./TabelLaporanPermintaanBarang";
 
 class LaporanPermintaanBarang extends Component {
   constructor(props) {
@@ -25,7 +24,7 @@ class LaporanPermintaanBarang extends Component {
   getLaporan(hasil) {
     AxiosMasterGet(
       "laporan/stocking/lap-permintaan-barang/" +
-        `${hasil.divisi}&${hasil.tanggal_awal}&${hasil.tanggal_akhir}`
+      `${hasil.divisi}&${hasil.tanggal_awal}&${hasil.tanggal_akhir}`
     )
       .then((res) => {
         this.setState({
@@ -35,13 +34,13 @@ class LaporanPermintaanBarang extends Component {
       .then(() =>
         this.state.listLaporan.length
           ? CetakPermintaanBarang(
-              hasil.tanggal_awal,
-              hasil.tanggal_akhir,
-              getUserData().user_name,
-              getToday(),
-              getUserData().user_name,
-              this.state.listLaporan
-            )
+            hasil.tanggal_awal,
+            hasil.tanggal_akhir,
+            getUserData().user_name,
+            getToday(),
+            getUserData().user_name,
+            this.state.listLaporan
+          )
           : ToastError("Data Laporan Kosong")
       );
   }

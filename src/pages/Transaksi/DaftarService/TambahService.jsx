@@ -60,40 +60,20 @@ class TambahService extends Component {
         },
         {
           dataField: "stock",
-          text: "Stock"
+          text: "Stock",
         },
         {
           dataField: "harga_jual",
           text: "Harga",
           formatter: (list) => list.toLocaleString("id-ID"),
         },
-        {
-          dataField: "supplier",
-          text: "Kode Supplier",
-          // formatter: (list) => list.toLocaleString("id-ID"),
-        },
+
         {
           dataField: "action",
           text: "Action",
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row) => {
-            let data = {
-              // kode_supplier: row.supplier,
-              kode_barcode: row.kode_barcode,
-              kode_barang: row.kode_barang,
-              nama_barang: row.nama_barang,
-              kode_kategori: row.kode_kategori,
-              kode_jenis: row.kode_jenis,
-              // kode_merk_barang: row.kode_merk_barang,
-              // kode_kwalitas: row.kode_kwalitas,
-              kode_lokasi_rak: row.kode_lokasi_rak,
-              kode_lokasi_selving: row.kode_lokasi_selving,
-              // kode_ukuran: row.kode_ukuran,
-              kode_satuan: row.kode_satuan,
-              type: row.type,
-              harga_jual: row.harga_jual,
-            };
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -103,7 +83,7 @@ class TambahService extends Component {
                       localStorage.setItem("kode_barcode", row.kode_barcode);
                       this.props.change("kode_barcode", row.kode_barcode);
                       this.props.change("sparepart", row.nama_barang);
-                      this.props.change("kode_supplier1", row.supplier);
+                      this.props.change("kode_supplier1", row.kode_supplier);
                       this.props.change("stock", row.stock);
                       this.props.change("harga_sparepart", row.harga_jual);
                       this.nextStep();
@@ -235,154 +215,154 @@ class TambahService extends Component {
               </div>
             </div>
             <div className={this.state.step2}>
-                <div className="row ml-5">
-                  <div className="col-lg-6">
-                    <div className="col-lg-12">
-                      <Field
-                        name="kategori_service1"
-                        component={ReanderSelect}
-                        options={this.props.listkategoriservice.map((list) => {
-                          let data = {
-                            value: `${list.kategori_service}||${list.harga_jasa_service}||${list.jenis_service}`,
-                            name: `${list.kategori_service} - ${list.jenis_service}`,
-                          };
-                          return data;
-                        })}
-                        onChange={(e) => this.setService(e)}
-                        type="text"
-                        label="Jenis Service"
-                        placeholder="Masukan Jenis Service"
-                      />
-                    </div>
-                    <div className="col-lg-12 d-none">
-                      <Field
-                        name="kategori_service"
-                        component={ReanderFieldInline}
-                        type="text"
-                        label="Harga Service"
-                        placeholder="Masukan Harga Service"
-                      />
-                    </div>
-                    <div className="col-lg-12 ">
-                      <Field
-                        name="harga_service"
-                        component={ReanderFieldInline}
-                        type="telp"
-                        label="Harga Service"
-                        placeholder="Masukan Harga Service"
-                        {...currencyMask}
-                        readOnly
-                      />
-                    </div>
-                    <div className="col-lg-12 ">
-                      <Field
-                        name="keterangan_service"
-                        component={ReanderFieldInline}
-                        type="text"
-                        label="Keterangan Service"
-                        placeholder="Masukan Keterangan Service"
-                        validate={required}
-                      />
-                    </div>
-                    <div className="col-lg-12 d-none ">
-                      <Field
-                        name="nama_service"
-                        component={ReanderFieldInline}
-                        type="telp"
-                        label="Harga Service"
-                        placeholder="Masukan Harga Service"
-                        {...currencyMask}
-                      />
-                    </div>
+              <div className="row ml-5">
+                <div className="col-lg-6">
+                  <div className="col-lg-12">
+                    <Field
+                      name="kategori_service1"
+                      component={ReanderSelect}
+                      options={this.props.listkategoriservice.map((list) => {
+                        let data = {
+                          value: `${list.kategori_service}||${list.harga_jasa_service}||${list.jenis_service}`,
+                          name: `${list.kategori_service} - ${list.jenis_service}`,
+                        };
+                        return data;
+                      })}
+                      onChange={(e) => this.setService(e)}
+                      type="text"
+                      label="Jenis Service"
+                      placeholder="Masukan Jenis Service"
+                    />
                   </div>
-                  <div className="col-lg-6">
-                    <div className="col-lg-12">
-                      <Field
-                        name="sparepart"
-                        component={ReanderField}
-                        type="text"
-                        label="Barang Sparepart"
-                        placeholder="Masukan Barang Sparepart"
-                        readOnly
-                      />
-                    </div>
-                    <div className="col-lg-12">
-                      <div className="row">
-                        <div className="col-lg-6">
-                          <Field
-                            name="kode_supplier1"
-                            component={ReanderField}
-                            type="text"
-                            label="Kode Supplier"
-                            placeholder="Masukan Kode Supplier"
-                            readOnly
-                          />
-                        </div>
-                        <div className="col-lg-6">
-                          <Field
-                            name="stock"
-                            component={ReanderField}
-                            type="text"
-                            label="Stock"
-                            placeholder="Masukan Kode Supplier"
-                            readOnly
-                          />
-                        </div>
+                  <div className="col-lg-12 d-none">
+                    <Field
+                      name="kategori_service"
+                      component={ReanderFieldInline}
+                      type="text"
+                      label="Harga Service"
+                      placeholder="Masukan Harga Service"
+                    />
+                  </div>
+                  <div className="col-lg-12 ">
+                    <Field
+                      name="harga_service"
+                      component={ReanderFieldInline}
+                      type="telp"
+                      label="Harga Service"
+                      placeholder="Masukan Harga Service"
+                      {...currencyMask}
+                      readOnly
+                    />
+                  </div>
+                  <div className="col-lg-12 ">
+                    <Field
+                      name="keterangan_service"
+                      component={ReanderFieldInline}
+                      type="text"
+                      label="Keterangan Service"
+                      placeholder="Masukan Keterangan Service"
+                      validate={required}
+                    />
+                  </div>
+                  <div className="col-lg-12 d-none ">
+                    <Field
+                      name="nama_service"
+                      component={ReanderFieldInline}
+                      type="telp"
+                      label="Harga Service"
+                      placeholder="Masukan Harga Service"
+                      {...currencyMask}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="col-lg-12">
+                    <Field
+                      name="sparepart"
+                      component={ReanderField}
+                      type="text"
+                      label="Barang Sparepart"
+                      placeholder="Masukan Barang Sparepart"
+                      readOnly
+                    />
+                  </div>
+                  <div className="col-lg-12">
+                    <div className="row">
+                      <div className="col-lg-6">
+                        <Field
+                          name="kode_supplier1"
+                          component={ReanderField}
+                          type="text"
+                          label="Kode Supplier"
+                          placeholder="Masukan Kode Supplier"
+                          readOnly
+                        />
+                      </div>
+                      <div className="col-lg-6">
+                        <Field
+                          name="stock"
+                          component={ReanderField}
+                          type="text"
+                          label="Stock"
+                          placeholder="Masukan Kode Supplier"
+                          readOnly
+                        />
                       </div>
                     </div>
-                    <div className="col-lg-12 d-none">
-                      <Field
-                        name="kode_sparepart"
-                        component={ReanderFieldInline}
-                        type="text"
-                        label="Harga Service"
-                        placeholder="Masukan Harga Service"
-                        readOnly
-                      />
-                    </div>
-                    <div className="col-lg-12 d-none">
-                      <Field
-                        name="kode_supplier"
-                        component={ReanderFieldInline}
-                        type="text"
-                        label="Harga Service"
-                        placeholder="Masukan Harga Service"
-                      />
-                    </div>
-                    <div className="col-lg-12 d-none">
-                      <Field
-                        name="nama_sparepart"
-                        component={ReanderFieldInline}
-                        type="text"
-                        label="Harga Service"
-                        placeholder="Masukan Harga Service"
-                      />
-                    </div>
-                    <div className="col-lg-12">
-                      <Field
-                        name="harga_sparepart"
-                        component={ReanderFieldInline}
-                        type="telp"
-                        label="Harga Sparepart"
-                        placeholder="Masukan Harga Sparepart"
-                        {...currencyMask}
-                        readOnly
-                      />
-                    </div>
                   </div>
-                  {/* <div className="col-lg-12">
+                  <div className="col-lg-12 d-none">
+                    <Field
+                      name="kode_sparepart"
+                      component={ReanderFieldInline}
+                      type="text"
+                      label="Harga Service"
+                      placeholder="Masukan Harga Service"
+                      readOnly
+                    />
+                  </div>
+                  <div className="col-lg-12 d-none">
+                    <Field
+                      name="kode_supplier"
+                      component={ReanderFieldInline}
+                      type="text"
+                      label="Harga Service"
+                      placeholder="Masukan Harga Service"
+                    />
+                  </div>
+                  <div className="col-lg-12 d-none">
+                    <Field
+                      name="nama_sparepart"
+                      component={ReanderFieldInline}
+                      type="text"
+                      label="Harga Service"
+                      placeholder="Masukan Harga Service"
+                    />
+                  </div>
+                  <div className="col-lg-12">
+                    <Field
+                      name="harga_sparepart"
+                      component={ReanderFieldInline}
+                      type="telp"
+                      label="Harga Sparepart"
+                      placeholder="Masukan Harga Sparepart"
+                      {...currencyMask}
+                      readOnly
+                    />
+                  </div>
+                </div>
+                {/* <div className="col-lg-12">
               <Tabel
               
               />
             </div> */}
-                  <div className="col-lg-12 mt-5">
-                    <div className="text-right">
-                      <button className="btn btn-primary">
-                        Submit <i className="fa fa-paper-plane ml-3"></i>
-                      </button>
-                    </div>
+                <div className="col-lg-12 mt-5">
+                  <div className="text-right">
+                    <button className="btn btn-primary">
+                      Submit <i className="fa fa-paper-plane ml-3"></i>
+                    </button>
                   </div>
                 </div>
+              </div>
             </div>
             <div className="row">
               <div className="col-lg-6">
@@ -431,6 +411,6 @@ export default connect((state) => {
   return {
     listBarang: state.datamaster.listbarang,
     listkategoriservice: state.datamaster.listkategoriservice,
-    listinfobarang: state.datamaster.listInfoBarang
+    listinfobarang: state.datamaster.listInfoBarang,
   };
 })(TambahService);

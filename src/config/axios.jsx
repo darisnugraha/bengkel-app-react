@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// const server = process.env.REACT_APP_BACKEND_URL_DEMO;
 const server = process.env.REACT_APP_BACKEND_URL;
 
 export function getData(enpoint, data, token) {

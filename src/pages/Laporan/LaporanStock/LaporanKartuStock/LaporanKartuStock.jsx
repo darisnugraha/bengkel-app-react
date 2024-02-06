@@ -13,7 +13,6 @@ import {
 } from "../../../../components/panel/panel";
 import CetakStockPerKategori from "../LaporanStockPerKategori/CetakStockPerKategori";
 import HeadLaporanKartuStock from "./HeadLaporanKartuStock";
-import TabelLaporanStockPerKategori from "./TabelLaporanStockPerKategori";
 
 class LaporanKartuStock extends Component {
   constructor(props) {
@@ -23,31 +22,25 @@ class LaporanKartuStock extends Component {
     };
   }
   getLaporan(hasil) {
-    AxiosMasterGet(
-      "laporan/stocking/lap-saldo-barang/" +
-        `${hasil.kode_kategori}&${hasil.kode_jenis}&${hasil.kode_lokasi}`
-    )
-      .then((res) => {
-        if (res.data.length === 0) {
-          ToastError("Data Laporan Kosong");
-          return false;
-        } else {
-          this.setState({
-            Laporan: res.data,
-          });
-        }
-      })
-      .then(() =>
-        this.state.Laporan.length
-          ? CetakStockPerKategori(
-              hasil.tanggal_awal,
-              getUserData().user_name,
-              getToday(),
-              getUserData().user_name,
-              this.state.Laporan
-            )
-          : ToastError("Data Laporan Kosong")
-      );
+    AxiosMasterGet("laporan/stocking/lap-saldo-barang", {
+      kategori: hasil.kode_kategori,
+      jenis: hasil.kode_jenis,
+      kode_lokasi_shelving: hasil.kode_lokasi_shelving,
+      kode_barcode: hasil.kode_barcode,
+    }).then((res) => {
+      if (res.data.length === 0) {
+        ToastError("Data Laporan Kosong");
+        return false;
+      } else {
+        CetakStockPerKategori(
+          hasil.tanggal_awal,
+          getUserData().user_name,
+          getToday(),
+          getUserData().user_name,
+          res.data
+        );
+      }
+    });
   }
   render() {
     return (

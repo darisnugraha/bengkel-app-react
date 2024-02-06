@@ -1,53 +1,30 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
-import {
-  onFinish,
-  onProgress,
-  showModal,
-} from "../../../actions/datamaster_action";
-import { AxiosMasterGet } from "../../../axios";
+import { showModal } from "../../../actions/datamaster_action";
 import { getToday } from "../../../components/notification/function";
 import {
   ReanderField,
   ReanderSelect,
 } from "../../../components/notification/notification";
+import { getNoTambahStock } from "../../../actions/stocking_action";
 
 class HeadTambahStockBarang extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listGudang: [],
+      listShelving: [],
     };
   }
   componentDidMount() {
     this.props.change("tanggal", getToday());
-    AxiosMasterGet("import-barang/generate/no-trx").then((res) =>
-      this.props.change("no_pindah", res.data[0].no_import_barang)
-    );
-    this.props.dispatch(onProgress());
-    AxiosMasterGet("lokasi-gudang/get/all")
-      .then((res) =>
-        this.setState({
-          listGudang:
-            res &&
-            res.data.map((list) => {
-              let data = {
-                value: list.kode_lokasi_gudang,
-                name: list.nama_lokasi_gudang,
-              };
-              return data;
-            }),
-        })
-      )
-      .then(() => this.props.dispatch(onFinish()));
+    this.props.dispatch(getNoTambahStock());
   }
   render() {
     return (
       <div>
         <form
           onSubmit={this.props.handleSubmit}
-          autoComplete={true}
           onKeyPress={(e) => {
             e.key === "Enter" && e.preventDefault();
           }}
@@ -55,11 +32,11 @@ class HeadTambahStockBarang extends Component {
           <div className="row">
             <div className="col-lg-3">
               <Field
-                name="no_pindah"
+                name="no_tambah"
                 component={ReanderField}
                 type="text"
-                label="Nomor Pindah"
-                placeholder="Masukan Nomor Pindah"
+                label="Nomor Tambah"
+                placeholder="Masukan Nomor Tambah"
                 readOnly
               />
             </div>
@@ -74,13 +51,17 @@ class HeadTambahStockBarang extends Component {
             </div>
             <div className="col-lg-3">
               <Field
-                name="lokasi"
+                name="kode_lokasi_shelving"
                 component={ReanderSelect}
-                options={this.state.listGudang}
-                label="Lokasi Gudang"
-                placeholder="Pilih Lokasi Gudang"
-                onChange={(e) => localStorage.setItem("lokasi_hancur", e)}
-                loading={this.props.onSend}
+                options={this.props.listSelfing.map((data) => {
+                  return {
+                    value: data.kode_lokasi_selving,
+                    name: data.nama_lokasi_selving,
+                  };
+                })}
+                label="Lokasi Shelving"
+                placeholder="Pilih Lokasi Shelving"
+                onChange={(e) => localStorage.setItem("lokasi_shelving", e)}
               />
             </div>
           </div>
@@ -127,6 +108,11 @@ HeadTambahStockBarang = reduxForm({
 })(HeadTambahStockBarang);
 export default connect((state) => {
   return {
+    initialValues: {
+      tanggal: getToday(),
+    },
     onSend: state.datamaster.onSend,
+    listSelfing: state.datamaster.listselfing,
+    noTambahStock: state.stocking.noTambahStock,
   };
 })(HeadTambahStockBarang);

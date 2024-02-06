@@ -1,6 +1,5 @@
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import { formatDateISO } from "../../../../components/notification/function";
 import Moment from "moment";
 // Date Fns is used to format the dates we receive
 
@@ -60,9 +59,9 @@ const CetakPenjualanSparepart = (
     let ketstat = "";
     let status = item.status_close
     console.log(status);
-    if(status === "OPEN"){
+    if (status === "OPEN") {
       ketstat = "BELUM LUNAS"
-    }else if(status ==="CLOS"){
+    } else if (status === "CLOS") {
       ketstat = "LUNAS"
     }
     let tgldata = Moment(item.tanggal).format("DD/MM/YYYY");

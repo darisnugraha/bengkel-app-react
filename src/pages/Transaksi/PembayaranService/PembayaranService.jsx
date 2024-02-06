@@ -13,6 +13,7 @@ import {
 } from "../../../components/panel/panel.jsx";
 import { reset } from "redux-form";
 import {
+  ListBarangBayar,
   getListBarangPembayaran,
   getListBayarService,
   getListPembayaran,
@@ -21,6 +22,7 @@ import {
 import ModalGlobal from "../../ModalGlobal.jsx";
 import {
   getFaktur,
+  getSelfing,
   hideModal,
   onFinish,
   onProgress,
@@ -28,12 +30,12 @@ import {
 } from "../../../actions/datamaster_action.jsx";
 import ModalBayarService from "./ModalBayarService.jsx";
 import ModalCC from "./ModalCC.jsx";
-import TambahService from "../DaftarService/TambahService.jsx";
 import { getToday, getNextDay } from "../../../components/helpers/function.jsx";
 import { AxiosMasterGet, AxiosMasterPost } from "../../../axios.js";
 import { multipleDeleteLocal } from "../../../components/notification/function.jsx";
 import ModalTambahJasa from "./ModalTambahJasa.jsx";
 import CetakFaktur from "./CetakFaktur.jsx";
+import SelectSearch from "react-select-search";
 
 const HeadPembayaranService = lazy(() => import("./HeadPembayaranService.jsx"));
 
@@ -42,6 +44,7 @@ const maptostate = (state) => {
     listbayar_service: state.stocking.listbayar_service,
     grand_total_all: state.transaksi.total_bayar,
     noFaktur: state.datamaster.noFaktur,
+    listselfing: state.datamaster.listselfing,
   };
 };
 
@@ -49,17 +52,13 @@ class PembayaranService extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      barangList:[],
+      barangList: [],
       isEdit: false,
       modalDialog: false,
       isLoading: false,
       bayar: true,
       jenisModal: "",
       columns: [
-        {
-          dataField: "kode_supplier",
-          text: "Kode Supplier",
-        },
         {
           dataField: "kode",
           text: "Kode Barang",
@@ -89,6 +88,32 @@ class PembayaranService extends React.Component {
           dataField: "harga_total",
           text: "Harga Total",
           formatter: (data) => `${parseFloat(data).toLocaleString("id-ID")}`,
+        },
+        {
+          dataField: "action",
+          text: "Lokasi Shelving",
+          formatter: (rowcontent, row) => {
+            return (
+              <>
+                <SelectSearch
+                  value={row.kode_lokasi_selving}
+                  search
+                  placeholder="Pilih Shelving"
+                  options={this.props.listselfing.map((list) => {
+                    let data = {
+                      value: list.kode_lokasi_selving,
+                      name: list.nama_lokasi_selving,
+                    };
+                    return data;
+                  })}
+                  onChange={(data) => this.updateShelving(row, data)}
+                  onKeyPress={(e) => {
+                    e.key === "Enter" && e.preventDefault();
+                  }}
+                />
+              </>
+            );
+          },
         },
         // {
         //   dataField: "action",
@@ -209,7 +234,7 @@ class PembayaranService extends React.Component {
             //   kode_divisi: row.kode_divisi,
             //   nama_divisi: row.nama_divisi,
             // };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -271,14 +296,25 @@ class PembayaranService extends React.Component {
     };
   }
 
+  updateShelving(row, kode_shelving) {
+    row.kode_lokasi_shelving = kode_shelving;
+    console.log(row, kode_shelving);
+    let data = JSON.parse(localStorage.getItem("list_barang_bayar"));
+    let indexBarang = data.findIndex((element) => element.kode === row.kode);
+    data.splice(indexBarang, 1, row);
+    localStorage.setItem("list_barang_bayar", JSON.stringify(data));
+    this.props.dispatch(ListBarangBayar(data));
+  }
+
   componentDidMount() {
     localStorage.setItem("list_barang_bayar", JSON.stringify([]));
     this.props.dispatch(getFaktur());
+    this.props.dispatch(getSelfing());
     this.props.dispatch(getListBayarService());
     this.props.dispatch(getListBarangPembayaran());
-    AxiosMasterGet("bayar-service/generate/no-trx").then((res) =>{
-      localStorage.setItem("no_pembayaran_service", res.data[0].no_service)}
-    );
+    AxiosMasterGet("bayar-service/generate/no-trx").then((res) => {
+      localStorage.setItem("no_pembayaran_service", res.data[0].no_service);
+    });
   }
   showBayar() {
     this.setState({
@@ -439,8 +475,10 @@ class PembayaranService extends React.Component {
     }
   }
   bayarservice(hasil) {
-    console.log("ini",hasil);
+    console.log("ini", hasil);
     this.props.dispatch(onProgress());
+    let detailBarang =
+      JSON.parse(localStorage.getItem("list_barang_bayar")) || [];
     let data = {
       no_daftar: localStorage.getItem("no_daftar") || "",
       tgl_bayar: getToday(),
@@ -457,8 +495,9 @@ class PembayaranService extends React.Component {
       cash_rp: localStorage.getItem("total_all") || 0,
       no_ref_cash: this.props.noFaktur,
       status_masuk_piutang: hasil.piutang || false,
-      detail_barang:
-        JSON.parse(localStorage.getItem("list_barang_bayar")) || [],
+      detail_barang: detailBarang.map(
+        ({ kode_supplier, no_pengeluaran, status_close, ...rest }) => rest
+      ),
       detail_non_tunai:
         localStorage.getItem("listPembayaran_temp") === "[]"
           ? [
@@ -575,7 +614,7 @@ class PembayaranService extends React.Component {
           </PanelBody>
           <ModalGlobal
             content={
-               this.state.jenisModal === "CC" ? (
+              this.state.jenisModal === "CC" ? (
                 <ModalCC onSubmit={(data) => this.handleSimpanCC(data)} />
               ) : (
                 <ModalTambahJasa
@@ -584,7 +623,7 @@ class PembayaranService extends React.Component {
               )
             }
             title={
-               this.state.jenisModal === "JASA"
+              this.state.jenisModal === "JASA"
                 ? "Tambah Data Jasa"
                 : this.state.jenisModal === "BAYAR"
                 ? "Tambah Pembayaran"

@@ -1,7 +1,16 @@
 import React from "react";
 import Skeleton from "react-loading-skeleton";
 
-export const getToday = () => {
+export const getToday = (indonesia) => {
+  if (indonesia) {
+    return (
+      ("0" + new Date().getDate()).slice(-2) +
+      "-" +
+      ("0" + (new Date().getMonth() + 1)).slice(-2) +
+      "-" +
+      new Date().getFullYear()
+    );
+  }
   return (
     new Date().getFullYear() +
     "-" +

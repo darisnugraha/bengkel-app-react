@@ -118,7 +118,7 @@ class MasterSales extends React.Component {
               tgl_keluar: parseIsoDatetime(row.tgl_keluar),
               status_aktif: row.status_aktif,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -200,26 +200,26 @@ class MasterSales extends React.Component {
     console.log(data);
     this.state.isEdit
       ? AxiosMasterPut(
-          "pegawai/update/by-kode-pegawai/" + hasil.kode_pegawai,
-          dataEdit
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("dataSales")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getSales()))
-          .catch((err) =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+        "pegawai/update/by-kode-pegawai/" + hasil.kode_pegawai,
+        dataEdit
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("dataSales")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getSales()))
+        .catch((err) =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("pegawai/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataSales")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getSales()))
-          .catch((err) =>
-            this.handleReactive(err, hasil.kode_pegawai, dataEdit)
-          );
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataSales")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getSales()))
+        .catch((err) =>
+          this.handleReactive(err, hasil.kode_pegawai, dataEdit)
+        );
   }
 
   handleReactive(err, kode, data) {
@@ -228,12 +228,12 @@ class MasterSales extends React.Component {
     let check = error.includes("Deleted");
     check
       ? reactive(
-          err,
-          kode,
-          "pegawai/reactive/by-kode-pegawai/",
-          data,
-          "pegawai/update/by-kode-pegawai/"
-        ).then(() => this.props.dispatch(getSales()))
+        err,
+        kode,
+        "pegawai/reactive/by-kode-pegawai/",
+        data,
+        "pegawai/update/by-kode-pegawai/"
+      ).then(() => this.props.dispatch(getSales()))
       : NotifError(err.response.data);
   }
 

@@ -10,7 +10,6 @@ import { AxiosMasterGet } from "../../../axios";
 import { getToday } from "../../../components/notification/function";
 import {
   ReanderField,
-  ReanderSelect,
   ToastError,
 } from "../../../components/notification/notification";
 import Tabel from "../../../components/Tabel/tabel";
@@ -20,7 +19,7 @@ class HeadPembayaranPiutang extends Component {
     super(props);
     this.state = {
       nama_customer: false,
-      listNopol:[],
+      listNopol: [],
       no_bon: false,
 
       columns: [
@@ -112,19 +111,19 @@ class HeadPembayaranPiutang extends Component {
     });
   }
 
-  getNopol(data){
-    let listNopol =   this.props.listCustomer.filter((list) => list.kode_customer === data)
-     let final =  listNopol[0].nopol_kendaraan.map((hasil) => {
+  getNopol(data) {
+    let listNopol = this.props.listCustomer.filter((list) => list.kode_customer === data)
+    let final = listNopol[0].nopol_kendaraan.map((hasil) => {
       let data = {
-        value : hasil.nopol_kendaraan,
-        name : hasil.nopol_kendaraan
+        value: hasil.nopol_kendaraan,
+        name: hasil.nopol_kendaraan
       }
       return data
     })
     this.setState({
-      listNopol : final
+      listNopol: final
     })
-    }
+  }
 
   render() {
     return (
@@ -231,12 +230,12 @@ class HeadPembayaranPiutang extends Component {
                 data={
                   this.state.nama_customer
                     ? this.props.listpiutangcustomer.filter(
-                        (list) =>
-                          list.nama_customer === this.state.nama_customer
-                      )
+                      (list) =>
+                        list.nama_customer === this.state.nama_customer
+                    )
                     : this.props.listpiutangcustomer.filter(
-                        (list) => list.no_bon === this.state.no_bon
-                      )
+                      (list) => list.no_bon === this.state.no_bon
+                    )
                 }
                 columns={this.state.columns}
                 emptyText="Silahkan Isi Nomor Bon atau Pilih Customer Untuk Melihat Data"

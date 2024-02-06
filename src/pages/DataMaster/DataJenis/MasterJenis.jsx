@@ -88,7 +88,7 @@ class MasterJenis extends React.Component {
               kode_jenis: row.kode_jenis,
               nama_jenis: row.nama_jenis,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -137,33 +137,33 @@ class MasterJenis extends React.Component {
     // this.props.dispatch(onProgress());
     this.state.isEdit
       ? AxiosMasterPut(
-          "jenis/edit/by-kode-jenis/" + hasil.kode_jenis || "-",
-          {
-            kode_kategori: hasil.kode_kategori || "-",
+        "jenis/edit/by-kode-jenis/" + hasil.kode_jenis || "-",
+        {
+          kode_kategori: hasil.kode_kategori || "-",
 
-            nama_jenis: hasil.nama_jenis || "-",
-          }
-        )
-          .then(() => this.props.dispatch(reset("DataJenis")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getJenis()))
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .catch(() =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+          nama_jenis: hasil.nama_jenis || "-",
+        }
+      )
+        .then(() => this.props.dispatch(reset("DataJenis")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getJenis()))
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .catch(() =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("jenis/add", data)
-          .then(() => this.props.dispatch(reset("DataJenis")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getJenis()))
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .catch((err) =>
-            this.handleReactive(err, hasil.kode_jenis, {
-              kode_kategori: hasil.kode_kategori,
-              nama_jenis: hasil.nama_jenis,
-            })
-          );
+        .then(() => this.props.dispatch(reset("DataJenis")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getJenis()))
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .catch((err) =>
+          this.handleReactive(err, hasil.kode_jenis, {
+            kode_kategori: hasil.kode_kategori,
+            nama_jenis: hasil.nama_jenis,
+          })
+        );
   }
 
   handleReactive(err, kode, data) {
@@ -173,12 +173,12 @@ class MasterJenis extends React.Component {
 
     check
       ? reactive(
-          err,
-          kode,
-          "jenis/reactive/by-kode-jenis/",
-          data,
-          "jenis/edit/by-kode-jenis/"
-        ).then(() => this.props.dispatch(getJenis()))
+        err,
+        kode,
+        "jenis/reactive/by-kode-jenis/",
+        data,
+        "jenis/edit/by-kode-jenis/"
+      ).then(() => this.props.dispatch(getJenis()))
       : NotifError("Data Gagal Ditambahkan");
   }
   tambahModal(data) {

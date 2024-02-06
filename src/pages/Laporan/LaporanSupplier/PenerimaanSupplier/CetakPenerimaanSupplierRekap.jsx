@@ -1,7 +1,6 @@
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import {
-  formatDateISO,
   getToday,
 } from "../../../../components/notification/function";
 import Moment from "moment";

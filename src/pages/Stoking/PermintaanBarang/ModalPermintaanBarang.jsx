@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import Stepper from "react-stepper-horizontal/lib/Stepper";
 import { Field, reduxForm } from "redux-form";
-import { createNumberMask } from "redux-form-input-masks";
 import {
   getIDBarang,
   getInfoBarang,
@@ -12,16 +11,8 @@ import {
 import { AxiosMasterGet } from "../../../axios";
 import {
   ReanderField,
-  ReanderFieldInline,
-  ReanderSelect,
 } from "../../../components/notification/notification";
 import Tabel from "../../../components/Tabel/tabel";
-import { required } from "../../../validasi/normalize";
-
-const currencyMask = createNumberMask({
-  prefix: "Rp. ",
-  locale: "id-ID",
-});
 
 const validate = (values) => {
   const errors = {};
@@ -87,23 +78,6 @@ class ModalPermintaanBarang extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row) => {
-            let data = {
-              // kode_supplier: row.supplier,
-              kode_barcode: row.kode_barcode,
-              kode_barang: row.kode_barang,
-              nama_barang: row.nama_barang,
-              kode_kategori: row.kode_kategori,
-              kode_jenis: row.kode_jenis,
-              kode_supplier: row.supplier,
-              // kode_merk_barang: row.kode_merk_barang,
-              // kode_kwalitas: row.kode_kwalitas,
-              kode_lokasi_rak: row.kode_lokasi_rak,
-              kode_lokasi_selving: row.kode_lokasi_selving,
-              // kode_ukuran: row.kode_ukuran,
-              kode_satuan: row.kode_satuan,
-              type: row.type,
-              harga_jual: row.harga_jual,
-            };
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -252,7 +226,7 @@ class ModalPermintaanBarang extends Component {
                   columns={this.state.columns}
                   CSVExport
                   tambahData={false}
-                  // handleClick={() => this.tambahModal()}
+                // handleClick={() => this.tambahModal()}
                 />
               </div>
             </div>

@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
-import { getSales, showModal } from "../../../actions/datamaster_action";
 import {
-  deleteLocalItemBarcode,
+  getSales,
+  getSelfing,
+  showModal,
+} from "../../../actions/datamaster_action";
+import {
   ReanderField,
   ReanderSelect,
   ToastError,
@@ -11,11 +14,15 @@ import {
 } from "../../../components/notification/notification";
 import Skeleton from "react-loading-skeleton";
 import Swal from "sweetalert2";
-import { getPermintaanTemp } from "../../../actions/stocking_action";
+import {
+  getNoEditService,
+  getPermintaanTemp,
+} from "../../../actions/stocking_action";
 import { AxiosMasterGet, AxiosMasterPost } from "../../../axios";
 import Tabel from "../../../components/Tabel/tabel";
 import { getToday } from "../../../components/notification/function";
 import { required } from "../../../validasi/normalize";
+import SelectSearch from "react-select-search";
 
 const maptostate = (state) => {
   return {
@@ -24,6 +31,7 @@ const maptostate = (state) => {
     },
     onSend: state.datamaster.onSend,
     listsales: state.datamaster.listsales,
+    listselfing: state.datamaster.listselfing,
   };
 };
 class HeadReturBarangTidakJadiPakai extends Component {
@@ -46,8 +54,8 @@ class HeadReturBarangTidakJadiPakai extends Component {
           text: "Nama Barang",
         },
         {
-          dataField: "kode_pengeluaran",
-          text: "Kode Pengeluaran",
+          dataField: "no_pengeluaran",
+          text: "No Pengeluaran",
         },
         // {
         //   dataField: "merk_barang",
@@ -67,8 +75,32 @@ class HeadReturBarangTidakJadiPakai extends Component {
           text: "Qty",
         },
         {
-          dataField: "kode_supplier",
-          text: "Kode Supplier",
+          dataField: "kode_lokasi_shelving",
+          text: "Lokasi Shelving",
+          formatter: (rowcontent, row) => {
+            return (
+              <>
+                <SelectSearch
+                  value={rowcontent}
+                  search
+                  placeholder="Silahkan Pilih Shelving"
+                  options={this.props.listselfing.map((list) => {
+                    let data = {
+                      value: list.kode_lokasi_selving,
+                      name: list.nama_lokasi_selving,
+                    };
+                    return data;
+                  })}
+                  onChange={(data) =>
+                    this.updateShelving(row.kode_barcode, data)
+                  }
+                  onKeyPress={(e) => {
+                    e.key === "Enter" && e.preventDefault();
+                  }}
+                />
+              </>
+            );
+          },
         },
 
         {
@@ -123,16 +155,15 @@ class HeadReturBarangTidakJadiPakai extends Component {
       confirmButtonText: "OK",
       showConfirmButton: true,
       preConfirm: (qty) => {
-        if (qty > row.qty){
+        if (qty > row.qty) {
           ToastError("Masukan qty sesuai stock!");
-        }else if( qty < 0){
-          ToastError("Masukan qty sesuai stock!");          
-        }
-        else{
+        } else if (qty < 0) {
+          ToastError("Masukan qty sesuai stock!");
+        } else {
           let data = {
             no_retur: localStorage.getItem("kode_permintaan_barang"),
             no_daftar_service: localStorage.getItem("no_spk"),
-            kode_pegawai : localStorage.getItem("no_pegawai"),
+            kode_pegawai: localStorage.getItem("no_pegawai"),
             // kode_divisi: localStorage.getItem("kode_divisi"),
             detail_barang: [
               {
@@ -151,39 +182,61 @@ class HeadReturBarangTidakJadiPakai extends Component {
             .then(() => window.location.reload())
             // .then(() => this.getSPK(data.no_daftar_service))
             .catch((err) => ToastError(err.response.data));
-          
-          // deleteLocalItemBarcode("PermintaanBarang_temp", row.kode_barcode);  
+
+          // deleteLocalItemBarcode("PermintaanBarang_temp", row.kode_barcode);
         }
-              
       },
-    })
+    });
   }
   componentDidMount() {
     this.props.dispatch(getSales());
-    AxiosMasterGet("retur-barang/generate/no-trx").then((res) =>
-      this.props.change("no_retur", res.data[0].no_retur)
-    );
+    this.props.dispatch(getSelfing());
+    this.props.dispatch(getNoEditService());
     this.props.change("tanggal", getToday());
     AxiosMasterGet("daftar-service/getDataPendaftaranSerivce")
-      .then((res) =>
-        {
-          console.log(res.data);
-          this.setState({
+      .then((res) => {
+        console.log(res.data);
+        this.setState({
           listSPK: res && res.data,
-        })}
-      )
+        });
+      })
       .catch((err) =>
         ToastError(`Erorr Get SPK , Detail : ${err.response.data}`)
       );
   }
+
+  updateShelving(kodeBarcode, kode_lokasi_shelving) {
+    let temp = JSON.parse(localStorage.getItem("PermintaanBarang_temp"));
+    let tempKirim = JSON.parse(
+      localStorage.getItem("PermintaanBarang_temp_kirim")
+    );
+    let tempIndex = temp.findIndex((data) => data.kode_barcode === kodeBarcode);
+    let tempKirimIndex = tempKirim.findIndex(
+      (data) => data.kode_barcode === kodeBarcode
+    );
+    let tempSelected = temp[tempIndex];
+    tempSelected["kode_lokasi_shelving"] = kode_lokasi_shelving;
+    let tempKirimSelected = tempKirim[tempIndex];
+    tempKirimSelected["kode_lokasi_shelving"] = kode_lokasi_shelving;
+    temp.splice(tempIndex, 1, tempSelected);
+    tempKirim.splice(tempKirimIndex, 1, tempKirimSelected);
+    localStorage.setItem("PermintaanBarang_temp", JSON.stringify(temp));
+    localStorage.setItem(
+      "PermintaanBarang_temp_kirim",
+      JSON.stringify(tempKirim)
+    );
+  }
+
   getSPK(data) {
     this.setState({
-      isEmpty: false
+      isEmpty: false,
     });
     let PermintaanBarang_temp_kirim = [];
     let filtered = this.state.listSPK.filter((list) => list.no_daftar === data);
     this.props.change("pegawai", filtered[0].id_pegawai);
-    let filterbarang = filtered[0].detail_barang.filter((fill)=>fill.jenis_barang === "SPAREPART")
+    let filterbarang = filtered[0].detail_barang.filter(
+      (fill) => fill.jenis_barang === "SPAREPART"
+    );
     filterbarang.forEach((list) => {
       PermintaanBarang_temp_kirim.push({
         kode_barcode: list.kode_barcode,
@@ -194,10 +247,7 @@ class HeadReturBarangTidakJadiPakai extends Component {
     localStorage.setItem("no_spk", filtered[0].no_daftar);
     localStorage.setItem("no_pegawai", filtered[0].id_pegawai);
     localStorage.setItem("kode_divisi", filtered[0].kode_divisi);
-    localStorage.setItem(
-      "PermintaanBarang_temp",
-      JSON.stringify(filterbarang)
-    );
+    localStorage.setItem("PermintaanBarang_temp", JSON.stringify(filterbarang));
     localStorage.setItem(
       "PermintaanBarang_temp_kirim",
       JSON.stringify(PermintaanBarang_temp_kirim)
@@ -206,13 +256,13 @@ class HeadReturBarangTidakJadiPakai extends Component {
   }
   render() {
     return (
-      <form onSubmit={this.props.handleSubmit} autoComplete={true}>
+      <form onSubmit={this.props.handleSubmit}>
         <div className="col-lg-12">
           <div className="col-lg-12">
             <div className="row">
               <div className="col-lg-4">
                 <Field
-                  name="no_retur"
+                  name="no_edit_service"
                   component={ReanderField}
                   type="text"
                   label="Kode Edit Service"
@@ -250,31 +300,25 @@ class HeadReturBarangTidakJadiPakai extends Component {
             </div>
           </div>
         </div>
-        <div className="col-lg-12 mb-5">
-          <div className="text-right">
-            {this.state.isEmpty ? 
-            <button
-              type="button"
-              className="btn btn-warning disabled"
-              // onClick={() => this.props.dispatch(showModal())}
-            >
-              Tambah Barang <i className="fa fa-plus ml-3"></i>
-            </button>:
-            <button
-            type="button"
-            className="btn btn-warning"
-            onClick={() => this.props.dispatch(showModal())}
-          >
-            Tambah Barang <i className="fa fa-plus ml-3"></i>
-          </button>
-            }
+        <div className="col-lg-12">
+          <div className="col-lg-12 mb-5">
+            <div className="text-right">
+              <button
+                type="button"
+                disabled={this.state.isEmpty}
+                className="btn btn-warning"
+                onClick={() => this.props.dispatch(showModal())}
+              >
+                Tambah Barang <i className="fa fa-plus ml-3"></i>
+              </button>
+            </div>
           </div>
         </div>
         <div className="col-lg-12">
           {this.props.permintaan_temp ? (
             <div className="col-lg-12">
               <Tabel
-                keyField="kode_barcode"
+                keyField="kode"
                 data={this.props.permintaan_temp || []}
                 columns={this.state.columns}
                 CSVExport
@@ -287,7 +331,7 @@ class HeadReturBarangTidakJadiPakai extends Component {
         </div>
         <div className="col-lg-12 mb-5 mt-3">
           <div className="text-right">
-            <button className="btn btn-primary d-none">
+            <button className="btn btn-primary" disabled={this.state.isEmpty}>
               {this.props.onSend ? (
                 <>
                   <i className="fas fa-spinner fa-spin"></i> &nbsp; Sedang
@@ -306,7 +350,7 @@ class HeadReturBarangTidakJadiPakai extends Component {
   }
 }
 HeadReturBarangTidakJadiPakai = reduxForm({
-  form: "permintaanBarang",
+  form: "editServiceBarang",
   enableReinitialize: true,
 })(HeadReturBarangTidakJadiPakai);
 export default connect(maptostate, null)(HeadReturBarangTidakJadiPakai);

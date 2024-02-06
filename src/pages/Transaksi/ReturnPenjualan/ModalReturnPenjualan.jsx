@@ -34,7 +34,7 @@ class ModalReturnPenjualan extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row) => {
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">

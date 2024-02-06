@@ -8,7 +8,6 @@ import {
   ReanderField,
   ReanderSelect,
 } from "../../../components/notification/notification";
-import { required } from "../../../validasi/normalize";
 
 const currencyMask = createNumberMask({
   prefix: "Rp. ",
@@ -23,7 +22,7 @@ class ModalKomplainService extends Component {
     this.state = {
       hasilBarcode: [],
       listSupplier: [],
-      tambah:[],
+      tambah: [],
       stock: 0,
     };
   }

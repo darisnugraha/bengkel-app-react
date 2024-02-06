@@ -20,8 +20,8 @@ export const GET_PROGRESS = "GET_PROGRESS";
 export const GET_LIST_BARANG_KOMPLAIN = "GET_LIST_BARANG_KOMPLAIN";
 export const GET_LIST_BARANG_RETUR_SPL = "GET_LIST_BARANG_RETUR_SPL";
 
-export const getListBarangReturSupplier =() => {
-  let data = JSON.parse(localStorage.getItem("ListBarangSPL")) || [];
+export const getListBarangReturSupplier = () => {
+  let data = JSON.parse(localStorage.getItem("ListBarangSPL") || "[]") || [];
   return (dispatch) => {
     dispatch({
       type: GET_LIST_BARANG_RETUR_SPL,
@@ -30,7 +30,7 @@ export const getListBarangReturSupplier =() => {
       },
     });
   };
-}
+};
 
 export const getListTerimaSupplier = () => {
   let data = JSON.parse(localStorage.getItem("PenerimaanSupplier_temp")) || [];
@@ -301,9 +301,7 @@ export const getListPembayaranKomplain = () => {
       },
     });
   };
-
-
-}
+};
 
 export const getKirimServiceBarang = () => {
   let data = JSON.parse(localStorage.getItem("barang_kirim_service")) || [];
@@ -355,9 +353,7 @@ export const getListBarangKomplain = () => {
   let data = JSON.parse(localStorage.getItem("KomplainBarang_temp")) || [];
   let total =
     data !== []
-      ? data
-          .map((data) => parseFloat(data.total))
-          .reduce((a, b) => a + b, 0)
+      ? data.map((data) => parseFloat(data.total)).reduce((a, b) => a + b, 0)
       : null;
   return (dispatch) => {
     dispatch({

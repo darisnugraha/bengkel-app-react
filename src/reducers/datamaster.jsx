@@ -52,6 +52,7 @@ import {
   ONPROGRESS,
   SHOW_MODAL,
   GET_INFO_BARANG,
+  GET_SHELVING,
 } from "../actions/datamaster_action";
 
 const initialState = {
@@ -65,21 +66,21 @@ const initialState = {
   datakendaraan: false,
   listkendaraan: [],
   datamerkbarang: false,
-  listmerkbarang: false,
+  listmerkbarang: [],
   datagudang: false,
   listgudang: [],
   datarak: false,
-  listrak: false,
+  listrak: [],
   dataselfing: false,
-  listselfing: false,
+  listselfing: [],
   datasatuan: false,
   listsatuan: [],
   datakwalitas: false,
-  listkwalitas: false,
+  listkwalitas: [],
   datajeniskunci: false,
   listjeniskunci: false,
   datakunci: false,
-  listkunci: false,
+  listkunci: [],
   databank: false,
   listbank: [],
   dataparameter: false,
@@ -87,9 +88,9 @@ const initialState = {
   datakategoriservice: false,
   listkategoriservice: [],
   datahargaservice: false,
-  listhargaservice: false,
+  listhargaservice: [],
   datadivisi: false,
-  listdivisi: false,
+  listdivisi: [],
   datasales: false,
   listsales: [],
   databarang: false,
@@ -106,6 +107,7 @@ const initialState = {
   listukuran: [],
   listDiskon: [],
   listInfoBarang: [],
+  listShelving: [],
   datainfobarang: false,
 };
 
@@ -123,6 +125,12 @@ const datamaster = (state = initialState, actions) => {
         modalDialog: actions.payload.data,
       };
     //End Modal
+    // Shelving
+    case GET_SHELVING:
+      return {
+        ...state,
+        listShelving: actions.payload.data,
+      };
     // Kategori
     case EDIT_KATEGORI:
       return {
@@ -339,11 +347,11 @@ const datamaster = (state = initialState, actions) => {
         ...state,
         idbarang: actions.payload.data,
       };
-      case GET_INFO_BARANG:
-      return{
+    case GET_INFO_BARANG:
+      return {
         ...state,
         listInfoBarang: actions.payload.data,
-      }
+      };
     // CUSTOMER
     case EDIT_CUSTOMER:
       return {
@@ -358,8 +366,8 @@ const datamaster = (state = initialState, actions) => {
     case GET_NOPOL_CUSTOMER:
       return {
         ...state,
-        listNopol: actions.payload.data
-      }
+        listNopol: actions.payload.data,
+      };
     // Supplier
     case EDIT_SUPPLIER:
       return {

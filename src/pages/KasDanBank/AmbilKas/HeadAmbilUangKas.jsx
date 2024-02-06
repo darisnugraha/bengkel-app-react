@@ -7,6 +7,7 @@ import {
   ReanderField,
   ReanderSelect,
 } from "../../../components/notification/notification";
+import { getToday } from "../../../components/notification/function";
 
 const currencyMask = createNumberMask({
   prefix: "Rp. ",
@@ -20,6 +21,7 @@ class HeadAmbilUangKas extends Component {
   }
   componentDidMount() {
     this.props.dispatch(getParameter());
+    this.props.change("tanggal", getToday())
   }
   render() {
     return (

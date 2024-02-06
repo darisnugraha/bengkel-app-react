@@ -89,7 +89,7 @@ class MasterKategoriService extends React.Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row) => {
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -155,27 +155,27 @@ class MasterKategoriService extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          "kategori-service/update/by-id-kategori-service/" +
-            hasil.id_kategori_service || "-",
-          dataEdit
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("dataKategoriService")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getKategoriService()))
-          .catch((err) =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+        "kategori-service/update/by-id-kategori-service/" +
+        hasil.id_kategori_service || "-",
+        dataEdit
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("dataKategoriService")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getKategoriService()))
+        .catch((err) =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("kategori-service/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataKategoriService")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getKategoriService()))
-          .catch((err) =>
-            this.handleReactive(err, hasil.id_kategori_service, dataEdit)
-          );
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataKategoriService")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getKategoriService()))
+        .catch((err) =>
+          this.handleReactive(err, hasil.id_kategori_service, dataEdit)
+        );
   }
 
   handleReactive(err, kode, data) {
@@ -184,12 +184,12 @@ class MasterKategoriService extends React.Component {
     let check = error.includes("hapus");
     check
       ? reactive(
-          err,
-          kode,
-          "kategori-service/reactive/by-id-kategori-service/",
-          data,
-          "kategori-service/update/by-id-kategori-service/"
-        ).then(() => this.props.dispatch(getKategoriService()))
+        err,
+        kode,
+        "kategori-service/reactive/by-id-kategori-service/",
+        data,
+        "kategori-service/update/by-id-kategori-service/"
+      ).then(() => this.props.dispatch(getKategoriService()))
       : NotifError("Data Gagal Ditambahkan");
   }
 

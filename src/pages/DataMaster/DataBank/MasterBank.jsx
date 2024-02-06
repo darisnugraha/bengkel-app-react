@@ -88,7 +88,7 @@ class MasterBank extends React.Component {
               nama_bank: row.nama_bank,
               atas_nama: row.atas_nama,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -152,21 +152,21 @@ class MasterBank extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut("bank/update/by-no-ac/" + hasil.nomor_bank, dataEdit)
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getBank()))
-          .catch((err) =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getBank()))
+        .catch((err) =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("bank/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataBank")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getBank()))
-          .catch((err) => this.handleReactive(err, hasil.nomor_bank, dataEdit));
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataBank")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getBank()))
+        .catch((err) => this.handleReactive(err, hasil.nomor_bank, dataEdit));
   }
   handleReactive(err, kode, data) {
     this.props.dispatch(hideModal());
@@ -174,12 +174,12 @@ class MasterBank extends React.Component {
     let check = error.includes("Deleted");
     check
       ? reactive(
-          err,
-          kode,
-          "bank/reactive/by-no-ac",
-          data,
-          "bank/update/by-no-ac/"
-        ).then(() => this.props.dispatch(getBank()))
+        err,
+        kode,
+        "bank/reactive/by-no-ac",
+        data,
+        "bank/update/by-no-ac/"
+      ).then(() => this.props.dispatch(getBank()))
       : NotifError("Data Gagal Ditambahkan");
   }
   render() {

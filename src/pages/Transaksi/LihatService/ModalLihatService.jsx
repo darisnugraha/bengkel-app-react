@@ -44,21 +44,21 @@ class ModalLihatService extends Component {
           dataField: "km_masuk",
           text: "KM Masuk",
           formatter: (data) => {
-            return + data.toLocaleString("id-ID")+" KM";
+            return + data.toLocaleString("id-ID") + " KM";
           },
         },
         {
           dataField: "km_keluar",
           text: "KM Keluar",
           formatter: (data) => {
-            return + data.toLocaleString("id-ID")+" KM";
+            return + data.toLocaleString("id-ID") + " KM";
           },
         },
         {
           dataField: "km_service",
           text: "KM Service",
           formatter: (data) => {
-            return + data.toLocaleString("id-ID")+" KM";
+            return + data.toLocaleString("id-ID") + " KM";
           },
         },
         {
@@ -74,7 +74,7 @@ class ModalLihatService extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row) => {
-            this.setState({});
+
             return (
               <div className="text-center">
                 <div className="col-12">

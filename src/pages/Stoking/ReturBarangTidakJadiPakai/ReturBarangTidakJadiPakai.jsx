@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { Suspense } from "react";
 import { Link } from "react-router-dom";
 
 import { connect } from "react-redux";
@@ -9,16 +9,17 @@ import {
   NotifSucces,
 } from "../../../components/notification/notification.jsx";
 import { Panel, PanelHeader } from "../../../components/panel/panel.jsx";
-import CetakNota from "../CetakNota.jsx";
 import { getPermintaanTemp } from "../../../actions/stocking_action.jsx";
-import { simpanLocal } from "../../../config/Helper.jsx";
+
 import { reset } from "redux-form";
-import { AxiosMasterGet, AxiosMasterPost, AxiosMasterPut } from "../../../axios.js";
-import { multipleDeleteLocal } from "../../../components/notification/function.jsx";
-import { onFinish, onProgress } from "../../../actions/datamaster_action.jsx";
+import { AxiosMasterPost } from "../../../axios.js";
+import {
+  hideModal,
+  onFinish,
+  onProgress,
+} from "../../../actions/datamaster_action.jsx";
 import ModalReturBarang from "./ModalReturBarangTidakJadiPakai.jsx";
 import HeadReturBarangTidakJadiPakai from "./HeadReturBarangTidakJadiPakai.jsx";
-
 
 const maptostate = (state) => {
   return {
@@ -47,9 +48,6 @@ class ReturBarang extends React.Component {
     localStorage.removeItem("PermintaanBarang_temp");
     localStorage.removeItem("PermintaanBarang_temp_kirim");
     this.props.dispatch(getPermintaanTemp());
-    AxiosMasterGet("retur-barang/generate/no-trx").then((res) =>
-      localStorage.setItem("kode_permintaan_barang", res.data[0].no_retur)
-    );
   }
 
   handleModal(hasil) {
@@ -57,149 +55,71 @@ class ReturBarang extends React.Component {
       JSON.parse(localStorage.getItem("PermintaanBarang_temp_kirim")) || [];
     let local2 =
       JSON.parse(localStorage.getItem("PermintaanBarang_temp")) || [];
-    let filtered = local.findIndex(
-      (list) => list.kode_barcode === hasil.kode_barcode
+    let data = {
+      nama_barang: hasil.nama_barang,
+      harga_satuan: Number(hasil.harga_jual),
+      harga_total: Number(hasil.total_harga),
+      kode_lokasi_shelving: hasil.kode_lokasi_shelving,
+      keterangan: hasil.keterangan,
+      jenis_barang: "SPAREPART",
+      status_close: "OPEN",
+      kode_barcode: hasil.kode_barcode,
+      qty: parseInt(hasil.qty),
+    };
+    let dataTable = {
+      kode: hasil.kode_barcode,
+      nama: hasil.nama_barang,
+      stock: hasil.stock,
+      qty: parseInt(hasil.qty),
+      harga_satuan: Number(hasil.harga_jual),
+      harga_total: Number(hasil.total_harga),
+      kode_lokasi_shelving: hasil.kode_lokasi_shelving,
+      keterangan: hasil.keterangan,
+      jenis_barang: "SPAREPART",
+      status_close: "OPEN",
+    };
+    local.push(data);
+    local2.push(dataTable);
+    localStorage.setItem("PermintaanBarang_temp", JSON.stringify(local2));
+    localStorage.setItem("PermintaanBarang_temp_kirim", JSON.stringify(local));
+    this.props.dispatch(reset("ModalPermintaanBarang"));
+    this.props.dispatch(hideModal());
+    this.props.dispatch(getPermintaanTemp());
+    NotifSucces(
+      "Barang Berhasil Ditambahkan Ke tabel, Silahkan Tekan Tombol Save Untuk Menyimpan Ke Nomor Daftar"
     );
-    let filtered2 = local2.findIndex(
-      (list) => list.kode_barcode === hasil.kode_barcode
-    );
-    if (filtered !== -1) {
-      let data = {
-        kode_barcode: hasil.kode_barcode,
-        qty: parseInt(hasil.qty) + parseFloat(local[filtered].qty),
-        kode_supplier: hasil.kode_supplier,
-      };
-      let dataTable = {
-        kode: hasil.kode_barcode,
-        nama: hasil.nama_barang,
-        // merk_barang: hasil.merk,
-        // kwalitas: hasil.kwalitas,
-        // ukuran: hasil.ukuran,
-        stock: hasil.stock,
-        qty: parseInt(hasil.qty) + parseInt(local2[filtered2].qty),
-      };
-      let datatambah = {
-        detail_barang:{
-          kode: hasil.kode_barcode,
-          nama: hasil.nama_barang,
-          stock: hasil.stock,
-          qty: parseInt(hasil.qty),
-          kode_supplier: hasil.kode_supplier,
-          jenis_barang: "SPAREPART",
-          harga: hasil.harga_jual,
-          total: hasil.harga_total
-        }
-      }
-      local.splice(filtered, 1);
-      local2.splice(filtered2, 1);
-      local.push(data);
-      local2.push(dataTable);
-      AxiosMasterPut("daftar-service/tambah-barang/"+localStorage.getItem("no_spk"), datatambah)
-      .then(()=>localStorage.setItem("PermintaanBarang_temp", JSON.stringify(local2)))
-      .then(()=>localStorage.setItem(
-        "PermintaanBarang_temp_kirim",
-        JSON.stringify(local)
-      ))
-      .then(()=>NotifSucces("Berhasil"))
-      .then(()=>this.props.dispatch(reset("ModalReturnSupplier")))
-      .then(()=>this.props.dispatch(getPermintaanTemp()))
-      .then(()=>window.location.reload())
-      
-    } else {
-      let data = {
-        kode_barcode: hasil.kode_barcode,
-        qty: parseInt(hasil.qty),
-        kode_supplier: hasil.kode_supplier,
-      };
-      let dataTable = {
-        detail_barang:{
-        kode: hasil.kode_barcode,
-        nama: hasil.nama_barang,
-        stock: hasil.stock,
-        qty: parseInt(hasil.qty),
-        kode_supplier: hasil.kode_supplier,
-        jenis_barang: "SPAREPART",
-        harga: hasil.harga_jual,
-        total: hasil.harga_total
-        }
-      };
-      AxiosMasterPut("daftar-service/tambah-barang/"+localStorage.getItem("no_spk"), dataTable)
-        .then(() => this.props.dispatch(reset("ModalPermintaanBarang")))
-        .then(() => this.props.dispatch(getPermintaanTemp()));
-      simpanLocal("PermintaanBarang_temp", dataTable)
-        .then(() => this.props.dispatch(reset("ModalPermintaanBarang")))
-        .then(() => this.props.dispatch(getPermintaanTemp()));
-      simpanLocal("PermintaanBarang_temp_kirim", data)
-        .then(() => this.props.dispatch(reset("ModalPermintaanBarang")))
-        .then(() => this.props.dispatch(getPermintaanTemp()));
-    }
   }
   sendData(hasil) {
     this.props.dispatch(onProgress());
     let kirim = {
-      no_permintaan: hasil.no_permintaan,
-      kode_divisi: hasil.divisi || "MKN",
-      kode_pegawai: hasil.pegawai,
+      no_edit_service: hasil.no_edit_service,
       no_daftar_service: hasil.no_spk,
-      tanggal: hasil.tanggal,
       detail_barang: JSON.parse(
-        localStorage.getItem("PermintaanBarang_temp_kirim")
-      ),
+        localStorage.getItem("PermintaanBarang_temp")
+      ).map(({ kode, nama, stock, no_pengeluaran, ...rest }, index) => {
+        return {
+          no_urut: index + 1,
+          kode_barcode: kode,
+          nama_barang: nama,
+          ...rest,
+        };
+      }),
     };
-    // INISIALISASI AUTOTABLE
-    const tableRows = [];
-    let table = JSON.parse(localStorage.getItem("PermintaanBarang_temp"));
-    table.forEach((data, i) => {
-      const rows = [
-        ++i,
-        data.kode_barcode,
-        data.nama_barang,
-        data.merk_barang,
-        data.kwalitas,
-        data.qty,
-      ];
-      tableRows.push(rows);
-    });
-    let columnTabel = ["NO", "BARCODE", "JENIS BARANG", "MERK", "KW", "QTY"];
-    // INISIALISASI SELESAI -> PANGGIL AXIOS DAN PANGGIL PRINT SAAT AXIOS BERHASIL
-    AxiosMasterPost("permintaan-barang/post-transaksi", kirim)
+    AxiosMasterPost("edit-service/add", kirim)
       .then(() => NotifSucces("Berhasil Menyimpan Data"))
-      .then(() =>
-        CetakNota(
-          "Tanggal",
-          hasil.tanggal,
-          "PEGAWAI",
-          hasil.pegawai,
-          "NO PERMINTAAN",
-          hasil.no_permintaan,
-          "DIVISI",
-          hasil.divisi,
-          "ADMIN",
-          "01-28-2021",
-          "ADMIN",
-          columnTabel,
-          "BUKTI PERMINTAAN BARANG",
-          tableRows,
-          [],
-          true
-        )
-      )
-      .then(() =>
-        multipleDeleteLocal([
-          "PermintaanBarang_temp_kirim",
-          "PermintaanBarang_temp",
-          "kode_permintaan_barang",
-        ])
-      )
-      .then(() => this.props.dispatch(reset("permintaanBarang")))
-      .then(() => this.props.dispatch(getPermintaanTemp()))
-      .then(() => this.props.dispatch(onFinish()))
+      .then(() => {
+        this.props.dispatch(reset("permintaanBarang"));
+        this.props.dispatch(getPermintaanTemp());
+        this.props.dispatch(onFinish());
+      })
       .catch((err) =>
-        NotifError(err.response.data).then(() =>
-          this.props.dispatch(onFinish())
-        )
+        NotifError(err.response.data).then(() => {
+          this.props.dispatch(onFinish());
+        })
       );
   }
+
+  handleSave(data) {}
   render() {
     return (
       <div>
@@ -217,6 +137,7 @@ class ReturBarang extends React.Component {
             <HeadReturBarangTidakJadiPakai
               onSubmit={(data) => this.sendData(data)}
               permintaan_temp={this.props.permintaan_temp}
+              handleSave={(data) => this.handleSave(data)}
             />
           </div>
           {/* Master Kategori */}

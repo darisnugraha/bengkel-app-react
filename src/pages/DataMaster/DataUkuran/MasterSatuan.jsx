@@ -82,7 +82,7 @@ class MasterSatuan extends React.Component {
               kode_satuan: row.kode_satuan,
               nama_satuan: row.nama_satuan,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -141,30 +141,30 @@ class MasterSatuan extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          "satuan/update/by-kode-satuan/" + hasil.kode_satuan,
-          {
-            nama_satuan: hasil.nama_satuan,
-          }
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("dataSatuan")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getSatuan()))
-          .catch(() =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+        "satuan/update/by-kode-satuan/" + hasil.kode_satuan,
+        {
+          nama_satuan: hasil.nama_satuan,
+        }
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("dataSatuan")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getSatuan()))
+        .catch(() =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("satuan/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataSatuan")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getSatuan()))
-          .catch((err) =>
-            this.handleReactive(err, hasil.kode_satuan, {
-              nama_satuan: hasil.nama_satuan || "-",
-            })
-          );
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataSatuan")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getSatuan()))
+        .catch((err) =>
+          this.handleReactive(err, hasil.kode_satuan, {
+            nama_satuan: hasil.nama_satuan || "-",
+          })
+        );
   }
   handleReactive(err, kode, data) {
     this.props.dispatch(hideModal());
@@ -172,12 +172,12 @@ class MasterSatuan extends React.Component {
     let check = error.includes("hapus");
     check
       ? reactive(
-          err,
-          kode,
-          "satuan/reactive/",
-          data,
-          "satuan/update/by-kode-satuan/"
-        ).then(() => this.props.dispatch(getSatuan()))
+        err,
+        kode,
+        "satuan/reactive/",
+        data,
+        "satuan/update/by-kode-satuan/"
+      ).then(() => this.props.dispatch(getSatuan()))
       : NotifError("Data Gagal Ditambahkan");
   }
   render() {

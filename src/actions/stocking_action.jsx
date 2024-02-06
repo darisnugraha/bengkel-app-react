@@ -1,3 +1,4 @@
+import { change } from "redux-form";
 import { AxiosMasterGet } from "../axios";
 
 export const GET_PERMINTAAN_TEMP = "GET_PERMINTAAN_TEMP";
@@ -7,8 +8,17 @@ export const GET_KONVERSI_BARANG_TEMP = "GET_KONVERSI_BARANG_TEMP";
 export const GET_PENGELUARAN_BARANG_TEMP = "GET_PENGELUARAN_BARANG_TEMP";
 export const GET_TAMBAH_STOCK_TEMP = "GET_TAMBAH_STOCK_TEMP";
 export const GET_LIST_PENGELUARAN_BARANG = "GET_LIST_PENGELUARAN_BARANG";
-export const GET_PENGELUARAN_BARANG_SELECTED = "GET_PENGELUARAN_BARANG_SELECTED";
-export const GET_RETUR_BARANG_TIDAK_JADI_JUAL_TEMP ="GET_RETUR_BARANG_TIDAK_JADI_JUAL_TEMPGET";
+export const GET_PENGELUARAN_BARANG_SELECTED =
+  "GET_PENGELUARAN_BARANG_SELECTED";
+export const GET_RETUR_BARANG_TIDAK_JADI_JUAL_TEMP =
+  "GET_RETUR_BARANG_TIDAK_JADI_JUAL_TEMPGET";
+export const GET_NO_TAMBAH_STOCK = "GET_NO_TAMBAH_STOCK";
+export const GET_NO_KONVERSI = "GET_NO_KONVERSI";
+export const GET_NO_EDIT_SERVICE = "GET_NO_EDIT_SERVICE";
+export const GET_NO_HANCUR = "GET_NO_HANCUR";
+export const GET_NO_PERMINTAAN_BARANG = "GET_NO_PERMINTAAN_BARANG";
+export const GET_NO_PENGELUARAN_BARANG = "GET_NO_PENGELUARAN_BARANG";
+export const GET_NO_KIRIM_SERVICE_LUAR = "GET_NO_KIRIM_SERVICE_LUAR";
 
 // Modal
 export const getPermintaanTemp = () => {
@@ -33,6 +43,80 @@ export const getKonversiTemp = () => {
     });
   };
 };
+
+export const getNoTambahStock = () => {
+  return (dispatch) => {
+    AxiosMasterGet("import-barang/generate/no-trx").then((res) => {
+      dispatch(
+        change("permintaanBarang", "no_tambah", res.data[0].no_import_barang)
+      );
+      return dispatch({
+        type: GET_NO_TAMBAH_STOCK,
+        payload: {
+          data: res.data[0].no_import_barang,
+        },
+      });
+    });
+  };
+};
+
+export const getNoHancur = () => {
+  return (dispatch) => {
+    AxiosMasterGet("hancur-barang/generate/no-trx").then((res) => {
+      dispatch(change("hancurBarang", "no_hancur", res.data[0].no_hancur));
+      return dispatch({
+        type: GET_NO_HANCUR,
+        payload: {
+          data: res.data[0].no_hancur,
+        },
+      });
+    });
+  };
+};
+export const getNoKonversi = () => {
+  return (dispatch) => {
+    AxiosMasterGet("konversi-barang/generate/no-trx").then((res) => {
+      dispatch(change("konversiBarang", "no_konversi", res.data[0].no_pindah));
+      return dispatch({
+        type: GET_NO_KONVERSI,
+        payload: {
+          data: res.data[0].no_pindah,
+        },
+      });
+    });
+  };
+};
+export const getNoEditService = () => {
+  return (dispatch) => {
+    AxiosMasterGet("edit-service/generate/no-trx").then((res) => {
+      dispatch(
+        change("editServiceBarang", "no_edit_service", res.data.no_edit_service)
+      );
+      return dispatch({
+        type: GET_NO_EDIT_SERVICE,
+        payload: {
+          data: res.data.no_edit_service,
+        },
+      });
+    });
+  };
+};
+export const getNoPermintaanBarang = () => {
+  return (dispatch) => {
+    AxiosMasterGet("permintaan-barang/generate/no-trx").then((res) => {
+      dispatch(
+        change("permintaanBarang", "no_permintaan", res.data[0].no_permintaan)
+      );
+      return dispatch({
+        type: GET_NO_PERMINTAAN_BARANG,
+        payload: {
+          data: res.data[0].no_permintaan,
+        },
+      });
+    });
+  };
+};
+
 export const getHancurTemp = () => {
   let data = JSON.parse(localStorage.getItem("HancurBarang_temp")) || [];
   return (dispatch) => {
@@ -132,7 +216,7 @@ export const getPengeluaranBarangSelected = () => {
 };
 export const getReturBarangTidakJadi = () => {
   let data = JSON.parse(localStorage.getItem("FakturTerpilih_detail")) || [];
-  return(dispatch) => {
+  return (dispatch) => {
     dispatch({
       type: GET_RETUR_BARANG_TIDAK_JADI_JUAL_TEMP,
       payload: {

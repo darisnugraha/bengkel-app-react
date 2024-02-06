@@ -23,6 +23,7 @@ class HeadTambahKas extends Component {
     this.props.dispatch(getBank());
     this.props.dispatch(getParameter());
     this.props.change("tanggal", getToday());
+
   }
   render() {
     return (

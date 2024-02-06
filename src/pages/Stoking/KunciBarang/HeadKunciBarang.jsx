@@ -82,7 +82,7 @@ class HeadKunciBarang extends Component {
               harga_satuan: row.harga_satuan,
               total: row.total,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -134,7 +134,7 @@ class HeadKunciBarang extends Component {
   render() {
     return (
       <div>
-        <form onSubmit={this.props.handleSubmit} autoComplete={true}>
+        <form onSubmit={this.props.handleSubmit}>
           <div className="row">
             <div className="col-lg-3">
               <Field

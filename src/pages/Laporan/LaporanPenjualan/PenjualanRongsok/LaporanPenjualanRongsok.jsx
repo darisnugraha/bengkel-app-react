@@ -11,7 +11,6 @@ import {
 } from "../../../../components/panel/panel";
 import CetakPenjualanRongsok from "./CetakPenjualanRongsok";
 import HeadLaporanPenjualanRongsok from "./HeadLaporanPenjualanRongsok";
-import TabelLaporanPenjualanRongsok from "./TabelLaporanPenjualanRongsok";
 
 class LaporanPenjualanRongsok extends Component {
   constructor(props) {
@@ -24,7 +23,7 @@ class LaporanPenjualanRongsok extends Component {
     this.props.dispatch(onProgress());
     AxiosMasterGet(
       "laporan/penjualan-rosok/lap-penjualan-rosok/" +
-        `${hasil.tanggal_awal}&${hasil.tanggal_akhir}`
+      `${hasil.tanggal_awal}&${hasil.tanggal_akhir}`
     )
       .then((res) => {
         if (res.data.lenght === 0) {
@@ -39,10 +38,10 @@ class LaporanPenjualanRongsok extends Component {
       .then(() =>
         this.state.listLaporan.length
           ? CetakPenjualanRongsok(
-              hasil.tanggal_awal,
-              hasil.tanggal_akhir,
-              this.state.listLaporan
-            )
+            hasil.tanggal_awal,
+            hasil.tanggal_akhir,
+            this.state.listLaporan
+          )
           : ToastError("Data Laporan Kosong")
       )
       .then(() => this.props.dispatch(onFinish()))

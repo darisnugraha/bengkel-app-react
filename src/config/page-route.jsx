@@ -153,9 +153,7 @@ const MasterCustomer = lazy(() =>
 const MasterSupplier = lazy(() =>
   import("../pages/DataMaster/DataSupplier/MasterSupplier.jsx")
 );
-const ReturBarang = lazy(() =>
-  import("../pages/Stoking/ReturBarangTidakJadiPakai/ReturBarangTidakJadiPakai.jsx")
-);
+
 const PermintaanBarang = lazy(() =>
   import("../pages/Stoking/PermintaanBarang/PermintaanBarang.jsx")
 );
@@ -313,7 +311,7 @@ const routes = [
     title: "Master Kendaraan",
     component: () => <MasterKendaraan />,
   },
-  
+
   // Data Merek Barang
   // {
   //   path: "/master-merk-barang",

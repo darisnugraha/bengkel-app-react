@@ -1,23 +1,24 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
-import {
-  onFinish,
-  onProgress,
-  showModal,
-} from "../../../actions/datamaster_action";
-import { AxiosMasterGet } from "../../../axios";
+import { showModal } from "../../../actions/datamaster_action";
 import {
   ReanderField,
   ReanderSelect,
 } from "../../../components/notification/notification";
+import { getToday } from "../../../components/notification/function";
+import { getNoKonversi } from "../../../actions/stocking_action";
 
 const maptostate = (state) => {
   return {
     initialValues: {
       no_pindah: localStorage.getItem("no_pindah") || "",
+      tanggal: getToday(),
     },
     onSend: state.datamaster.onSend,
+    listSelfing: state.datamaster.listselfing,
+    listSupplier: state.datamaster.listsupplier,
+    konversi_temp: state.stocking.konversi_temp,
   };
 };
 class HeadKonversiBarang extends Component {
@@ -29,37 +30,8 @@ class HeadKonversiBarang extends Component {
     };
   }
   componentDidMount() {
-    this.props.dispatch(onProgress());
-    AxiosMasterGet("lokasi-gudang/get/all")
-      .then((res) =>
-        this.setState({
-          listLokasi: res.data.map((list) => {
-            let data = {
-              value: list.kode_lokasi_gudang,
-              name: `${list.nama_lokasi_gudang} - (${list.kode_lokasi_gudang})`,
-            };
-            return data;
-          }),
-        })
-      )
-      .then(() => this.props.dispatch(onFinish()));
-    this.props.dispatch(onProgress());
-    AxiosMasterGet("supplier/get/all")
-      .then((res) =>
-        this.setState({
-          listSupplier: res.data.map((list) => {
-            let data = {
-              value: list.kode_supplier,
-              name: `${list.nama_supplier} - (${list.kode_supplier})`,
-            };
-            return data;
-          }),
-        })
-      )
-      .then(() => this.props.dispatch(onFinish()));
-    AxiosMasterGet("konversi-barang/generate/no-trx").then((res) =>
-      this.props.change("no_pindah", res.data[0].no_pindah)
-    );
+    this.props.change("tanggal", getToday());
+    this.props.dispatch(getNoKonversi());
   }
   setLokasi(e) {
     this.setState({
@@ -76,15 +48,15 @@ class HeadKonversiBarang extends Component {
   render() {
     return (
       <div>
-        <form onSubmit={this.props.handleSubmit} autoComplete={true}>
+        <form onSubmit={this.props.handleSubmit}>
           <div className="row">
             <div className="col-lg-3">
               <Field
-                name="no_pindah"
+                name="no_konversi"
                 component={ReanderField}
                 type="text"
-                label="Nomor Pindah"
-                placeholder="Masukan Nomor Pindah"
+                label="Nomor Konversi"
+                placeholder="Masukan Nomor Konversi"
                 readOnly
               />
             </div>
@@ -101,7 +73,12 @@ class HeadKonversiBarang extends Component {
               <Field
                 name="lokasi"
                 component={ReanderSelect}
-                options={this.state.listLokasi}
+                options={this.props.listSelfing.map((data) => {
+                  return {
+                    value: data.kode_lokasi_selving,
+                    name: data.nama_lokasi_selving,
+                  };
+                })}
                 label="LOKASI"
                 placeholder="PILIH LOKASI"
                 onChange={(e) => this.setLokasi(e)}
@@ -111,7 +88,12 @@ class HeadKonversiBarang extends Component {
               <Field
                 name="supplier"
                 component={ReanderSelect}
-                options={this.state.listSupplier}
+                options={this.props.listSupplier.map((data) => {
+                  return {
+                    value: data.kode_supplier,
+                    name: data.nama_supplier,
+                  };
+                })}
                 label="SUPPLIER"
                 placeholder="PILIH SUPPLIER"
                 onChange={(e) => this.setSupplier(e)}
@@ -122,7 +104,10 @@ class HeadKonversiBarang extends Component {
             <div className="row">
               <div className="col-lg-6">
                 <div className="text-left">
-                  <button className="btn btn-primary">
+                  <button
+                    className="btn btn-primary"
+                    disabled={this.props.konversi_temp.length < 1}
+                  >
                     {this.props.onSend ? (
                       <>
                         <i className="fas fa-spinner fa-spin"></i> &nbsp; Sedang
@@ -162,7 +147,7 @@ class HeadKonversiBarang extends Component {
   }
 }
 HeadKonversiBarang = reduxForm({
-  form: "permintaanBarang",
+  form: "konversiBarang",
   enableReinitialize: true,
 })(HeadKonversiBarang);
 export default connect(maptostate, null)(HeadKonversiBarang);

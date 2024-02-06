@@ -21,9 +21,7 @@ import {
   showModal,
 } from "../../../actions/datamaster_action.jsx";
 import {
-  getListBarang,
   getListBarangKomplain,
-  getListBarangPembayaran,
   getListPembayaran,
   getListPembayaranKomplain,
 } from "../../../actions/transaksi_action.jsx";
@@ -89,7 +87,7 @@ class KomplainService extends React.Component {
             //   kode_divisi: row.kode_divisi,
             //   nama_divisi: row.nama_divisi,
             // };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -135,24 +133,24 @@ class KomplainService extends React.Component {
     array["detail_non_tunai"] =
       localStorage.getItem("listPembayaran_temp") === "[]"
         ? [
-            {
-              no_ref: "-",
-              no_ac: "-",
-              bayar_rp: 0,
-              fee_rp: 0,
-              no_card: "-",
-              valid_until: "-",
-              nama_pemilik: "-",
-              no_ktp: "-",
-              alamat_ktp: "-",
-              kota_ktp: "-",
-              telepon_ktp: "-",
-              jenis_trx: "-",
-            },
-          ]
+          {
+            no_ref: "-",
+            no_ac: "-",
+            bayar_rp: 0,
+            fee_rp: 0,
+            no_card: "-",
+            valid_until: "-",
+            nama_pemilik: "-",
+            no_ktp: "-",
+            alamat_ktp: "-",
+            kota_ktp: "-",
+            telepon_ktp: "-",
+            jenis_trx: "-",
+          },
+        ]
         : localStorage.getItem("listPembayaran_temp") !== null
-        ? JSON.parse(localStorage.getItem("listPembayaran_temp"))
-        : [
+          ? JSON.parse(localStorage.getItem("listPembayaran_temp"))
+          : [
             {
               no_ref: "-",
               no_ac: "-",
@@ -350,12 +348,12 @@ class KomplainService extends React.Component {
               />
             )
           }
-          // content={
-          //   <ModalKomplainService
-          //     onSend={this.props.onSend}
-          //     onSubmit={(data) => this.handleSubmit(data)}
-          //   />
-          // }
+        // content={
+        //   <ModalKomplainService
+        //     onSend={this.props.onSend}
+        //     onSubmit={(data) => this.handleSubmit(data)}
+        //   />
+        // }
         />
       </div>
     );

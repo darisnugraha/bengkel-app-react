@@ -60,12 +60,12 @@ class MasterBarang extends React.Component {
         },
         {
           dataField: "kode_oem",
-          text:  "Kode OE"
-         },
-         {
-           dataField: "kode_sku",
-           text: "Kode SKU"
-         },
+          text: "Kode OE"
+        },
+        {
+          dataField: "kode_sku",
+          text: "Kode SKU"
+        },
         // {
         //   dataField: "kode_ukuran",
         //   text: "Ukuran",
@@ -78,14 +78,14 @@ class MasterBarang extends React.Component {
         //   dataField: "kode_kwalitas",
         //   text: "Kualitas",
         // },
-        {
-          dataField: "kode_lokasi_rak",
-          text: "Rak",
-        },
-        {
-          dataField: "kode_lokasi_selving",
-          text: "Selving",
-        },
+        // {
+        //   dataField: "kode_lokasi_rak",
+        //   text: "Rak",
+        // },
+        // {
+        //   dataField: "kode_lokasi_selving",
+        //   text: "Selving",
+        // },
         {
           dataField: "harga_jual",
           text: "Harga",
@@ -114,7 +114,7 @@ class MasterBarang extends React.Component {
               type: row.type,
               harga_jual: row.harga_jual,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -166,8 +166,8 @@ class MasterBarang extends React.Component {
       kode_satuan: hasil.satuan || "-",
       // kode_kwalitas: hasil.kwalitas || "-",
       type: hasil.type || "-",
-      kode_lokasi_rak: hasil.rak || "-",
-      kode_lokasi_selving: hasil.selving || "-",
+      // kode_lokasi_rak: hasil.rak || "-",
+      // kode_lokasi_selving: hasil.selving || "-",
       harga_jual: hasil.harga || "-",
     };
     let dataEdit = {
@@ -175,37 +175,37 @@ class MasterBarang extends React.Component {
       nama_barang: hasil.nama_barang || "-",
       kode_kategori: hasil.kode_kategori || "-",
       kode_jenis: hasil.jenis_barang || "-",
-      kode_oem : hasil.no_oem,
-      kode_sku : hasil.no_sku,
+      kode_oem: hasil.no_oem,
+      kode_sku: hasil.no_sku,
       // kode_merk_barang: hasil.merk || "-",
       // kode_ukuran: hasil.ukuran || "-",
       kode_satuan: hasil.satuan || "-",
       // kode_kwalitas: hasil.kwalitas || "-",
       type: hasil.type || "-",
-      kode_lokasi_rak: hasil.rak || "-",
-      kode_lokasi_selving: hasil.selving || "-",
+      // kode_lokasi_rak: hasil.rak || "-",
+      // kode_lokasi_selving: hasil.selving || "-",
       harga_jual: hasil.harga || "-",
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          "barang/update/by-kode-barang/" + hasil.kode_barang,
-          dataEdit
+        "barang/update/by-kode-barang/" + hasil.kode_barang,
+        dataEdit
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("dataBarang")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getBarang()))
+        .catch((err) =>
+          NotifError(`Gagal Merubah Data, Detial : ${err.response.data}`)
         )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("dataBarang")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getBarang()))
-          .catch((err) =>
-            NotifError(`Gagal Merubah Data, Detial : ${err.response.data}`)
-          )
       : AxiosMasterPost("barang/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataBarang")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getBarang()))
-          .catch((err) =>
-            ToastError(`Error Simpan Barang, Detail :  ${err.response.data}`)
-          );
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataBarang")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getBarang()))
+        .catch((err) =>
+          ToastError(`Error Simpan Barang, Detail :  ${err.response.data}`)
+        );
   }
 
   render() {

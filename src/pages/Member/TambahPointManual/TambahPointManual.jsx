@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { onFinish, onProgress } from "../../../actions/datamaster_action";
 import { AxiosMasterPost } from "../../../axios";
 import {
-  NotifError,
   NotifSucces,
   ToastError,
 } from "../../../components/notification/notification";

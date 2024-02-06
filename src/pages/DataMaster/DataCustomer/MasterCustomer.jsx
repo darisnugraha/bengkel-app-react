@@ -23,9 +23,10 @@ import { reset } from "redux-form";
 import { AxiosMasterPost, AxiosMasterPut } from "../../../axios.js";
 import Tabel from "../../../components/Tabel/tabel.jsx";
 import FormModalCustomerTambah from "./FormModalCustomerTambah.jsx";
-import uuid from "react-uuid";
 const FormModalCustomer = lazy(() => import("./FormModalCustomer.jsx"));
-const FormModalTambahKendaraan = lazy(()=> import ("./FormModalTambahKendaraan.jsx"));
+const FormModalTambahKendaraan = lazy(() =>
+  import("./FormModalTambahKendaraan.jsx")
+);
 
 const maptostate = (state) => {
   return {
@@ -33,14 +34,14 @@ const maptostate = (state) => {
     onSend: state.datamaster.onSend,
     listcustomer: state.datamaster.listcustomer,
     noFaktur: state.datamaster.noFaktur,
-    kode_customer: state.datamaster.datacustomer.kode_customer
+    kode_customer: state.datamaster.datacustomer.kode_customer,
   };
 };
 class MasterCustomer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isRealEdit:false,
+      isRealEdit: false,
       isEdit: false,
       modalDialog: false,
       isLoading: false,
@@ -88,14 +89,15 @@ class MasterCustomer extends React.Component {
               kota: row.kota,
               handphone: row.handphone,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-6">
                   <button
                     onClick={() => this.editModal(dataEdit)}
                     className="btn btn-warning"
-                  ><span className="pr-2">Edit</span>
+                  >
+                    <span className="pr-2">Edit</span>
                     <i className="fa fa-edit"></i>
                   </button>
                 </div>
@@ -131,38 +133,37 @@ class MasterCustomer extends React.Component {
 
   componentDidMount() {
     this.props.dispatch(getCustomer());
-    localStorage.removeItem("noFaktur")
+    localStorage.removeItem("noFaktur");
     this.props.dispatch(getFaktur());
-    
   }
   editModal(data) {
     this.props.dispatch(showModal());
     this.props.dispatch(editCustomer(data));
     this.setState({
       JenisModal: "Edit Customer",
-      isRealEdit:true,
-      isEdit:false
+      isRealEdit: true,
+      isEdit: false,
     });
-    localStorage.setItem("kode_customer",data.kode_customer)
+    localStorage.setItem("kode_customer", data.kode_customer);
   }
   tambahkendaraanmodal(tambah) {
     this.props.dispatch(showModal());
     this.props.dispatch(editCustomer(tambah));
     this.setState({
-      isRealEdit:false,
+      isRealEdit: false,
       isEdit: true,
-      JenisModal: "Tambah Kendaraan"
+      JenisModal: "Tambah Kendaraan",
     });
   }
   tambahModal() {
     this.props.dispatch(showModal());
     this.props.dispatch(editCustomer(""));
     this.setState({
-      isRealEdit:false,
+      isRealEdit: false,
       isEdit: false,
     });
   }
-  
+
   handleSubmit(hasil) {
     let data = {
       kode_customer: this.props.noFaktur || "-",
@@ -170,35 +171,22 @@ class MasterCustomer extends React.Component {
       alamat: hasil.alamat_customer || "-",
       kota: hasil.kota_customer || "-",
       handphone: hasil.handphone_customer || "-",
-      // nopol_kendaraan: [JSON.stringify(hasil.no_polisi)] || "-",
-      // merk_kendaraan: hasil.merk || "-",
-      // type_kendaraan: hasil.type || "-",
-      // nomesin_kendaraan: hasil.no_mesin || "-",
-      // warna_kendaraan: hasil.warna || "-",
+      nopol_kendaraan: [hasil.no_polisi] || "-",
     };
     let dataEdit = {
       nama_customer: hasil.nama_customer || "-",
       alamat: hasil.alamat_customer || "-",
       kota: hasil.kota_customer || "-",
       handphone: hasil.handphone_customer || "-",
-      // nopol_kendaraan: hasil.no_polisi.replace(/\s/g, "") || "-",
-      // merk_kendaraan: hasil.merk || "-",
-      // type_kendaraan: hasil.type || "-",
-      // nomesin_kendaraan: hasil.no_mesin || "-",
-      // warna_kendaraan: hasil.warna || "-",
     };
     let dataEditKendaraan = {
       merk_kendaraan: hasil.merk || "-",
       type_kendaraan: hasil.type || "-",
       nomesin_kendaraan: hasil.no_mesin || "-",
       warna_kendaraan: hasil.warna || "-",
-    }
+    };
     let dataKendaraan = {
       id_customer: hasil.kode_customer || "-",
-      // nama_customer: hasil.nama_customer || "-",
-      // alamat: hasil.alamat_customer || "-",
-      // kota: hasil.kota_customer || "-",
-      // handphone: hasil.handphone_customer || "-",
       nopol_kendaraan: hasil.no_polisi || "-",
       merk_kendaraan: hasil.merk || "-",
       type_kendaraan: hasil.type || "-",
@@ -207,10 +195,6 @@ class MasterCustomer extends React.Component {
     };
     let dataTambah = {
       id_customer: this.props.kode_customer || "-",
-      // nama_customer: hasil.nama_customer || "-",
-      // alamat: hasil.alamat_customer || "-",
-      // kota: hasil.kota_customer || "-",
-      // handphone: hasil.handphone_customer || "-",
       nopol_kendaraan: hasil.no_polisi || "-",
       merk_kendaraan: hasil.merk || "-",
       type_kendaraan: hasil.type || "-",
@@ -219,23 +203,29 @@ class MasterCustomer extends React.Component {
     };
 
     this.state.isRealEdit
-    ? AxiosMasterPut("customer/update/by-kode-customer/"+localStorage.getItem("kode_customer"),dataEdit)
-    .then(()=>AxiosMasterPut("kendaraan-customer/update/"+hasil.no_polisi,dataEditKendaraan))
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("dataBarang")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getCustomer()))
-          .catch((err) =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+      ? AxiosMasterPut(
+        "customer/update/by-kode-customer/" +
+        localStorage.getItem("kode_customer"),
+        dataEdit
+      )
+        .then(() =>
+          AxiosMasterPut(
+            "kendaraan-customer/update/" + hasil.no_polisi,
+            dataEditKendaraan
           )
-    : 
-    this.state.isEdit
-      ? AxiosMasterPost(
-          "kendaraan-customer/add",
-          dataTambah
-        ).then(()=> localStorage.removeItem("noFaktur"))
+        )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("dataBarang")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getCustomer()))
+        .catch((err) =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
+          )
+        )
+      : this.state.isEdit
+        ? AxiosMasterPost("kendaraan-customer/add", dataTambah)
+          .then(() => localStorage.removeItem("noFaktur"))
           .then(() => NotifSucces("Berhasil Ditambahkan"))
           .then(() => this.props.dispatch(reset("dataBarang")))
           .then(() => this.props.dispatch(hideModal()))
@@ -246,10 +236,12 @@ class MasterCustomer extends React.Component {
               "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
             )
           )
-      : AxiosMasterPost("customer/add", data)
-          .then(() => AxiosMasterPost("kendaraan-customer/add",dataKendaraan)
-          .then(()=> localStorage.removeItem("noFaktur"))
-          .then(() => this.props.dispatch(getFaktur())))
+        : AxiosMasterPost("customer/add", data)
+          .then(() =>
+            AxiosMasterPost("kendaraan-customer/add", dataKendaraan)
+              .then(() => localStorage.removeItem("noFaktur"))
+              .then(() => this.props.dispatch(getFaktur()))
+          )
           .then(() => NotifSucces("Berhasil Ditambahkan"))
           .then(() => this.props.dispatch(reset("dataBarang")))
           .then(() => this.props.dispatch(hideModal()))
@@ -259,7 +251,7 @@ class MasterCustomer extends React.Component {
             NotifError(
               "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
             )
-          )
+          );
   }
 
   render() {
@@ -292,48 +284,49 @@ class MasterCustomer extends React.Component {
           </PanelBody>
           <ModalGlobal
             title={
-              this.state.isRealEdit ? "Edit Data Customer" 
-              : this.state.isEdit ? "Tambah Data Kendaraan" 
-              : "Tambah Data Customer"
+              this.state.isRealEdit
+                ? "Edit Data Customer"
+                : this.state.isEdit
+                  ? "Tambah Data Kendaraan"
+                  : "Tambah Data Customer"
             }
             content={
               this.state.isRealEdit ? (
-              <Suspense
-                fallback={<Skeleton width={"100%"} height={50} count={2} />}
-              >
-                <FormModalCustomer
-                  onSubmit={(data) => this.handleSubmit(data)}
-                  onSend={this.props.onSend}
-                  isEdit={this.state.isEdit}
-                  noFaktur={this.props.noFaktur}
-                />
-              </Suspense>
+                <Suspense
+                  fallback={<Skeleton width={"100%"} height={50} count={2} />}
+                >
+                  <FormModalCustomer
+                    onSubmit={(data) => this.handleSubmit(data)}
+                    onSend={this.props.onSend}
+                    isEdit={this.state.isEdit}
+                    noFaktur={this.props.noFaktur}
+                  />
+                </Suspense>
               ) : this.state.isEdit ? (
                 <Suspense
-                fallback={<Skeleton width={"100%"} height={50} count={2} />}
-              >
-                <FormModalTambahKendaraan
-                  onSubmit={(data) => this.handleSubmit(data)}
-                  onSend={this.props.onSend}
-                  isEdit={this.state.isEdit}
-                  noFaktur={this.props.noFaktur}
-                />
-              </Suspense>
+                  fallback={<Skeleton width={"100%"} height={50} count={2} />}
+                >
+                  <FormModalTambahKendaraan
+                    onSubmit={(data) => this.handleSubmit(data)}
+                    onSend={this.props.onSend}
+                    isEdit={this.state.isEdit}
+                    noFaktur={this.props.noFaktur}
+                  />
+                </Suspense>
               ) : (
                 <Suspense
-                fallback={<Skeleton width={"100%"} height={50} count={2} />}
-              >
-                <FormModalCustomerTambah
-                  onSubmit={(data) => this.handleSubmit(data)}
-                  onSend={this.props.onSend}
-                  isEdit={this.state.isEdit}
-                  noFaktur={this.props.noFaktur}
-                />
-              </Suspense>
+                  fallback={<Skeleton width={"100%"} height={50} count={2} />}
+                >
+                  <FormModalCustomerTambah
+                    onSubmit={(data) => this.handleSubmit(data)}
+                    onSend={this.props.onSend}
+                    isEdit={this.state.isEdit}
+                    noFaktur={this.props.noFaktur}
+                  />
+                </Suspense>
               )
             }
           />
-               
 
           {/* End Tambah Master Kategori  */}
         </Panel>

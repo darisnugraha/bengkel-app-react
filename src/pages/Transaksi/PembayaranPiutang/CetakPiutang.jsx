@@ -1,6 +1,5 @@
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import Moment from "moment";
 // Date Fns is used to format the dates we receive
 
 // define a generatePDF function that accepts a tickets argument

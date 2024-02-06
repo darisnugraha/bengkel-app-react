@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Field, formValueSelector, reduxForm } from "redux-form";
 import { createNumberMask } from "redux-form-input-masks";
-import { ReanderFieldInline } from "../../../components/notification/notification";
+import {
+  ReanderFieldInline,
+  ReanderSelectInline,
+} from "../../../components/notification/notification";
 
 const currencyMask = createNumberMask({
   prefix: "Rp. ",
@@ -87,6 +90,21 @@ class ModalDetailBarangSparepart extends Component {
                 label="Satuan"
                 placeholder="Masukan Satuan"
                 readOnly
+              />
+            </div>
+            <div className="col-lg-12">
+              <Field
+                name="kode_lokasi_shelving"
+                component={ReanderSelectInline}
+                options={this.props.listSelfing.map((data) => {
+                  return {
+                    value: data.kode_lokasi_selving,
+                    name: data.nama_lokasi_selving,
+                  };
+                })}
+                type="text"
+                label="Lokasi Shelving"
+                placeholder="Masukan Lokasi Shelving"
               />
             </div>
           </div>
@@ -209,13 +227,12 @@ export default connect((state) => {
       // ukuran: state.datamaster.databarang.kode_ukuran,
       // kwalitas: state.datamaster.databarang.kode_kwalitas,
       type: state.datamaster.databarang.type,
-      rak: state.datamaster.databarang.kode_lokasi_rak,
-      selving: state.datamaster.databarang.kode_lokasi_selving,
       harga_satuan: state.datamaster.databarang.harga_jual,
       satuan: state.datamaster.databarang.kode_satuan,
     },
     sub_total: parseFloat(harga_satuan || 0) * parseFloat(jumlah || 0),
     total_discount: parseFloat(jumlah || 0) * parseFloat(discount || 0),
+    listSelfing: state.datamaster.listselfing,
     grand_total:
       parseFloat(harga_satuan || 0) * parseFloat(jumlah || 0) -
       parseFloat(jumlah || 0) * parseFloat(discount || 0),

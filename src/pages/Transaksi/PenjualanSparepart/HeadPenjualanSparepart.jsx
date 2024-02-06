@@ -60,7 +60,6 @@ class HeadPenjualanSparepart extends Component {
       member: false,
       reguler: true,
     });
-    this.props.change("pelanggan", "");
     AxiosMasterGet("customer/get/all").then((res) =>
       this.setState({
         listCustomer:
@@ -99,6 +98,7 @@ class HeadPenjualanSparepart extends Component {
       });
   }
   setCustomer(hasil) {
+    console.log(hasil);
     let data = hasil.split("||");
     this.props.change("tanggal", getToday());
     localStorage.setItem("penjualan_sparepart_nama_customer", data[0]);
@@ -333,6 +333,11 @@ HeadPenjualanSparepart = reduxForm({
 })(HeadPenjualanSparepart);
 const selector = formValueSelector("HeadPenjualanSparepart");
 export default connect((state) => {
+  let pelanggan = `${localStorage.getItem(
+    "penjualan_sparepart_nama_customer"
+  )}||${localStorage.getItem(
+    "penjualan_sparepart_alamat"
+  )}||${localStorage.getItem("penjualan_sparepart_telepon")}`;
   return {
     initialValues: {
       no_faktur: localStorage.getItem("no_penjualan_sparepart") || "",
@@ -340,12 +345,7 @@ export default connect((state) => {
         localStorage.getItem("penjualan_sparepart_nama_customer") || "",
       alamat: localStorage.getItem("penjualan_sparepart_alamat") || "",
       telepon: localStorage.getItem("penjualan_sparepart_telepon") || "",
-      pelanggan:
-        `${localStorage.getItem(
-          "penjualan_sparepart_nama_customer"
-        )}||${localStorage.getItem(
-          "penjualan_sparepart_alamat"
-        )}||${localStorage.getItem("penjualan_sparepart_telepon")}` || "",
+      pelanggan: pelanggan || "",
       kode_sales: localStorage.getItem("penjualan_sparepart_kode_sales") || "",
     },
     listBarangSparepart: state.transaksi.listBarangSparepart,

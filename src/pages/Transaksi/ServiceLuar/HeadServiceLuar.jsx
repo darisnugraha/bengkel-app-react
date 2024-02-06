@@ -27,7 +27,7 @@ class HeadServiceLuar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listNopol:[],
+      listNopol: [],
       columns: [
         {
           dataField: "nama_barang",
@@ -65,7 +65,7 @@ class HeadServiceLuar extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row, rowIndex) => {
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -116,26 +116,26 @@ class HeadServiceLuar extends Component {
     this.props.dispatch(getCustomer());
   }
 
-  getNopol(){
+  getNopol() {
     let kodecust = localStorage.getItem("kode_customer");
-    let listNopol =   this.props.listcustomer.filter((list) => list.kode_customer === kodecust)
-     let final =  listNopol[0].nopol_kendaraan.map((hasil) => {
+    let listNopol = this.props.listcustomer.filter((list) => list.kode_customer === kodecust)
+    let final = listNopol[0].nopol_kendaraan.map((hasil) => {
       let data = {
-        value : hasil.nopol_kendaraan,
-        name : hasil.nopol_kendaraan
+        value: hasil.nopol_kendaraan,
+        name: hasil.nopol_kendaraan
       }
       return data
     })
     this.setState({
-      listNopol : final
+      listNopol: final
     })
-    }
+  }
 
-    setNopol(hasil){
-      console.log("hasil",hasil);
-      localStorage.setItem("kode_customer",hasil);
-      this.getNopol(hasil[0]);
-    }
+  setNopol(hasil) {
+    console.log("hasil", hasil);
+    localStorage.setItem("kode_customer", hasil);
+    this.getNopol(hasil[0]);
+  }
   render() {
     return (
       <form
@@ -197,7 +197,7 @@ class HeadServiceLuar extends Component {
               label="Nama Customer"
               placeholder="Masukan Nama Customer"
               validate={required}
-              onChange={(e)=>this.setNopol(e)}
+              onChange={(e) => this.setNopol(e)}
             />
           </div>
           <div className="col-lg-4">

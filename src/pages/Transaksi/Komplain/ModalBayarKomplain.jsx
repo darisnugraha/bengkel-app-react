@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Field, formValueSelector, reduxForm } from "redux-form";
 import { createNumberMask } from "redux-form-input-masks";
-import { getListBarangPembayaran, getListPembayaran, getListPembayaranKomplain } from "../../../actions/transaksi_action";
+import { getListPembayaranKomplain } from "../../../actions/transaksi_action";
 import { ReanderField } from "../../../components/notification/notification";
 import Tabel from "../../../components/Tabel/tabel";
 
@@ -156,9 +156,9 @@ export default connect((state) => {
   localStorage.setItem(
     "kembalian_bayar",
     (selector(state, "bayar") || 0) -
-      state.transaksi.total_bayar +
-      state.transaksi.totalTukar +
-      state.transaksi.sum_pembayaran
+    state.transaksi.total_bayar +
+    state.transaksi.totalTukar +
+    state.transaksi.sum_pembayaran
   );
   return {
     grand_total_all: state.transaksi.total_bayar,

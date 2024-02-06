@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Field, reduxForm } from "redux-form";
+import { Field, formValueSelector, reduxForm } from "redux-form";
 import { onFinish, onProgress } from "../../../actions/datamaster_action";
 import { AxiosMasterGet } from "../../../axios";
 import {
   ReanderField,
   ReanderSelect,
-  ToastError,
 } from "../../../components/notification/notification";
 import { required } from "../../../validasi/normalize";
+import { debounce } from "../../../config/Helper";
 
 class ModalStockOpname extends Component {
   constructor(props) {
@@ -16,8 +16,10 @@ class ModalStockOpname extends Component {
     this.state = {
       listSupplier: [],
     };
+    this.loadData = this.loadData.bind(this);
+    this.debouncedLoadData = debounce(this.loadData, 500);
   }
-  getBarcode(e) {
+  loadData(e) {
     this.props.dispatch(onProgress());
     let lokasi_hancur = localStorage.getItem("lokasi_stock_opname") || "";
     AxiosMasterGet(
@@ -28,6 +30,14 @@ class ModalStockOpname extends Component {
       .then(() => this.props.dispatch(onFinish()))
       .catch((err) => this.props.dispatch(onFinish()));
   }
+
+  // Membuat fungsi debounce
+  debouncedLoadData = debounce(this.loadData, 500);
+
+  getBarcode = (e) => {
+    this.debouncedLoadData(e);
+  };
+
   setBarang(res) {
     console.log(res);
     this.props.change("kode_barang", res[0].kode_barang);
@@ -35,23 +45,16 @@ class ModalStockOpname extends Component {
     // this.props.change("merk", res[0].merk_barang);
     // this.props.change("kwalitas", res[0].kwalitas);
     this.props.change("satuan", res[0].satuan);
-    this.setState({
-      listSupplier:
-        res &&
-        res[0].data_supplier.map((list) => {
-          let data = {
-            value: `${list.kode_supplier}||${list.stock}`,
-            name: list.nama_supplier,
-          };
-          return data;
-        }),
-    });
+    this.props.change("stock", res[0].stock);
   }
   setStock(hasil) {
-    let data = hasil.split("||");
-    this.props.change("kode_supplier", data[0]);
-    this.props.change("stock", data[1]);
+    this.props.change("kode_supplier", hasil);
   }
+  calculateSelisih = (e) => {
+    if (e.target.value !== undefined || e.target.value !== "") {
+      this.props.change("selisih", this.props.stock - Number(e.target.value));
+    }
+  };
   render() {
     return (
       <div>
@@ -71,7 +74,6 @@ class ModalStockOpname extends Component {
                   label="Kode Barcode"
                   placeholder="Masukan Kode Barcode"
                   onChange={(e) => this.getBarcode(e)}
-                  onBlur={(e) => this.getBarcode(e)}
                 />
               </div>
               <div className="col-lg-3 d-none">
@@ -96,27 +98,6 @@ class ModalStockOpname extends Component {
                   loading={this.props.onSend}
                 />
               </div>
-              {/* <div className="col-lg-3">
-                <Field
-                  name="merk"
-                  component={ReanderField}
-                  type="text"
-                  label="Merk"
-                  placeholder="Masukan Merk"
-                  readOnly
-                  loading={this.props.onSend}
-                />
-              </div>
-              <div className="col-lg-3">
-                <Field
-                  name="kwalitas"
-                  component={ReanderField}
-                  label="Kualitas"
-                  placeholder="Masukan Kualitas"
-                  readOnly
-                  loading={this.props.onSend}
-                />
-              </div> */}
               <div className="col-lg-3">
                 <Field
                   name="satuan"
@@ -130,22 +111,19 @@ class ModalStockOpname extends Component {
               </div>
               <div className="col-lg-3">
                 <Field
-                  name="kode_supplier1"
+                  validate={required}
+                  name="kode_supplier"
                   component={ReanderSelect}
-                  options={this.state.listSupplier}
+                  options={this.props.listsupplier?.map((data) => {
+                    return {
+                      value: data.kode_supplier,
+                      name: data.nama_supplier,
+                    };
+                  })}
                   type="text"
                   label="Kode Supplier"
                   placeholder="Masukan Kode Supplier"
                   onChange={(e) => this.setStock(e)}
-                />
-              </div>
-              <div className="col-lg-3 d-none">
-                <Field
-                  name="kode_supplier"
-                  component={ReanderField}
-                  type="text"
-                  label="Kode Supplier"
-                  placeholder="Masukan Kode Supplier"
                 />
               </div>
               <div className="col-lg-2">
@@ -167,6 +145,18 @@ class ModalStockOpname extends Component {
                   label="Qty"
                   placeholder="Masukan Qty"
                   validate={required}
+                  onChange={this.calculateSelisih}
+                />
+              </div>
+              <div className="col-lg-2">
+                <Field
+                  name="selisih"
+                  component={ReanderField}
+                  type="number"
+                  label="Selisih"
+                  placeholder="Masukan Selisih"
+                  readOnly
+                  loading={this.props.onSend}
                 />
               </div>
             </div>
@@ -188,8 +178,13 @@ ModalStockOpname = reduxForm({
   form: "ModalStockOpname",
   enableReinitialize: true,
 })(ModalStockOpname);
+const selector = formValueSelector("ModalStockOpname");
 export default connect((state) => {
+  const { qty, stock } = selector(state, "qty", "stock");
   return {
     onSend: state.datamaster.onSend,
+    listsupplier: state.datamaster.listsupplier,
+    stock,
+    qty,
   };
 })(ModalStockOpname);

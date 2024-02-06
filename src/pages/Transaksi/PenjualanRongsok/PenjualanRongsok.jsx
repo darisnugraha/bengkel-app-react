@@ -71,7 +71,7 @@ class PenjualanRongsok extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row, index) => {
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -135,7 +135,7 @@ class PenjualanRongsok extends Component {
         kode_satuan: hasil.satuan,
         harga_satuan: parseFloat(hasil.harga_satuan),
         harga_total:
-        (parseInt(hasil.qty)+ parseFloat(local[filtered].qty)) * parseFloat(hasil.harga_satuan),
+          (parseInt(hasil.qty) + parseFloat(local[filtered].qty)) * parseFloat(hasil.harga_satuan),
       };
       local.splice(filtered, 1);
       local.push(data);
@@ -189,21 +189,21 @@ class PenjualanRongsok extends Component {
     head["detail_non_tunai"] =
       localStorage.getItem("listPembayaran_temp") === "[]"
         ? [
-            {
-              no_ref: "-",
-              no_ac: "-",
-              bayar_rp: 0,
-              fee_rp: 0,
-              no_card: "-",
-              valid_until: "-",
-              nama_pemilik: "-",
-              no_ktp: "-",
-              alamat_ktp: "-",
-              kota_ktp: "-",
-              telepon_ktp: "-",
-              jenis_trx: "-",
-            },
-          ]
+          {
+            no_ref: "-",
+            no_ac: "-",
+            bayar_rp: 0,
+            fee_rp: 0,
+            no_card: "-",
+            valid_until: "-",
+            nama_pemilik: "-",
+            no_ktp: "-",
+            alamat_ktp: "-",
+            kota_ktp: "-",
+            telepon_ktp: "-",
+            jenis_trx: "-",
+          },
+        ]
         : JSON.parse(localStorage.getItem("listPembayaran_temp")) || [];
 
     localStorage.setItem("headPembayaranRongsok", JSON.stringify(head));

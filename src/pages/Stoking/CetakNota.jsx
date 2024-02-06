@@ -22,10 +22,10 @@ const CetakNota = (
   disc = "",
   total = "",
   tandatangan,
-  
-  
+
+
 ) => {
-  console.log("tes" , disc);
+  console.log("tes", disc);
   // initialize jsPDF
   const doc = new jsPDF();
   // var tickets = JSON.parse(data);
@@ -52,20 +52,28 @@ const CetakNota = (
   doc.text(title, 14, 15);
   doc.setFontSize(10);
   //row 1
-  doc.text(`${row1name}	: ${row1isi}`, 14, 25);
+  if (row1name !== "") {
+    doc.text(`${row1name}	: ${row1isi}`, 14, 25);
+  }
   // doc.text(":", 37, 25);
   // doc.text(row1isi, 40, 25);
-  doc.text(`${row2name}	: ${row2isi}`, 120, 25);
+  if (row2name !== '') {
+    doc.text(`${row2name}	: ${row2isi}`, 120, 25);
+  }
   // doc.text(":", 141, 25);
   // doc.text(row2isi, 145, 25);
   //row 2
-  doc.text(`${row3name}	: ${row3isi}`, 14, 30);
+  if (row3name !== "") {
+    doc.text(`${row3name}	: ${row3isi}`, 14, 30);
+  }
   // doc.text(":", 37, 30);
   // doc.text(row3isi, 40, 30);
-  doc.text(`${row4name}	: ${row4isi}`, 120, 30);
+  if (row4name !== "") {
+    doc.text(`${row4name}	: ${row4isi}`, 120, 30);
+  }
   // doc.text(":", 141, 30);
   // doc.text(row4isi, 145, 30);
-  if(row1name === "NO TERIMA"){
+  if (row1name === "NO TERIMA") {
     doc.text(`Discount`, 149, finalY - 8);
     doc.text(`${parseFloat(disc).toLocaleString("id-ID")}`, 182, finalY - 8);
     doc.text(`Grand Total`, 149, finalY - 3);

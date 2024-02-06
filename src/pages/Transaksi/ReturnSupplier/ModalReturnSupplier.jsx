@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Field, formValueSelector, reduxForm } from "redux-form";
 import {
-  NotifError,
   ReanderField,
-  ReanderFieldInline,
   ReanderSelect,
 } from "../../../components/notification/notification";
 import { createNumberMask } from "redux-form-input-masks";
@@ -62,23 +60,6 @@ class ModalReturnSupplier extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row) => {
-            let data = {
-              // kode_supplier: row.supplier,
-              kode_barcode: row.kode_barcode,
-              kode_barang: row.kode_barang,
-              nama_barang: row.nama_barang,
-              kode_kategori: row.kode_kategori,
-              kode_jenis: row.kode_jenis,
-              // kode_merk_barang: row.kode_merk_barang,
-              // kode_kwalitas: row.kode_kwalitas,
-              kode_lokasi_rak: row.kode_lokasi_rak,
-              kode_lokasi_selving: row.kode_lokasi_selving,
-              // kode_ukuran: row.kode_ukuran,
-              kode_satuan: row.kode_satuan,
-              type: row.type,
-              harga_jual: row.harga_jual,
-            };
-            console.log(data);
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -93,6 +74,10 @@ class ModalReturnSupplier extends Component {
                       this.props.change("satuan_barang", row.satuan);
                       this.props.change("stock", row.stock);
                       this.props.change("harga_satuan", row.harga_satuan);
+                      this.props.change(
+                        "kode_lokasi_shelving",
+                        row.kode_lokasi_shelving
+                      );
                       this.nextStep();
                     }}
                     // onClick={() => {
@@ -166,7 +151,10 @@ class ModalReturnSupplier extends Component {
   }
   getBarcode(hasil) {
     AxiosMasterGet("barang/get/by-kode-barcode/" + hasil.target.value)
-      .then((res) => {this.setState({ hasilBarcode: res.data });console.log(res.data);})
+      .then((res) => {
+        this.setState({ hasilBarcode: res.data });
+        console.log(res.data);
+      })
       .then(() => this.setDetail())
       .catch((err) => console.log(err));
   }
@@ -272,6 +260,21 @@ class ModalReturnSupplier extends Component {
                 </div>
                 <div className="col-lg-3">
                   <Field
+                    name="kode_lokasi_shelving"
+                    component={ReanderSelect}
+                    options={this.props.listSelfing.map((data) => {
+                      return {
+                        value: data.kode_lokasi_selving,
+                        name: data.nama_lokasi_selving,
+                      };
+                    })}
+                    type="text"
+                    label="Lokasi Shelving"
+                    placeholder="Pilih Lokasi Shelving"
+                  />
+                </div>
+                <div className="col-lg-3">
+                  <Field
                     name="harga_satuan"
                     component={ReanderField}
                     type="text"
@@ -352,5 +355,6 @@ export default connect((state) => {
   return {
     list_barang: state.transaksi.returbarangspl,
     total: parseFloat(harga_satuan || 0) * parseFloat(qty || 0),
+    listSelfing: state.datamaster.listselfing,
   };
 })(ModalReturnSupplier);

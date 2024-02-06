@@ -15,95 +15,84 @@ const CetakStockPerKategori = (
   //   let data = JSON.parse(localStorage.getItem("tt_pengeluaran_barang")) || [];
   let tableRows = [];
   let footRows = [];
-  let finalY = 40;
+  let finalY = 35;
   let sub_qty = 0;
 
   doc.setFontSize(15);
   doc.text("LAPORAN STOCK PER KATEGORI", 14, 15);
   doc.setFontSize(10);
+
   //row 1
   // doc.text(`Tanggal : ${row1isi}`, 14, 25);
   //   row 2
   // doc.text(`Tanggal	: ${row2isi}`, 120, 25);
-  console.log("tes",data);
-  data.forEach((item, index) => {
-    let tableColumn = [
-      [
-        {
-          content: `LOKASI : ${item.lokasi}`,
-          colSpan: 9,
-        },
-      ],
-      [
-        {
-          content: `KODE JENIS`,
-        },
-        {
-          content: `AWAL`,
-        },
-        {
-          content: `TAMBAH`,
-        },
-        {
-          content: `RETUR CUST`,
-        },
-
-        {
-          content: `JUAL`,
-        },
-        {
-          content: `RETUR STOCK`,
-        },
-        {
-          content: `MEKANIK`,
-        },
-        {
-          content: `KELUAR`,
-        },
-        {
-          content: `AKHIR`,
-        },
-      ],
-    ];
-    item.detail.forEach((barang, index) => {
-      let rows = [
-        barang.kode_jenis,
-        barang.awal_qty,
-        barang.tambah_qty,
-        barang.retcust_qty,
-        barang.jual_qty,
-        barang.retstock_qty,
-        barang.mekanik_qty,
-        barang.keluar_qty,
-        barang.akhir_qty,
-      ];
-      sub_qty = sub_qty + parseInt(barang.qty);
-      tableRows.push(rows);
-      console.log(tableRows);
-    });
-    let footer = [];
-    footRows.push(footer);
-    doc.autoTable({
-      head: tableColumn,
-      body: tableRows,
-      foot: footRows,
-      startY: index === 0 ? 35 : finalY + 5,
-      theme: "plain",
-      rowPageBreak: "avoid",
-      pageBreak: "avoid",
-      margin: { top: 20 },
-      bodyStyles: { lineWidth: 0.02, lineColor: "#000" },
-      headStyles: {
-        lineWidth: 0.02,
-        lineColor: "#000",
-        fillColor: [212, 212, 211],
+  let tableColumn = [
+    [
+      {
+        content: `KODE JENIS`,
       },
-    });
-    finalY = doc.autoTableEndPosY() + 10;
-    tableRows = [];
-    footRows = [];
-    sub_qty = 0;
+      {
+        content: `AWAL`,
+      },
+      {
+        content: `TAMBAH`,
+      },
+      {
+        content: `RETUR CUST`,
+      },
+
+      {
+        content: `JUAL`,
+      },
+      {
+        content: `RETUR STOCK`,
+      },
+      {
+        content: `MEKANIK`,
+      },
+      {
+        content: `KELUAR`,
+      },
+      {
+        content: `AKHIR`,
+      },
+    ],
+  ];
+  data.forEach((barang, index) => {
+    let rows = [
+      barang.kode_jenis,
+      barang.awal_qty,
+      barang.tambah_qty,
+      barang.retcust_qty,
+      barang.jual_qty,
+      barang.retstock_qty,
+      barang.mekanik_qty,
+      barang.keluar_qty,
+      barang.akhir_qty,
+    ];
+    sub_qty = sub_qty + parseInt(barang.qty);
+    tableRows.push(rows);
+    console.log(tableRows);
   });
+  let footer = [];
+  footRows.push(footer);
+  doc.autoTable({
+    head: tableColumn,
+    body: tableRows,
+    foot: footRows,
+    startY: finalY,
+    theme: "plain",
+    rowPageBreak: "avoid",
+    pageBreak: "avoid",
+    margin: { top: 20 },
+    bodyStyles: { lineWidth: 0.02, lineColor: "#000" },
+    headStyles: {
+      lineWidth: 0.02,
+      lineColor: "#000",
+      fillColor: [212, 212, 211],
+    },
+  });
+  finalY = doc.autoTableEndPosY() + 10;
   // const date = Date().split(" ");
   // we use a date string to generate our filename.
   // const dateStr = date[2] + date[3] + date[4];

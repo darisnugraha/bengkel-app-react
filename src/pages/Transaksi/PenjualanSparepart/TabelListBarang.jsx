@@ -11,6 +11,7 @@ import {
   getIDBarang,
   getInfoBarang,
   getListBarangCari,
+  getSelfing,
   getSupplier,
 } from "../../../actions/datamaster_action.jsx";
 import Tabel from "../../../components/Tabel/tabel.jsx";
@@ -21,7 +22,7 @@ const maptostate = (state) => {
     listbarang: state.datamaster.listbarang,
     idbarang: state.datamaster.idbarang,
     listsupplier: state.datamaster.listsupplier,
-    listinfobarang: state.datamaster.listInfoBarang
+    listinfobarang: state.datamaster.listInfoBarang,
   };
 };
 class TabelListBarang extends React.Component {
@@ -46,12 +47,12 @@ class TabelListBarang extends React.Component {
           text: "Nama Barang",
         },
         {
-         dataField: "kode_oem",
-         text:  "Kode OEM"
+          dataField: "kode_oem",
+          text: "Kode OEM",
         },
         {
           dataField: "kode_sku",
-          text: "Kode SKU"
+          text: "Kode SKU",
         },
         {
           dataField: "type",
@@ -59,7 +60,7 @@ class TabelListBarang extends React.Component {
         },
         {
           dataField: "stock",
-          text: "Stock"
+          text: "Stock",
         },
         {
           dataField: "harga_jual",
@@ -67,8 +68,8 @@ class TabelListBarang extends React.Component {
           formatter: (list) => list.toLocaleString("id-ID"),
         },
         {
-          dataField: "supplier",
-          text: "Kode Supplier",
+          dataField: "kode_supplier",
+          text: "Supplier",
           // formatter: (list) => list.toLocaleString("id-ID"),
         },
       ],
@@ -78,20 +79,21 @@ class TabelListBarang extends React.Component {
   componentDidMount() {
     this.props.dispatch(getInfoBarang());
     this.props.dispatch(getIDBarang());
+    this.props.dispatch(getSelfing());
     // AxiosMasterGet("/daftar-service/getDataBarangDaftarService/")
   }
   detail() {
     // this.props.showDetail();
-    let final = JSON.parse(localStorage.getItem("FakturTerpilih_detail")) || []
+    let final = JSON.parse(localStorage.getItem("FakturTerpilih_detail")) || [];
     console.log(final);
-    final.map((list)=>{
+    final.map((list) => {
       let data = {
         value: list.kode_barcode,
-        name: list.kode_barcode
-      }
-      localStorage.setItem("kode_barcode",JSON.stringify(list.kode_barcode))
-      return data
-    })
+        name: list.kode_barcode,
+      };
+      localStorage.setItem("kode_barcode", JSON.stringify(list.kode_barcode));
+      return data;
+    });
   }
 
   render() {
@@ -111,7 +113,7 @@ class TabelListBarang extends React.Component {
           kode_supplier: row.supplier,
           kode_barcode: row.kode_barcode,
           qty: row.stock,
-          nama: row.nama_barang
+          nama: row.nama_barang,
           // merk_barang: row.merk_barang,
           // kwalitas: row.kwalitas,
           // ukuran: row.ukuran,
@@ -206,11 +208,14 @@ class TabelListBarang extends React.Component {
             {/* End Master Kategori */}
           </PanelBody>
           <PanelFooter>
-            <button 
-            className="btn btn-info float-right"
-            onClick={()=>{this.detail()}}
-            
-            >Masukkan Keranjang</button>
+            <button
+              className="btn btn-info float-right"
+              onClick={() => {
+                this.detail();
+              }}
+            >
+              Masukkan Keranjang
+            </button>
           </PanelFooter>
         </Panel>
       </div>

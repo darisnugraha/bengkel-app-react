@@ -82,7 +82,7 @@ class MasterMerkBarang extends React.Component {
               kode_merk_barang: row.kode_merk_barang,
               nama_merk_barang: row.nama_merk_barang,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -144,29 +144,29 @@ class MasterMerkBarang extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          this.props.dispatch,
-          "merk-barang/update/by-kode-merk-barang/" + hasil.merk_barang || "-",
-          { nama_merk_barang: hasil.nama_barang }
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("dataBarang")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getMerkBarang()))
-          .catch(() =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+        this.props.dispatch,
+        "merk-barang/update/by-kode-merk-barang/" + hasil.merk_barang || "-",
+        { nama_merk_barang: hasil.nama_barang }
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("dataBarang")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getMerkBarang()))
+        .catch(() =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("merk-barang/add", data)
-          .then(() => this.props.dispatch(reset("dataBarang")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getMerkBarang()))
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .catch((err) =>
-            this.handleReactive(err, hasil.merk_barang, {
-              nama_merk_barang: hasil.nama_barang,
-            })
-          );
+        .then(() => this.props.dispatch(reset("dataBarang")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getMerkBarang()))
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .catch((err) =>
+          this.handleReactive(err, hasil.merk_barang, {
+            nama_merk_barang: hasil.nama_barang,
+          })
+        );
   }
   handleReactive(err, kode, data) {
     this.props.dispatch(hideModal());
@@ -175,12 +175,12 @@ class MasterMerkBarang extends React.Component {
 
     check
       ? reactive(
-          err,
-          kode,
-          "merk-barang/reactive/",
-          data,
-          "merk-barang/update/by-kode-merk-barang/"
-        ).then(() => this.props.dispatch(getMerkBarang()))
+        err,
+        kode,
+        "merk-barang/reactive/",
+        data,
+        "merk-barang/update/by-kode-merk-barang/"
+      ).then(() => this.props.dispatch(getMerkBarang()))
       : NotifError("Data Gagal Ditambahkan");
   }
 

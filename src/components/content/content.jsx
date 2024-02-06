@@ -30,11 +30,11 @@ class Content extends React.Component {
   }
 
   checkAcces() {
-    let array = JSON.parse(localStorage.getItem("Menu")) || []; //ganti dengan hak akses dari API
-    let data = this.props.history.location.pathname;
-    let hasil = array.findIndex((res) => res === data);
-    return data === "/" ? 2 : hasil;
-    // return 3;
+    // let array = JSON.parse(localStorage.getItem("Menu")) || []; //ganti dengan hak akses dari API
+    // let data = this.props.history.location.pathname;
+    // let hasil = array.findIndex((res) => res === data);
+    // return data === "/" ? 2 : hasil;
+    return 3;
   }
   render() {
     return (
@@ -103,7 +103,7 @@ class Content extends React.Component {
                 <>
                   {this.props.history.location.pathname ===
                     "/validasi-jual-beli" ||
-                  this.props.history.location.pathname ===
+                    this.props.history.location.pathname ===
                     "/validasi-hutang" ? (
                     <>
                       {routes.map((route, index) => (

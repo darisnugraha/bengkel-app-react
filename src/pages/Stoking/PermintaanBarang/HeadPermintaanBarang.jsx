@@ -10,11 +10,15 @@ import {
 } from "../../../components/notification/notification";
 import Skeleton from "react-loading-skeleton";
 import Swal from "sweetalert2";
-import { getPermintaanTemp } from "../../../actions/stocking_action";
+import {
+  getNoPermintaanBarang,
+  getPermintaanTemp,
+} from "../../../actions/stocking_action";
 import { AxiosMasterGet } from "../../../axios";
 import Tabel from "../../../components/Tabel/tabel";
 import { getToday } from "../../../components/notification/function";
 import { required } from "../../../validasi/normalize";
+import SelectSearch from "react-select-search";
 
 const maptostate = (state) => {
   return {
@@ -23,6 +27,7 @@ const maptostate = (state) => {
     },
     onSend: state.datamaster.onSend,
     listsales: state.datamaster.listsales,
+    listselfing: state.datamaster.listselfing,
   };
 };
 class HeadPermintaanBarang extends Component {
@@ -53,22 +58,43 @@ class HeadPermintaanBarang extends Component {
         //   text: "Kualitas",
         // },
         {
-          dataField: "kode_supplier",
-          text: "Kode Supplier",
-        },
-
-        {
           dataField: "qty",
           text: "Qty",
         },
-
+        {
+          dataField: "action",
+          text: "Lokasi Shelving",
+          formatter: (rowcontent, row) => {
+            return (
+              <>
+                <SelectSearch
+                  value={row.kode_lokasi_selving}
+                  search
+                  placeholder="Silahkan Pilih Shelving"
+                  options={this.props.listselfing.map((list) => {
+                    let data = {
+                      value: list.kode_lokasi_selving,
+                      name: list.nama_lokasi_selving,
+                    };
+                    return data;
+                  })}
+                  onChange={(data) =>
+                    this.updateShelving(row.kode_barcode, data)
+                  }
+                  onKeyPress={(e) => {
+                    e.key === "Enter" && e.preventDefault();
+                  }}
+                />
+              </>
+            );
+          },
+        },
         {
           dataField: "action",
           text: "Action",
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row) => {
-            this.setState({});
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -108,10 +134,8 @@ class HeadPermintaanBarang extends Component {
   }
   componentDidMount() {
     this.props.dispatch(getSales());
-    AxiosMasterGet("permintaan-barang/generate/no-trx").then((res) =>
-      this.props.change("no_permintaan", res.data[0].no_permintaan)
-    );
     this.props.change("tanggal", getToday());
+    this.props.change(getNoPermintaanBarang());
     AxiosMasterGet("daftar-service/getDaftarServiceAllActive")
       .then((res) =>
         this.setState({
@@ -125,24 +149,26 @@ class HeadPermintaanBarang extends Component {
   getSPK(data) {
     this.setState({ isEmpty: false });
     let PermintaanBarang_temp_kirim = [];
+    console.log(this.state.listSPK);
     let filtered = this.state.listSPK.filter((list) => list.no_daftar === data);
-    console.log(
-      "tes",
-      filtered[0].tambah_barang.filter((fill) => fill.qty > 0)
-    );
     this.props.change("pegawai", filtered[0].kode_pegawai);
-    filtered[0].tambah_barang
+    this.props.change("tanggal", getToday());
+    filtered[0].detail_barang
       .filter((fill) => fill.qty > 0)
       .forEach((list) => {
         PermintaanBarang_temp_kirim.push({
           kode_barcode: list.kode_barcode,
-          kode_supplier: list.kode_supplier,
           qty: list.qty,
+          kode_lokasi_shelving: "-",
         });
       });
     localStorage.setItem(
       "PermintaanBarang_temp",
-      JSON.stringify(filtered[0].tambah_barang)
+      JSON.stringify(
+        filtered[0].detail_barang.map((data) => {
+          return { ...data, kode_lokasi_shelving: "-" };
+        })
+      )
     );
     localStorage.setItem(
       "PermintaanBarang_temp_kirim",
@@ -150,13 +176,42 @@ class HeadPermintaanBarang extends Component {
     );
     this.props.dispatch(getPermintaanTemp());
   }
+
+  updateShelving(kodeBarcode, kode_lokasi_shelving) {
+    let temp = JSON.parse(localStorage.getItem("PermintaanBarang_temp"));
+    let tempKirim = JSON.parse(
+      localStorage.getItem("PermintaanBarang_temp_kirim")
+    );
+    let tempIndex = temp.findIndex((data) => data.kode_barcode === kodeBarcode);
+    let tempKirimIndex = tempKirim.findIndex(
+      (data) => data.kode_barcode === kodeBarcode
+    );
+    let updateTemp = {
+      kode_barcode: temp[tempIndex].kode_barcode,
+      kode_lokasi_shelving: kode_lokasi_shelving,
+      nama_barang: temp[tempIndex].nama_barang,
+      qty: Number(temp[tempIndex].qty),
+    };
+    let updateTempKirim = {
+      kode_barcode: tempKirim[tempIndex].kode_barcode,
+      kode_lokasi_shelving: kode_lokasi_shelving,
+      qty: Number(tempKirim[tempIndex].qty),
+    };
+    temp.splice(tempIndex, 1, updateTemp);
+    tempKirim.splice(tempKirimIndex, 1, updateTempKirim);
+    localStorage.setItem("PermintaanBarang_temp", JSON.stringify(temp));
+    localStorage.setItem(
+      "PermintaanBarang_temp_kirim",
+      JSON.stringify(tempKirim)
+    );
+  }
   render() {
     return (
-      <form onSubmit={this.props.handleSubmit} autoComplete={true}>
+      <form onSubmit={this.props.handleSubmit}>
         <div className="col-lg-12">
           <div className="col-lg-12">
             <div className="row">
-              <div className="col-lg-2">
+              <div className="col-lg-3">
                 <Field
                   name="no_permintaan"
                   component={ReanderField}

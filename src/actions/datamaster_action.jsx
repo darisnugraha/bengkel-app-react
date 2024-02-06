@@ -58,6 +58,7 @@ export const GET_DISKON = "GET_DISKON";
 export const GET_NOPOL_CUSTOMER = "GET_NOPOL_CUSTOMER";
 export const GET_LIST_BARANG = "GET_LIST_BARANG";
 export const GET_INFO_BARANG = "GET_INFO_BARANG";
+export const GET_SHELVING = "GET_SHELVING";
 
 // Modal
 export const hideModal = () => {
@@ -510,6 +511,23 @@ export const getListBarangCari = (data) => {
   };
 };
 
+//SHELVING
+export const getShelving = () => {
+  return (dispatch) => {
+    console.log("GET SHELVING");
+    AxiosMasterGet("lokasi-selving/get/all").then((res) => {
+      console.log(res.data);
+      dispatch({
+        type: GET_SHELVING,
+        payload: {
+          data: res.data,
+        },
+      })
+    }
+    );
+  };
+};
+
 export const getInfoBarang = (data) => {
   return (dispatch) => {
     AxiosMasterGet("/barang/get/info/all").then((res) =>
@@ -628,7 +646,7 @@ export const editSupplier = (data) => {
 };
 export const getSupplier = (data) => {
   return (dispatch) => {
-    AxiosMasterGet("supplier/get/all").then((res) =>{
+    AxiosMasterGet("supplier/get/all").then((res) => {
       dispatch({
         type: GET_SUPPLIER,
         payload: {

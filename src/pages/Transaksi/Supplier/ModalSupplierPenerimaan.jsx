@@ -17,7 +17,6 @@ import {
   showModal,
 } from "../../../actions/datamaster_action";
 import Tabel from "../../../components/Tabel/tabel";
-import { required } from "../../../validasi/normalize";
 import Stepper from "react-stepper-horizontal/lib/Stepper";
 
 const currencyMask = createNumberMask({
@@ -75,36 +74,19 @@ class ModalSupplierPenerimaan extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row) => {
-            let data = {
-              // kode_supplier: row.supplier,
-              kode_barcode: row.kode_barcode,
-              kode_barang: row.kode_barang,
-              nama_barang: row.nama_barang,
-              kode_kategori: row.kode_kategori,
-              kode_jenis: row.kode_jenis,
-              // kode_merk_barang: row.kode_merk_barang,
-              // kode_kwalitas: row.kode_kwalitas,
-              kode_lokasi_rak: row.kode_lokasi_rak,
-              kode_lokasi_selving: row.kode_lokasi_selving,
-              // kode_ukuran: row.kode_ukuran,
-              kode_satuan: row.kode_satuan,
-              type: row.type,
-              harga_jual: row.harga_jual,
-            };
             return (
               <div className="row text-center">
                 <div className="col-12">
                   <button
                     className="btn btn-teal mr-3"
-                    onClick={() => 
-                      {
-                      localStorage.setItem("kode_barcode",row.kode_barcode)
-                      this.props.change("kode_barcode",row.kode_barcode)
-                      this.props.change("nama_barang",row.nama_barang)
-                      this.props.change("type", row.type)
-                      this.props.change("satuan", row.kode_satuan)
-                      this.props.change("harga_satuan",row.harga_jual)
-                      this.nextStep()
+                    onClick={() => {
+                      localStorage.setItem("kode_barcode", row.kode_barcode);
+                      this.props.change("kode_barcode", row.kode_barcode);
+                      this.props.change("nama_barang", row.nama_barang);
+                      this.props.change("type", row.type);
+                      this.props.change("satuan", row.kode_satuan);
+                      this.props.change("harga_satuan", row.harga_jual);
+                      this.nextStep();
                     }}
                     // onClick={() => {
                     //   this.detail(data);
@@ -303,6 +285,21 @@ class ModalSupplierPenerimaan extends Component {
               </div>
               <div className="col-lg-3">
                 <Field
+                  name="kode_lokasi_shelving"
+                  component={ReanderSelect}
+                  options={this.props.listSelfing.map((data) => {
+                    return {
+                      value: data.kode_lokasi_selving,
+                      name: data.nama_lokasi_selving,
+                    };
+                  })}
+                  type="text"
+                  label="Lokasi Shelving"
+                  placeholder="Pilih Lokasi Shelving"
+                />
+              </div>
+              <div className="col-lg-3">
+                <Field
                   name="harga_satuan"
                   component={ReanderField}
                   type="text"
@@ -414,5 +411,6 @@ export default connect((state) => {
     total: parseFloat(harga_satuan || 0) * parseFloat(qty || 0),
     onSend: state.datamaster.onSend,
     listinfobarang: state.datamaster.listbarang,
+    listSelfing: state.datamaster.listselfing,
   };
 })(ModalSupplierPenerimaan);

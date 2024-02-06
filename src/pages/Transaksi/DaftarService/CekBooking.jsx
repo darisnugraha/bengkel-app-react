@@ -37,9 +37,6 @@ class CekBooking extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row) => {
-            let data = {
-             no_booking : row.no_booking,
-            };
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -74,7 +71,7 @@ class CekBooking extends Component {
     );
   }
 
-  handlePilih(){
+  handlePilih() {
     this.props.dispatch(hideModal())
     window.location.reload()
   }
@@ -106,7 +103,7 @@ CekBooking = reduxForm({
   enableReinitialize: true,
 })(CekBooking);
 export default connect((state) => {
-  return{
+  return {
 
   };
 })(CekBooking);

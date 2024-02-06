@@ -65,7 +65,7 @@ class DaftarHadiah extends Component {
               stock: hasil.stock,
               poin: hasil.poin,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -130,31 +130,31 @@ class DaftarHadiah extends Component {
     };
     this.state.isEdit
       ? AxiosMasterPut("hadiah/update-hadiah/" + hasil.kode_hadiah, {
-          nama_hadiah: hasil.nama_hadiah,
-          stock: hasil.stock,
-          poin: hasil.poin,
-        })
-          .then(() => NotifSucces("Hadiah berhasil ditambahkan"))
-          .then(() => this.props.dispatch(reset("ModalDaftarHadiah")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getListHadiah()))
-          .then(() => this.props.dispatch(onFinish()))
-          .catch((err) =>
-            ToastError(
-              `Gagal Tambah Hadiah, Error : ${err.response.data}`
-            ).then(() => this.props.dispatch(onFinish()))
-          )
+        nama_hadiah: hasil.nama_hadiah,
+        stock: hasil.stock,
+        poin: hasil.poin,
+      })
+        .then(() => NotifSucces("Hadiah berhasil ditambahkan"))
+        .then(() => this.props.dispatch(reset("ModalDaftarHadiah")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getListHadiah()))
+        .then(() => this.props.dispatch(onFinish()))
+        .catch((err) =>
+          ToastError(
+            `Gagal Tambah Hadiah, Error : ${err.response.data}`
+          ).then(() => this.props.dispatch(onFinish()))
+        )
       : AxiosMasterPost("hadiah/tambah-hadiah-baru", data)
-          .then(() => NotifSucces("Hadiah berhasil ditambahkan"))
-          .then(() => this.props.dispatch(reset("ModalDaftarHadiah")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getListHadiah()))
-          .then(() => this.props.dispatch(onFinish()))
-          .catch((err) =>
-            ToastError(
-              `Gagal Tambah Hadiah, Error : ${err.response.data}`
-            ).then(() => this.props.dispatch(onFinish()))
-          );
+        .then(() => NotifSucces("Hadiah berhasil ditambahkan"))
+        .then(() => this.props.dispatch(reset("ModalDaftarHadiah")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getListHadiah()))
+        .then(() => this.props.dispatch(onFinish()))
+        .catch((err) =>
+          ToastError(
+            `Gagal Tambah Hadiah, Error : ${err.response.data}`
+          ).then(() => this.props.dispatch(onFinish()))
+        );
   }
   render() {
     return (

@@ -9,7 +9,6 @@ import {
 import {
   getCustomer,
   getKategoriService,
-  getNopolCustomer,
   getSales,
 } from "../../../actions/datamaster_action";
 import { required } from "../../../validasi/normalize";
@@ -24,7 +23,7 @@ class ModalBookingService extends Component {
       reguler: false,
       listCustomer: [],
       listkendaraan: [],
-      listNopol: []
+      listNopol: [],
     };
   }
   handleChange(nama, data) {
@@ -76,24 +75,26 @@ class ModalBookingService extends Component {
               value: `${list.nama_customer}||${list.alamat}||${list.handphone}||${list.kode_customer}`,
               name: list.nama_customer,
             };
-            console.log(data)
+            console.log(data);
             return data;
           }),
       })
     );
   }
-  getNopol(data){
-  let listNopol =   this.props.listCustomer.filter((list) => list.kode_customer === data)
-   let final =  listNopol[0].nopol_kendaraan.map((hasil) => {
-    let data = {
-      value : hasil.nopol_kendaraan,
-      name : hasil.nopol_kendaraan
-    }
-    return data
-  })
-  this.setState({
-    listNopol : final
-  })
+  getNopol(data) {
+    let listNopol = this.props.listCustomer.filter(
+      (list) => list.kode_customer === data
+    );
+    let final = listNopol[0].nopol_kendaraan.map((hasil) => {
+      let data = {
+        value: hasil.nopol_kendaraan,
+        name: hasil.nopol_kendaraan,
+      };
+      return data;
+    });
+    this.setState({
+      listNopol: final,
+    });
   }
   render() {
     return (
@@ -140,14 +141,12 @@ class ModalBookingService extends Component {
                   name="pelaggan"
                   component={ReanderSelect}
                   options={this.state.listCustomer}
-                  onChange={(data) =>
-                  this.getNopol(data.split("||")[3])
-                  }
+                  onChange={(data) => this.getNopol(data.split("||")[3])}
                   type="text"
                   label="Nama customer"
                   placeholder="Nama customer"
                   validate={required}
-                  loading={this.props.listCustomer === [] ? true : false}
+                  loading={this.props.listCustomer.length === 0 ? true : false}
                 />
               </div>
               <div className="col-lg-3 d-none">
@@ -175,7 +174,9 @@ class ModalBookingService extends Component {
                   label="Jenis Service"
                   placeholder="Jenis Service"
                   validate={required}
-                  loading={this.props.listkategoriservice === [] ? true : false}
+                  loading={
+                    this.props.listkategoriservice.length === 0 ? true : false
+                  }
                 />
               </div>
               <div className="col-lg-2">
@@ -218,7 +219,7 @@ class ModalBookingService extends Component {
                 />
               </div> */}
               <div className="col-lg-3 mt-2">
-                <Field  
+                <Field
                   name="id_mekanik"
                   component={ReanderSelect}
                   options={this.props.listsales
@@ -234,7 +235,7 @@ class ModalBookingService extends Component {
                   label="ID Mekanik"
                   placeholder="Masukan ID Mekanik"
                   validate={required}
-                  loading={this.props.listsales === [] ? true : false}
+                  loading={this.props.listsales.length === 0 ? true : false}
                 />
               </div>
               {/* <div className="col-lg-3 mt-2">
@@ -259,15 +260,15 @@ class ModalBookingService extends Component {
               </div> */}
               {/* {console.log(this.state.listNopol)} */}
               <div className="col-lg-3 mt-2">
-                <Field 
-                name="no_polisi"
-                component={ReanderSelect}
-                options={this.state.listNopol}
-                type="text"
-                label="Nomor Polisi"
-                placeholder="Masukan Nomor Polisi"
-                validate={required}
-                loading={this.props.listcustomer === [] ? true : false}
+                <Field
+                  name="no_polisi"
+                  component={ReanderSelect}
+                  options={this.state.listNopol}
+                  type="text"
+                  label="Nomor Polisi"
+                  placeholder="Masukan Nomor Polisi"
+                  validate={required}
+                  loading={this.props.listcustomer?.length === 0 ? true : false}
                 />
               </div>
               <div className="col-lg-12">

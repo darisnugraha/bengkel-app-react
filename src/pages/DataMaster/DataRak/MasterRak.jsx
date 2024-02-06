@@ -88,7 +88,7 @@ class MasterRak extends React.Component {
               kode_rak: row.kode_lokasi_rak,
               nama_rak: row.nama_lokasi_rak,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -150,33 +150,33 @@ class MasterRak extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          "lokasi-rak/update/by-kode-lokasi-rak/" + hasil.kode_rak || "-",
-          {
-            kode_lokasi_gudang: hasil.kode_gudang || "-",
+        "lokasi-rak/update/by-kode-lokasi-rak/" + hasil.kode_rak || "-",
+        {
+          kode_lokasi_gudang: hasil.kode_gudang || "-",
 
-            nama_lokasi_rak: hasil.nama_rak || "-",
-          }
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getRak()))
-          .catch(() =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+          nama_lokasi_rak: hasil.nama_rak || "-",
+        }
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getRak()))
+        .catch(() =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("lokasi-rak/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataRak")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getRak()))
-          .catch((err) =>
-            this.handleReactive(err, hasil.kode_rak, {
-              kode_lokasi_gudang: hasil.kode_gudang || "-",
-              nama_lokasi_rak: hasil.nama_rak || "-",
-            })
-          );
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataRak")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getRak()))
+        .catch((err) =>
+          this.handleReactive(err, hasil.kode_rak, {
+            kode_lokasi_gudang: hasil.kode_gudang || "-",
+            nama_lokasi_rak: hasil.nama_rak || "-",
+          })
+        );
   }
   handleReactive(err, kode, data) {
     this.props.dispatch(hideModal());
@@ -184,12 +184,12 @@ class MasterRak extends React.Component {
     let check = error.includes("hapus");
     check
       ? reactive(
-          err,
-          kode,
-          "lokasi-rak/reactive/",
-          data,
-          "lokasi-rak/update/by-kode-lokasi-rak/"
-        ).then(() => this.props.dispatch(getRak()))
+        err,
+        kode,
+        "lokasi-rak/reactive/",
+        data,
+        "lokasi-rak/update/by-kode-lokasi-rak/"
+      ).then(() => this.props.dispatch(getRak()))
       : NotifError("Data Gagal Ditambahkan");
   }
 

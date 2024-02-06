@@ -83,7 +83,7 @@ class MasterKwalitas extends React.Component {
               kode_kwalitas: row.kode_kwalitas,
               nama_kwalitas: row.nama_kwalitas,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -142,28 +142,28 @@ class MasterKwalitas extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          "kwalitas/update/by-kode-kwalitas/" + hasil.kode_kwalitas || "-",
-          { nama_kwalitas: hasil.nama_kwalitas }
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("dataKwalitas")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getKwalitas()))
-          .catch(() =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+        "kwalitas/update/by-kode-kwalitas/" + hasil.kode_kwalitas || "-",
+        { nama_kwalitas: hasil.nama_kwalitas }
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("dataKwalitas")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getKwalitas()))
+        .catch(() =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("kwalitas/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataKwalitas")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getKwalitas()))
-          .catch((err) =>
-            this.handleReactive(err, hasil.kode_kwalitas, {
-              nama_kwalitas: hasil.nama_kwalitas,
-            })
-          );
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataKwalitas")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getKwalitas()))
+        .catch((err) =>
+          this.handleReactive(err, hasil.kode_kwalitas, {
+            nama_kwalitas: hasil.nama_kwalitas,
+          })
+        );
   }
 
   handleReactive(err, kode, data) {
@@ -172,12 +172,12 @@ class MasterKwalitas extends React.Component {
     let check = error.includes("hapus");
     check
       ? reactive(
-          err,
-          kode,
-          "kwalitas/reactive/",
-          data,
-          "kwalitas/update/by-kode-kwalitas/"
-        ).then(() => this.props.dispatch(getKwalitas()))
+        err,
+        kode,
+        "kwalitas/reactive/",
+        data,
+        "kwalitas/update/by-kode-kwalitas/"
+      ).then(() => this.props.dispatch(getKwalitas()))
       : NotifError("Data Gagal Ditambahkan");
   }
   render() {

@@ -7,6 +7,7 @@ import ModalDetailBarangSparepart from "./ModalDetailBarangSparepart";
 import ModalPenjualanSparepart from "./ModalPenjualanSparepart";
 import {
   getFaktur,
+  getSelfing,
   hideModal,
   onFinish,
   onProgress,
@@ -28,7 +29,6 @@ import {
 import ModalBayarSparepart from "./ModalBayarSparepart";
 import { reset } from "redux-form";
 import { multipleDeleteLocal } from "../../../components/notification/function";
-import CetakFakturJual from "./CetakFakturJual";
 
 class PenjualanSparepart extends Component {
   constructor(props) {
@@ -69,7 +69,7 @@ class PenjualanSparepart extends Component {
             //   kode_divisi: row.kode_divisi,
             //   nama_divisi: row.nama_divisi,
             // };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -165,7 +165,7 @@ class PenjualanSparepart extends Component {
               jenis_trx: "-",
             },
           ];
-    console.log("arr",array);
+    console.log("arr", array);
     // return false;
     AxiosMasterPost("penjualan/post-transaksi", array)
       .then(() => NotifSucces("Transaksi Berhasil, Terima Kasih.."))
@@ -193,9 +193,9 @@ class PenjualanSparepart extends Component {
       // .then(() => CetakFakturJual())
       .then(() => this.props.dispatch(onFinish()))
       .catch((err) =>
-        ToastError(
-          `Gagal Menambah Data, Error : ${err.response.data}`
-        ).then(() => this.props.dispatch(onFinish()))
+        ToastError(`Gagal Menambah Data, Error : ${err.response.data}`).then(
+          () => this.props.dispatch(onFinish())
+        )
       );
   }
   setCariBarang(data) {
@@ -248,6 +248,7 @@ class PenjualanSparepart extends Component {
   }
   componentDidMount() {
     this.props.dispatch(getFaktur());
+    this.props.dispatch(getSelfing());
     AxiosMasterGet("penjualan/generate/no-trx")
       .then((res) =>
         localStorage.setItem(
@@ -277,6 +278,7 @@ class PenjualanSparepart extends Component {
           qty: parseFloat(hasil.jumlah) + parseFloat(array[indexnya].qty),
           harga_satuan: parseFloat(hasil.harga_satuan),
           diskon_rp: parseFloat(hasil.discount || 0),
+          kode_lokasi_shelving: hasil.kode_lokasi_shelving,
           harga_total:
             parseFloat(hasil.grand_total) +
             parseFloat(array[indexnya].harga_total),
@@ -296,6 +298,7 @@ class PenjualanSparepart extends Component {
           qty: parseFloat(hasil.jumlah),
           harga_satuan: parseFloat(hasil.harga_satuan),
           diskon_rp: parseFloat(hasil.discount || 0),
+          kode_lokasi_shelving: hasil.kode_lokasi_shelving,
           harga_total: parseFloat(hasil.grand_total),
         };
         array.push(data);
@@ -320,6 +323,7 @@ class PenjualanSparepart extends Component {
           qty: parseFloat(hasil.jumlah) + parseFloat(array[indexnya].qty),
           harga_satuan: parseFloat(hasil.harga_satuan),
           potongan: parseFloat(hasil.discount || 0),
+          kode_lokasi_shelving: hasil.kode_lokasi_shelving,
           harga_total:
             parseFloat(hasil.grand_total) +
             parseFloat(array[indexnya].harga_total),
@@ -340,6 +344,7 @@ class PenjualanSparepart extends Component {
           qty: parseFloat(hasil.jumlah),
           harga_satuan: parseFloat(hasil.harga_satuan),
           potongan: parseFloat(hasil.discount || 0),
+          kode_lokasi_shelving: hasil.kode_lokasi_shelving,
           harga_total: parseFloat(hasil.grand_total),
         };
         array.push(data);

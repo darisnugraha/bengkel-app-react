@@ -18,7 +18,6 @@ import {
   getListBarangPembayaran,
   ListBarangBayar,
 } from "../../../actions/transaksi_action";
-import { AxiosMasterGet } from "../../../axios";
 import { required } from "../../../validasi/normalize";
 
 const { SearchBar } = Search;
@@ -27,7 +26,7 @@ class HeadPembayaranService extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      barangList:[],
+      barangList: [],
       step: 0,
       step1: "row",
       step2: "row d-none",
@@ -76,13 +75,13 @@ class HeadPembayaranService extends Component {
     this.props.dispatch(getListBarangPembayaran());
   }
 
-  setKMBerikutnya(e){
+  setKMBerikutnya(e) {
     // this.setState({
     //   km_keluar: this.state.km_keluar + parseInt(e.target.value)
     // }  
     // )
     // localStorage.setItem("km_selanjutnya", e.target.value);
-    
+
   }
   render() {
     return (
@@ -124,7 +123,7 @@ class HeadPembayaranService extends Component {
                 />
               </div>
               <div className="col-lg-3">
-              <Field
+                <Field
                   validate={required}
                   name="tanggal_keluar"
                   label="Tanggal Service Keluar"
@@ -133,7 +132,7 @@ class HeadPembayaranService extends Component {
                 />
               </div>
               <div className="col-lg-3">
-              <Field
+                <Field
                   validate={required}
                   name="km_keluar"
                   label="KM Keluar"
@@ -142,12 +141,12 @@ class HeadPembayaranService extends Component {
                   component={ReanderField}
                   // onChange={() => this.props.change("km_service_berikutnya",this.props.km_service_berikutnya)}
                   onBlur={
-                    localStorage.setItem("coba",JSON.stringify(this.props.change("km_service_berikutnya",this.props.km_service_berikutnya)))
+                    localStorage.setItem("coba", JSON.stringify(this.props.change("km_service_berikutnya", this.props.km_service_berikutnya)))
                   }
                 />
               </div>
               <div className="col-lg-3">
-              <Field
+                <Field
                   name="tanggal_service_selanjutnya"
                   label="Tanggal Service Selanjutnya"
                   type="date"
@@ -155,14 +154,14 @@ class HeadPembayaranService extends Component {
                 />
               </div>
               <div className="col-lg-3">
-              <Field
+                <Field
                   validate={required}
                   name="km_service_berikutnya"
                   label="KM Service Berikutnya"
                   type="text"
                   component={ReanderField}
                   placeholder="Masukkan KM Service berikutnya"
-                  onChange={localStorage.setItem("km_berikutnya",this.props.km_berikutnya)}
+                  onChange={localStorage.setItem("km_berikutnya", this.props.km_berikutnya)}
                 />
               </div>
               {/* <div className="col-lg-4">
@@ -295,7 +294,7 @@ class HeadPembayaranService extends Component {
                               type="button"
                               onClick={this.props.showBayar}
                               onChange={
-                              localStorage.setItem("km_keluar",this.props.km_keluar)}
+                                localStorage.setItem("km_keluar", this.props.km_keluar)}
                               className="btn btn-primary"
                             >
                               Bayar
@@ -363,9 +362,9 @@ export default connect((state) => {
     listbayar_service: state.transaksi.listbayar_service,
     kriteria: selector(state, "kriteria"),
     pencarian: selector(state, "pencarian"),
-    km_service_berikutnya : parseFloat(selector(state, "km_keluar") || 0) + 5000,
+    km_service_berikutnya: parseFloat(selector(state, "km_keluar") || 0) + 5000,
     km_berikutnya: selector(state, "km_service_berikutnya"),
-    km_keluar:selector(state, "km_keluar"),
+    km_keluar: selector(state, "km_keluar"),
     listbarangpembayaran: state.transaksi.listbarangpembayaran,
   };
 })(HeadPembayaranService);

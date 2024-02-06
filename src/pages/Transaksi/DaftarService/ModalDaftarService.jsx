@@ -68,7 +68,7 @@ class ModalDaftarService extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row, rowIndex) => {
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -254,11 +254,6 @@ class ModalDaftarService extends Component {
     this.props.change("kota", hasil[2]);
     this.props.change("handphone", hasil[3]);
     this.getNopol(hasil[0]);
-    // this.props.getNopol("nopol_kendaraan",hasil[4]);
-    // this.props.change("merk_kendaraan", hasil[5]);
-    // this.props.change("type_kendaraan", hasil[6]);
-    // this.props.change("warna_kendaraan", hasil[7]);
-    // this.props.change("nomesin_kendaraan", hasil[8]);
   }
   getNopol(data) {
     let listNopol = this.props.listCustomer.filter(
@@ -266,8 +261,8 @@ class ModalDaftarService extends Component {
     );
     let final = listNopol[0].nopol_kendaraan.map((hasil) => {
       let data = {
-        value: hasil.nopol_kendaraan,
-        name: hasil.nopol_kendaraan,
+        value: hasil,
+        name: hasil,
       };
       return data;
     });
@@ -331,24 +326,11 @@ class ModalDaftarService extends Component {
       member: false,
       reguler: true,
     });
-    AxiosMasterGet("kendaraan-customer/get/by-nopol/" + e).then((res) =>
-      // this.setState({
-      //   listkendaraan:
-      //     res &&
-      //     res.data.map((list) => {
-      //       let data = {
-      //         value: `${list.nopol_kendaraan}||${list.nomesin_kendaraan}||${list.merk_kendaraan}||${list.warna_kendaraan}||${list.type_kendaraan}||${list.id_customer}`,
-      //         name: list.nama_customer,
-      //       };
-      //       console.log("data",data);
-      //       return data;
-      //     }),
-      // }
-      {
-        let data = res && res.data;
-        this.props.change("type_kendaraan", data[0].type_kendaraan);
-        this.props.change("nomesin_kendaraan", data[0].nomesin_kendaraan);
-      }
+    AxiosMasterGet("kendaraan-customer/get/by-nopol/" + e).then((res) => {
+      let data = res && res.data;
+      this.props.change("type_kendaraan", data.type_kendaraan);
+      this.props.change("nomesin_kendaraan", data.nomesin_kendaraan);
+    }
     );
   }
 
@@ -414,8 +396,8 @@ class ModalDaftarService extends Component {
                   placeholder="Masukan Nomor Booking "
                   handleClick={this.props.showBooking}
                   readOnly
-                  // onChange={(e) => this.cariBooking(e)}
-                  // onBlur={(e) => this.cariBooking(e)}
+                // onChange={(e) => this.cariBooking(e)}
+                // onBlur={(e) => this.cariBooking(e)}
                 />
               </div>
               <div className="col-lg-4">

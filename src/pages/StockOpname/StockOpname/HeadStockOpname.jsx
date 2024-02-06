@@ -9,6 +9,7 @@ import {
 } from "../../../components/notification/notification";
 import Tabel from "../../../components/Tabel/tabel";
 import { required } from "../../../validasi/normalize";
+import { getToday } from "../../../components/notification/function";
 
 class HeadStockOpname extends Component {
   constructor(props) {
@@ -20,18 +21,27 @@ class HeadStockOpname extends Component {
           text: "Kode Barcode",
         },
         {
-          dataField: "kode_supplier",
-          text: "Kode Supplier",
+          dataField: "nama_barang",
+          text: "Nama Barang",
+        },
+        {
+          dataField: "stock",
+          text: "Stock",
         },
         {
           dataField: "qty",
           text: "Qty",
+        },
+        {
+          dataField: "selisih",
+          text: "Selisih",
         },
       ],
     };
   }
   componentDidMount() {
     this.props.dispatch(getGudang());
+    this.props.change("tanggal", getToday());
     this.props.dispatch(getListStockOpname());
     this.props.change(
       "lokasi",
@@ -61,10 +71,10 @@ class HeadStockOpname extends Component {
             <Field
               name="lokasi"
               component={ReanderSelect}
-              options={this.props.listgudang.map((list) => {
+              options={this.props.listselfing.map((list) => {
                 let data = {
-                  value: list.kode_lokasi_gudang,
-                  name: list.nama_lokasi_gudang,
+                  value: list.kode_lokasi_selving,
+                  name: list.nama_lokasi_selving,
                 };
                 return data;
               })}
@@ -125,7 +135,7 @@ HeadStockOpname = reduxForm({
 })(HeadStockOpname);
 export default connect((state) => {
   return {
-    listgudang: state.datamaster.listgudang,
+    listselfing: state.datamaster.listselfing,
     liststockopname: state.supervisor.liststockopname,
     onSend: state.datamaster.onSend,
   };

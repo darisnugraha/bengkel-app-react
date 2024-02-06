@@ -3,10 +3,15 @@ import {
   GET_KONVERSI_BARANG_TEMP,
   GET_KUNCI_BARANG_TEMP,
   GET_LIST_PENGELUARAN_BARANG,
+  GET_NO_EDIT_SERVICE,
+  GET_NO_HANCUR,
+  GET_NO_KONVERSI,
+  GET_NO_TAMBAH_STOCK,
   GET_PENGELUARAN_BARANG_SELECTED,
   GET_PENGELUARAN_BARANG_TEMP,
   GET_PERMINTAAN_TEMP,
   GET_TAMBAH_STOCK_TEMP,
+  GET_NO_PERMINTAAN_BARANG,
 } from "../actions/stocking_action";
 
 const initialState = {
@@ -16,6 +21,10 @@ const initialState = {
   konversi_temp: false,
   hancur_temp: false,
   kunci_temp: false,
+  noTambahStock: "",
+  noHancur: "",
+  noKonversi: "",
+  noEditService: "",
   tambahStock_temp: [],
 };
 
@@ -60,6 +69,31 @@ const stocking = (state = initialState, actions) => {
       return {
         ...state,
         tambahStock_temp: actions.payload.data,
+      };
+    case GET_NO_HANCUR:
+      return {
+        ...state,
+        noHancur: actions.payload.data,
+      };
+    case GET_NO_KONVERSI:
+      return {
+        ...state,
+        noKonversi: actions.payload.data,
+      };
+    case GET_NO_TAMBAH_STOCK:
+      return {
+        ...state,
+        noTambahStock: actions.payload.data,
+      };
+    case GET_NO_EDIT_SERVICE:
+      return {
+        ...state,
+        noEditService: actions.payload.data,
+      };
+    case GET_NO_PERMINTAAN_BARANG:
+      return {
+        ...state,
+        noPermintaanBarang: actions.payload.data,
       };
     default:
       return state;

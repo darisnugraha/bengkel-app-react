@@ -48,7 +48,7 @@ class ModalBayar extends Component {
             //   kode_divisi: row.kode_divisi,
             //   nama_divisi: row.nama_divisi,
             // };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -183,8 +183,8 @@ export default connect((state) => {
   localStorage.setItem(
     "kembalian_bayar",
     (selector(state, "bayar") || 0) -
-      state.transaksi.total_bayar +
-      state.transaksi.sum_pembayaran
+    state.transaksi.total_bayar +
+    state.transaksi.sum_pembayaran
   );
   return {
     grand_total_all: state.transaksi.total_bayar,

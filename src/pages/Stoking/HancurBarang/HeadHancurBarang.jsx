@@ -1,57 +1,37 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
-import {
-  onFinish,
-  onProgress,
-  showModal,
-} from "../../../actions/datamaster_action";
-import { AxiosMasterGet } from "../../../axios";
+import { showModal } from "../../../actions/datamaster_action";
 import {
   ReanderField,
   ReanderSelect,
 } from "../../../components/notification/notification";
+import { getToday } from "../../../components/notification/function";
+import { getNoHancur } from "../../../actions/stocking_action";
 
 class HeadHancurBarang extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listGudang: [],
+      listShelving: [],
     };
   }
   componentDidMount() {
-    AxiosMasterGet("hancur-barang/generate/no-trx").then((res) =>
-      this.props.change("no_pindah", res.data[0].no_hancur)
-    );
-    this.props.dispatch(onProgress());
-    AxiosMasterGet("lokasi-gudang/get/all")
-      .then((res) =>
-        this.setState({
-          listGudang:
-            res &&
-            res.data.map((list) => {
-              let data = {
-                value: list.kode_lokasi_gudang,
-                name: list.nama_lokasi_gudang,
-              };
-              return data;
-            }),
-        })
-      )
-      .then(() => this.props.dispatch(onFinish()));
+    this.props.change("tanggal", getToday());
+    this.props.dispatch(getNoHancur());
   }
   render() {
     return (
       <div>
-        <form onSubmit={this.props.handleSubmit} autoComplete={true}>
+        <form onSubmit={this.props.handleSubmit}>
           <div className="row">
             <div className="col-lg-3">
               <Field
-                name="no_pindah"
+                name="no_hancur"
                 component={ReanderField}
                 type="text"
-                label="Nomor Pindah"
-                placeholder="Masukan Nomor Pindah"
+                label="Nomor Hancur"
+                placeholder="Masukan Nomor Hancur"
                 readOnly
               />
             </div>
@@ -68,9 +48,14 @@ class HeadHancurBarang extends Component {
               <Field
                 name="lokasi"
                 component={ReanderSelect}
-                options={this.state.listGudang}
-                label="Lokasi Gudang"
-                placeholder="Pilih Lokasi Gudang"
+                options={this.props.listSelfing.map((data) => {
+                  return {
+                    value: data.kode_lokasi_selving,
+                    name: data.nama_lokasi_selving,
+                  };
+                })}
+                label="Lokasi Shelving"
+                placeholder="Pilih Lokasi Shelving"
                 onChange={(e) => localStorage.setItem("lokasi_hancur", e)}
                 loading={this.props.onSend}
               />
@@ -111,11 +96,15 @@ class HeadHancurBarang extends Component {
   }
 }
 HeadHancurBarang = reduxForm({
-  form: "permintaanBarang",
+  form: "hancurBarang",
   enableReinitialize: true,
 })(HeadHancurBarang);
 export default connect((state) => {
   return {
+    initialValues: {
+      tanggal: getToday(),
+    },
     onSend: state.datamaster.onSend,
+    listSelfing: state.datamaster.listselfing,
   };
 })(HeadHancurBarang);

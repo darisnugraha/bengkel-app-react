@@ -4,9 +4,7 @@ import { Link } from "react-router-dom";
 import { onFinish, onProgress } from "../../../../actions/datamaster_action";
 import { AxiosMasterGet } from "../../../../axios";
 import Moment from "moment";
-import { getToday } from "../../../../components/notification/function";
 import {
-  getUserData,
   ToastError,
 } from "../../../../components/notification/notification";
 import {
@@ -16,13 +14,12 @@ import {
 } from "../../../../components/panel/panel";
 import CetakMekanik from "./CetakMekanik";
 import HeadLaporanMekanik from "./HeadLaporanMekanik";
-import TabelLaporanMekanik from "./TabelLaporanMekanik"
 
 const mapDispatchToProps = (dispatch) => {
   return {
     // dispatching plain actions
-    onProgress: (()=>dispatch(onProgress())),
-    onFinish: (()=>dispatch(onFinish()))
+    onProgress: (() => dispatch(onProgress())),
+    onFinish: (() => dispatch(onFinish()))
   }
 }
 
@@ -55,10 +52,10 @@ class LaporanMekanik extends Component {
       .then(() =>
         this.state.listLaporan.length
           ? CetakMekanik(
-              `${tglawal} - ${tglakhir}`,
-              hasil.kode_mekanik || "SEMUA",
-              this.state.listLaporan
-            )
+            `${tglawal} - ${tglakhir}`,
+            hasil.kode_mekanik || "SEMUA",
+            this.state.listLaporan
+          )
           : ToastError("Data Laporan Kosong")
       )
       .then(() => this.props.onFinish())

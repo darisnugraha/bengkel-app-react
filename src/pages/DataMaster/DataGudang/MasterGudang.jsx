@@ -82,7 +82,7 @@ class MasterGudang extends React.Component {
               kode_gudang: row.kode_lokasi_gudang,
               nama_gudang: row.nama_lokasi_gudang,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -144,29 +144,29 @@ class MasterGudang extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          "lokasi-gudang/update/by-kode-lokasi-gudang/" + hasil.kode_gudang ||
-            "-",
-          { nama_lokasi_gudang: hasil.nama_gudang }
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getGudang()))
-          .catch(() =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+        "lokasi-gudang/update/by-kode-lokasi-gudang/" + hasil.kode_gudang ||
+        "-",
+        { nama_lokasi_gudang: hasil.nama_gudang }
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getGudang()))
+        .catch(() =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("lokasi-gudang/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataGudang")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getGudang()))
-          .catch((err) =>
-            this.handleReactive(err, hasil.kode_gudang, {
-              nama_lokasi_gudang: hasil.nama_gudang,
-            })
-          );
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataGudang")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getGudang()))
+        .catch((err) =>
+          this.handleReactive(err, hasil.kode_gudang, {
+            nama_lokasi_gudang: hasil.nama_gudang,
+          })
+        );
   }
 
   handleReactive(err, kode, data) {
@@ -175,12 +175,12 @@ class MasterGudang extends React.Component {
     let check = error.includes("delete");
     check
       ? reactive(
-          err,
-          kode,
-          "lokasi-gudang/reactive/",
-          data,
-          "lokasi-gudang/update/by-kode-lokasi-gudang/"
-        ).then(() => this.props.dispatch(getGudang()))
+        err,
+        kode,
+        "lokasi-gudang/reactive/",
+        data,
+        "lokasi-gudang/update/by-kode-lokasi-gudang/"
+      ).then(() => this.props.dispatch(getGudang()))
       : NotifError("Data Gagal Ditambahkan");
   }
 

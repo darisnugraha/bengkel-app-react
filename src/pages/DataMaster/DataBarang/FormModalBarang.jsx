@@ -26,8 +26,8 @@ const maptostate = (state) => {
         // ukuran: state.datamaster.databarang.kode_ukuran,
         // kwalitas: state.datamaster.databarang.kode_kwalitas,
         type: state.datamaster.databarang.type,
-        rak: state.datamaster.databarang.kode_lokasi_rak,
-        selving: state.datamaster.databarang.kode_lokasi_selving,
+        // rak: state.datamaster.databarang.kode_lokasi_rak,
+        // selving: state.datamaster.databarang.kode_lokasi_selving,
         harga: state.datamaster.databarang.harga_jual,
         satuan: state.datamaster.databarang.kode_satuan,
       },
@@ -62,7 +62,7 @@ class FormModalBarang extends Component {
   componentDidMount() {
     if (!this.props.isEdit) {
       AxiosMasterGet("barang-barcode/generate/barcode").then((res) =>
-      this.props.change("kode_barcode", res.data));
+        this.props.change("kode_barcode", res.data));
       console.log(this.props.idbarang);
       this.props.change("kode_barang", this.props.idbarang);
     }
@@ -144,45 +144,45 @@ class FormModalBarang extends Component {
     this.props.change("jenis_barang", "");
     hasil === ""
       ? AxiosMasterGet("jenis/get/all")
-          .then((res) =>
-            this.setState({
-              listJenis: res.data,
-            })
-          )
-          .catch(() =>
-            NotifError("Sepertinya ada gangguan, coba check koneksi anda")
-          )
+        .then((res) =>
+          this.setState({
+            listJenis: res.data,
+          })
+        )
+        .catch(() =>
+          NotifError("Sepertinya ada gangguan, coba check koneksi anda")
+        )
       : AxiosMasterGet("jenis/get/by-kode-kategori/" + hasil)
-          .then((res) =>
-            this.setState({
-              listJenis: res.data,
-            })
-          )
-          .catch(() =>
-            NotifError("Sepertinya ada gangguan, coba check koneksi anda")
-          );
+        .then((res) =>
+          this.setState({
+            listJenis: res.data,
+          })
+        )
+        .catch(() =>
+          NotifError("Sepertinya ada gangguan, coba check koneksi anda")
+        );
   }
   getShelving(hasil = "") {
     this.props.change("selving", "");
     hasil === ""
       ? AxiosMasterGet("lokasi-selving/get/all")
-          .then((res) =>
-            this.setState({
-              listSelving: res.data,
-            })
-          )
-          .catch(() =>
-            NotifError("Sepertinya ada gangguan, coba check koneksi anda")
-          )
+        .then((res) =>
+          this.setState({
+            listSelving: res.data,
+          })
+        )
+        .catch(() =>
+          NotifError("Sepertinya ada gangguan, coba check koneksi anda")
+        )
       : AxiosMasterGet("lokasi-selving/get/by-kode-lokasi-rak/" + hasil)
-          .then((res) =>
-            this.setState({
-              listSelving: res.data,
-            })
-          )
-          .catch(() =>
-            NotifError("Sepertinya ada gangguan, coba check koneksi anda")
-          );
+        .then((res) =>
+          this.setState({
+            listSelving: res.data,
+          })
+        )
+        .catch(() =>
+          NotifError("Sepertinya ada gangguan, coba check koneksi anda")
+        );
   }
   render() {
     return (
@@ -265,8 +265,8 @@ class FormModalBarang extends Component {
               type="text"
               label="Kode OE"
               placeholder="Masukan Kode OE"
-              // validate={required}
-              // readOnly={this.props.isEdit}
+            // validate={required}
+            // readOnly={this.props.isEdit}
             />
           </div>
           <div className="col-lg-3">
@@ -276,8 +276,8 @@ class FormModalBarang extends Component {
               type="text"
               label="Kode SKU"
               placeholder="Masukan Kode SKU"
-              // validate={required}
-              // readOnly={this.props.isEdit}
+            // validate={required}
+            // readOnly={this.props.isEdit}
             />
           </div>
           {/* <div className="col-lg-6">
@@ -319,7 +319,7 @@ class FormModalBarang extends Component {
               placeholder="Masukan Type"
             />
           </div>
-          <div className="col-lg-6">
+          {/* <div className="col-lg-6">
             <Field
               name="rak"
               component={ReanderSelect}
@@ -352,7 +352,7 @@ class FormModalBarang extends Component {
                 <div style={{ textAlign: "center" }}>Data Shelving Kosong</div>
               )}
             />
-          </div>
+          </div> */}
           <div className="col-lg-6">
             <Field
               name="satuan"

@@ -83,7 +83,7 @@ class MasterParameterTransaksi extends React.Component {
               id_kategori: row.id_kategori,
               kategori: row.kategori,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -147,29 +147,29 @@ class MasterParameterTransaksi extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          "kategori-transaksi/update/by-id-kategori/" + hasil.id_kategori ||
-            "-",
-          dataEdit
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("dataParameterTransaksi")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getParameter()))
-          .catch((err) =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+        "kategori-transaksi/update/by-id-kategori/" + hasil.id_kategori ||
+        "-",
+        dataEdit
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("dataParameterTransaksi")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getParameter()))
+        .catch((err) =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("kategori-transaksi/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataParameterTransaksi")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getParameter()))
-          .catch((err) =>
-            this.handleReactive(err, hasil.id_kategori, {
-              kategori: hasil.kategori,
-            })
-          );
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataParameterTransaksi")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getParameter()))
+        .catch((err) =>
+          this.handleReactive(err, hasil.id_kategori, {
+            kategori: hasil.kategori,
+          })
+        );
   }
 
   handleReactive(err, kode, data) {
@@ -178,12 +178,12 @@ class MasterParameterTransaksi extends React.Component {
     let check = error.includes("hapus");
     check
       ? reactive(
-          err,
-          kode,
-          "kategori-transaksi/reactive/by-id-kategori/",
-          data,
-          "kategori-transaksi/update/by-id-kategori/"
-        ).then(() => this.props.dispatch(getParameter()))
+        err,
+        kode,
+        "kategori-transaksi/reactive/by-id-kategori/",
+        data,
+        "kategori-transaksi/update/by-id-kategori/"
+      ).then(() => this.props.dispatch(getParameter()))
       : NotifError("Data Gagal Ditambahkan");
   }
 

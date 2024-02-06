@@ -85,7 +85,7 @@ class MasterJenisKunci extends React.Component {
               kode_jenis_kunci: row.kode_jenis_kunci,
               nama_jenis_kunci: row.nama_jenis_kunci,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -147,29 +147,29 @@ class MasterJenisKunci extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          "jenis-kunci/update/by-kode-jenis-kunci/" + hasil.kode_jenis_kunci ||
-            "-",
-          { nama_jenis_kunci: hasil.nama_jenis_kunci }
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("dataJenisKunci")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getJenisKunci()))
-          .catch(() =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+        "jenis-kunci/update/by-kode-jenis-kunci/" + hasil.kode_jenis_kunci ||
+        "-",
+        { nama_jenis_kunci: hasil.nama_jenis_kunci }
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("dataJenisKunci")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getJenisKunci()))
+        .catch(() =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("jenis-kunci/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataJenisKunci")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getJenisKunci()))
-          .catch((err) =>
-            this.handleReactive(err, hasil.kode_jenis_kunci, {
-              nama_jenis_kunci: hasil.nama_jenis_kunci,
-            })
-          );
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataJenisKunci")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getJenisKunci()))
+        .catch((err) =>
+          this.handleReactive(err, hasil.kode_jenis_kunci, {
+            nama_jenis_kunci: hasil.nama_jenis_kunci,
+          })
+        );
   }
 
   handleReactive(err, kode, data) {
@@ -178,12 +178,12 @@ class MasterJenisKunci extends React.Component {
     let check = error.includes("hapus");
     check
       ? reactive(
-          err,
-          kode,
-          "satuan/reactive/",
-          data,
-          "satuan/update/by-kode-satuan/"
-        ).then(() => this.props.dispatch(getJenisKunci()))
+        err,
+        kode,
+        "satuan/reactive/",
+        data,
+        "satuan/update/by-kode-satuan/"
+      ).then(() => this.props.dispatch(getJenisKunci()))
       : NotifError("Data Gagal Ditambahkan");
   }
   render() {

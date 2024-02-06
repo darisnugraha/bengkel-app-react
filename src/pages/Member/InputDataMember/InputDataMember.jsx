@@ -86,7 +86,7 @@ class InputDataMember extends Component {
               nomesin_kendaraan: hasil.nomesin_kendaraan,
               kode_customer: hasil.kode_customer,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -134,26 +134,26 @@ class InputDataMember extends Component {
 
     this.state.isEdit
       ? AxiosMasterPut("member/update-member/" + hasil.kode_customer, data)
-          .then(() => NotifSucces("Tambah member berhasil"))
-          .then(() => this.props.dispatch(reset("HeadInputDataMember")))
-          .then(() => this.props.dispatch(getListMember()))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(onFinish()))
-          .catch((err) =>
-            ToastError(
-              `Error Tambah Member , Error: ${err.response.data}`
-            ).then(() => this.props.dispatch(onFinish()))
-          )
+        .then(() => NotifSucces("Tambah member berhasil"))
+        .then(() => this.props.dispatch(reset("HeadInputDataMember")))
+        .then(() => this.props.dispatch(getListMember()))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(onFinish()))
+        .catch((err) =>
+          ToastError(
+            `Error Tambah Member , Error: ${err.response.data}`
+          ).then(() => this.props.dispatch(onFinish()))
+        )
       : AxiosMasterPost("member/tambah-member-baru", data)
-          .then(() => NotifSucces("Tambah member berhasil"))
-          .then(() => this.props.dispatch(reset("HeadInputDataMember")))
-          .then(() => this.props.dispatch(getListMember()))
-          .then(() => this.props.dispatch(onFinish()))
-          .catch((err) =>
-            ToastError(
-              `Error Tambah Member , Error: ${err.response.data}`
-            ).then(() => this.props.dispatch(onFinish()))
-          );
+        .then(() => NotifSucces("Tambah member berhasil"))
+        .then(() => this.props.dispatch(reset("HeadInputDataMember")))
+        .then(() => this.props.dispatch(getListMember()))
+        .then(() => this.props.dispatch(onFinish()))
+        .catch((err) =>
+          ToastError(
+            `Error Tambah Member , Error: ${err.response.data}`
+          ).then(() => this.props.dispatch(onFinish()))
+        );
   }
   componentDidMount() {
     this.props.dispatch(getListMember());

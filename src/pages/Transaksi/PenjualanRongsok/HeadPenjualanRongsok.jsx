@@ -63,7 +63,7 @@ class HeadPenjualanRongsok extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row, index) => {
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">

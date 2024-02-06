@@ -14,10 +14,14 @@ import {
   NotifError,
   NotifSucces,
 } from "../../../components/notification/notification";
-import { multipleDeleteLocal } from "../../../components/notification/function";
+import {
+  getToday,
+  multipleDeleteLocal,
+} from "../../../components/notification/function";
 import Skeleton from "react-loading-skeleton";
 import {
   getFaktur,
+  getSelfing,
   hideModal,
   onFinish,
   onProgress,
@@ -43,11 +47,12 @@ class SupplierPenerimaan extends Component {
 
   componentDidMount() {
     this.props.dispatch(getListTerimaSupplier());
+    this.props.dispatch(getSelfing());
     this.getKodePenerimaan();
     this.props.dispatch(getFaktur());
   }
   handleHead(hasil) {
-    console.log("this",hasil);
+    console.log("this", hasil);
     if (localStorage.getItem("type_pembayaran") === "true") {
       this.setState({
         bayar: true,
@@ -61,9 +66,11 @@ class SupplierPenerimaan extends Component {
       this.props.dispatch(onProgress());
       let data = {
         no_terima: localStorage.getItem("penerimaan_kode_terima"),
-        tanggal_terima: localStorage.getItem("penerimaan_tanggal_barang"),
+        tanggal_terima:
+          localStorage.getItem("penerimaan_tanggal_barang") || getToday(),
         no_bon: localStorage.getItem("penerimaan_no_bon"),
-        tanggal_bon: localStorage.getItem("penerimaan_tanggal_invoice"),
+        tanggal_bon:
+          localStorage.getItem("penerimaan_tanggal_invoice") || getToday(),
         kode_supplier: localStorage.getItem("penerimaan_kode_supplier"),
         pembayaran_cash:
           localStorage.getItem("type_pembayaran") === "true"
@@ -130,8 +137,8 @@ class SupplierPenerimaan extends Component {
 
       AxiosMasterPost("terima-barang-supplier/post-transaksi", data)
         .then(() => NotifSucces("Berhasil Melakukan Pembayaran Non-Tunai"))
-        .then(() =>
-          {CetakNota(
+        .then(() => {
+          CetakNota(
             "NO TERIMA",
             hasil.kode_terima,
             "TANGGAL",
@@ -147,9 +154,9 @@ class SupplierPenerimaan extends Component {
             "BUKTI PENERIMAAN BARANG SUPPLIER",
             tableRows,
             footerRows,
-            true,  
-          )}
-        )
+            true
+          );
+        })
         .then(() =>
           multipleDeleteLocal([
             "PenerimaanSupplier_temp",
@@ -203,12 +210,14 @@ class SupplierPenerimaan extends Component {
         kode_barcode: hasil.kode_barcode,
         qty: parseInt(hasil.qty) + parseFloat(local[filtered].qty),
         harga_satuan: parseFloat(hasil.harga_satuan),
+        kode_lokasi_shelving: hasil.kode_lokasi_shelving,
         harga_total:
           parseFloat(hasil.total) + parseFloat(local[filtered].harga_total),
       };
       let dataTable = {
         harga_satuan: hasil.harga_satuan,
         kode_barcode: hasil.kode_barcode,
+        kode_lokasi_shelving: hasil.kode_lokasi_shelving,
         // kwalitas: hasil.kwalitas,
         // merk: hasil.merk,
         nama_barang: hasil.nama_barang,
@@ -235,10 +244,12 @@ class SupplierPenerimaan extends Component {
         qty: parseInt(hasil.qty),
         harga_satuan: parseFloat(hasil.harga_satuan),
         harga_total: parseFloat(hasil.total),
+        kode_lokasi_shelving: hasil.kode_lokasi_shelving,
       };
       let dataTable = {
         harga_satuan: hasil.harga_satuan,
         kode_barcode: hasil.kode_barcode,
+        kode_lokasi_shelving: hasil.kode_lokasi_shelving,
         // kwalitas: hasil.kwalitas,
         // merk: hasil.merk,
         nama_barang: hasil.nama_barang,
@@ -257,16 +268,18 @@ class SupplierPenerimaan extends Component {
   }
 
   handleCash(hasil) {
-    console.log("cash",hasil);
+    console.log("cash", hasil);
     if (localStorage.getItem("PenerimaanSupplier_temp_kirim") === null) {
       NotifError("Data Barang Masih Kosong, Mohon isi barang dulu");
       return false;
     } else {
       let data = {
         no_terima: localStorage.getItem("penerimaan_kode_terima"),
-        tanggal_terima: localStorage.getItem("penerimaan_tanggal_barang"),
         no_bon: localStorage.getItem("penerimaan_no_bon"),
-        tanggal_bon: localStorage.getItem("penerimaan_tanggal_invoice"),
+        tanggal_terima:
+          localStorage.getItem("penerimaan_tanggal_barang") || getToday(),
+        tanggal_bon:
+          localStorage.getItem("penerimaan_tanggal_invoice") || getToday(),
         kode_supplier: localStorage.getItem("penerimaan_kode_supplier"),
         no_ref: this.props.noFaktur,
         no_ref_cash: this.props.noFaktur,
@@ -342,13 +355,14 @@ class SupplierPenerimaan extends Component {
             "NO TERIMA",
             localStorage.getItem("penerimaan_kode_terima"),
             "TANGGAL",
-            localStorage.getItem("penerimaan_tanggal_invoice"),
+            localStorage.getItem("penerimaan_tanggal_invoice") ||
+              getToday(true),
             "NO BON",
             localStorage.getItem("penerimaan_no_bon"),
             "SUPPLIER",
             localStorage.getItem("penerimaan_kode_supplier"),
             getUserData().user_name,
-            "01-28-2021",
+            getToday(true),
             getUserData().user_name,
             columnTabel,
             "BUKTI PENERIMAAN BARANG SUPPLIER",
@@ -356,8 +370,7 @@ class SupplierPenerimaan extends Component {
             footerRows,
             localStorage.getItem("penerimaan_discount"),
             hasil.cash,
-            true,
-            
+            true
           )
         )
         .then(() =>

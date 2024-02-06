@@ -1,29 +1,19 @@
 import React, { Component } from "react";
-import BootstrapTable from "react-bootstrap-table-next";
 import { connect } from "react-redux";
-import { Field, reduxForm } from "redux-form";
+import { reduxForm } from "redux-form";
 import {
   editBarang,
-  getBarang,
   getIDBarang,
   getInfoBarang,
-  getSupplier,
 } from "../../../actions/datamaster_action";
-import {
-  ReanderSelect,
-  ToastWarning,
-} from "../../../components/notification/notification";
-import { Panel, PanelBody, PanelHeader } from "../../../components/panel/panel";
 import Tabel from "../../../components/Tabel/tabel";
-import { required } from "../../../validasi/normalize";
-import TabelListBarang from "./TabelListBarang";
 
 class ModalPenjualanSparepart extends Component {
   constructor(props) {
     super(props);
     this.state = {
       supplier: false,
-      kode_oem: '',
+      kode_oem: "",
       columns: [
         {
           dataField: "kode_barang",
@@ -39,12 +29,12 @@ class ModalPenjualanSparepart extends Component {
           text: "Nama Barang",
         },
         {
-         dataField: "kode_oem",
-         text:  "Kode OE"
+          dataField: "kode_oem",
+          text: "Kode OE",
         },
         {
           dataField: "kode_sku",
-          text: "Kode SKU"
+          text: "Kode SKU",
         },
         {
           dataField: "type",
@@ -52,7 +42,7 @@ class ModalPenjualanSparepart extends Component {
         },
         {
           dataField: "stock",
-          text: "Stock"
+          text: "Stock",
         },
         {
           dataField: "harga_jual",
@@ -60,7 +50,7 @@ class ModalPenjualanSparepart extends Component {
           formatter: (list) => list.toLocaleString("id-ID"),
         },
         {
-          dataField: "supplier",
+          dataField: "kode_supplier",
           text: "Kode Supplier",
           // formatter: (list) => list.toLocaleString("id-ID"),
         },
@@ -70,28 +60,12 @@ class ModalPenjualanSparepart extends Component {
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row) => {
-            let data = {
-              kode_supplier: row.supplier,
-              kode_barcode: row.kode_barcode,
-              kode_barang: row.kode_barang,
-              nama_barang: row.nama_barang,
-              kode_kategori: row.kode_kategori,
-              kode_jenis: row.kode_jenis,
-              // kode_merk_barang: row.kode_merk_barang,
-              // kode_kwalitas: row.kode_kwalitas,
-              kode_lokasi_rak: row.kode_lokasi_rak,
-              kode_lokasi_selving: row.kode_lokasi_selving,
-              // kode_ukuran: row.kode_ukuran,
-              kode_satuan: row.kode_satuan,
-              type: row.type,
-              harga_jual: row.harga_jual,
-            };
             return (
               <div className="row text-center">
                 <div className="col-12">
                   <button
                     className="btn btn-teal mr-3"
-                    onClick={() => this.detail(data)}
+                    onClick={() => this.detail(row)}
                   >
                     Tambah
                     <i className="fa fa-cart-arrow-down ml-2"></i>
@@ -106,8 +80,7 @@ class ModalPenjualanSparepart extends Component {
   }
 
   detail(data) {
-    localStorage.setItem("supplier_barang_sparepart", data.kode_supplier)
-    console.log("cobs",data);
+    localStorage.setItem("supplier_barang_sparepart", data.kode_supplier);
     this.props.showDetail();
     this.props.dispatch(editBarang(data));
   }
@@ -203,16 +176,16 @@ class ModalPenjualanSparepart extends Component {
           />
         </div> */}
         <div className="col-lg-12 mt-4">
-        <Tabel
-                keyField="kode_barang"
-                data={this.props.listinfobarang || []}
-                columns={this.state.columns}
-                CSVExport
-                tambahData={false}
-                // handleClick={() => this.tambahModal()}
-              />
+          <Tabel
+            keyField="kode_barang"
+            data={this.props.listinfobarang || []}
+            columns={this.state.columns}
+            CSVExport
+            tambahData={false}
+            // handleClick={() => this.tambahModal()}
+          />
         </div>
-        
+
         {/* <div className="col-lg-12">
           <TabelListBarang/>
         </div> */}
@@ -229,6 +202,6 @@ export default connect((state) => {
   return {
     listbarang: state.datamaster.listbarang,
     listsupplier: state.datamaster.listsupplier,
-    listinfobarang: state.datamaster.listInfoBarang
+    listinfobarang: state.datamaster.listInfoBarang,
   };
 })(ModalPenjualanSparepart);

@@ -2,7 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { reset } from "redux-form";
-import { onFinish, onProgress } from "../../../actions/datamaster_action";
+import {
+  getSelfing,
+  getSupplier,
+  onFinish,
+  onProgress,
+} from "../../../actions/datamaster_action";
 import { getListStockOpname } from "../../../actions/supervisor_action";
 import { AxiosMasterPost } from "../../../axios";
 import {
@@ -21,13 +26,20 @@ class StockOpname extends Component {
     this.state = {};
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.props.dispatch(getSelfing());
+    this.props.dispatch(getSupplier());
+  }
   handleHead(hasil) {
     this.props.dispatch(onProgress());
+    let detailBarang =
+      JSON.parse(localStorage.getItem("StockOpname_temp")) || [];
     let data = {
       tanggal: hasil.tanggal,
-      kode_lokasi_gudang: hasil.lokasi,
-      detail_barang: JSON.parse(localStorage.getItem("StockOpname_temp")) || [],
+      kode_lokasi_shelving: hasil.lokasi,
+      detail_barang: detailBarang.map(
+        ({ nama_barang, kode_barang, satuan, kode_supplier1, ...rest }) => rest
+      ),
     };
     AxiosMasterPost("stock-opname/post-transaksi", data)
       .then(() => NotifSucces("Stockopname Berhasil"))
@@ -37,18 +49,13 @@ class StockOpname extends Component {
       .then(() => this.props.dispatch(getListStockOpname()))
       .then(() => this.props.dispatch(onFinish()))
       .catch((err) =>
-        ToastError(
-          `Gagal StockOpname , Error : ${err.response.data}`
-        ).then(() => this.props.dispatch(onFinish()))
+        ToastError(`Gagal StockOpname , Error : ${err.response.data}`).then(
+          () => this.props.dispatch(onFinish())
+        )
       );
   }
   handleModal(hasil) {
-    let data = {
-      kode_supplier: hasil.kode_supplier,
-      kode_barcode: hasil.kode_barcode,
-      qty: hasil.qty,
-    };
-    simpanLocal("StockOpname_temp", data);
+    simpanLocal("StockOpname_temp", hasil);
     this.props.dispatch(getListStockOpname());
     this.props.dispatch(reset("ModalStockOpname"));
   }

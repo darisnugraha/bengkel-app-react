@@ -81,7 +81,7 @@ class MasterParameterHargaService extends React.Component {
               jenis_service: row.jenis_service,
               jasa_service: row.jasa_service,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -148,15 +148,15 @@ class MasterParameterHargaService extends React.Component {
     this.state.isEdit
       ? console.log(data)
       : AxiosMasterPut(
-          "kategori-service/update-harga-jasa-service/" +
-            hasil.jenis_kategori || "-",
-          data
-        )
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataHargaService")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.getList())
-          .catch((err) => NotifError(err));
+        "kategori-service/update-harga-jasa-service/" +
+        hasil.jenis_kategori || "-",
+        data
+      )
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataHargaService")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.getList())
+        .catch((err) => NotifError(err));
   }
 
   render() {

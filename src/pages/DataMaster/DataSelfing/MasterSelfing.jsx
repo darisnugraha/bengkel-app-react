@@ -88,7 +88,7 @@ class MasterSelfing extends React.Component {
               kode_selving: row.kode_lokasi_selving,
               nama_selving: row.nama_lokasi_selving,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -151,32 +151,32 @@ class MasterSelfing extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          "lokasi-selving/update/by-kode-lokasi-selving/" + hasil.kode_selving,
-          {
-            kode_lokasi_rak: hasil.kode_rak || "-",
-            nama_lokasi_selving: hasil.nama_selving || "-",
-          }
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getSelfing()))
-          .catch(() =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
-            )
+        "lokasi-selving/update/by-kode-lokasi-selving/" + hasil.kode_selving,
+        {
+          kode_lokasi_rak: hasil.kode_rak || "-",
+          nama_lokasi_selving: hasil.nama_selving || "-",
+        }
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getSelfing()))
+        .catch(() =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi"
           )
+        )
       : AxiosMasterPost("lokasi-selving/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataSelving")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getSelfing()))
-          .catch((err) =>
-            this.handleReactive(err, hasil.kode_selving, {
-              kode_lokasi_rak: hasil.kode_rak,
-              nama_lokasi_selving: hasil.nama_selving,
-            })
-          );
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataSelving")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getSelfing()))
+        .catch((err) =>
+          this.handleReactive(err, hasil.kode_selving, {
+            kode_lokasi_rak: hasil.kode_rak,
+            nama_lokasi_selving: hasil.nama_selving,
+          })
+        );
   }
 
   handleReactive(err, kode, data) {
@@ -185,12 +185,12 @@ class MasterSelfing extends React.Component {
     let check = error.includes("hapus");
     check
       ? reactive(
-          err,
-          kode,
-          "lokasi-selving/reactive/",
-          data,
-          "lokasi-selving/update/by-kode-lokasi-selving/"
-        ).then(() => this.props.dispatch(getSelfing()))
+        err,
+        kode,
+        "lokasi-selving/reactive/",
+        data,
+        "lokasi-selving/update/by-kode-lokasi-selving/"
+      ).then(() => this.props.dispatch(getSelfing()))
       : NotifError("Data Gagal Ditambahkan");
   }
   render() {

@@ -10,11 +10,8 @@ import {
   PanelBody,
   PanelHeader,
 } from "../../../components/panel/panel.jsx";
-import { hideModal } from "../../../actions/datamaster_action.jsx";
 import { getKunciBarang } from "../../../actions/stocking_action.jsx";
-import access from "../../../assets/accessDenied.svg";
 import HeadKunciBarang from "./HeadKunciBarang.jsx";
-import ModalHancurBarang from "../HancurBarang/ModalHancurBarang.jsx";
 import { reset } from "redux-form";
 import { simpanLocal } from "../../../config/Helper.jsx";
 
@@ -84,7 +81,7 @@ class KunciBarang extends React.Component {
               nama_kunci: row.nama_kunci,
               qty: row.qty,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">

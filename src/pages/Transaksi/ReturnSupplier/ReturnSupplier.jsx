@@ -14,7 +14,11 @@ import {
 } from "../../../components/notification/notification";
 import { AxiosMasterGet, AxiosMasterPost } from "../../../axios";
 import { multipleDeleteLocal } from "../../../components/notification/function";
-import { onFinish, onProgress } from "../../../actions/datamaster_action";
+import {
+  getSelfing,
+  onFinish,
+  onProgress,
+} from "../../../actions/datamaster_action";
 
 const HeadReturnSupplier = lazy(() =>
   import("../ReturnSupplier/HeadReturnSupplier")
@@ -34,11 +38,12 @@ class SupplierPenerimaan extends Component {
 
   componentDidMount() {
     this.props.dispatch(getListReturnSupplier());
+    this.props.dispatch(getSelfing());
     this.getKodeReturn();
   }
   handleHead(hasil) {
     this.props.dispatch(onProgress());
-    console.log("aku",hasil);
+    console.log("aku", hasil);
     let data = {
       no_retur_supplier: hasil.kode_return,
       tanggal_retur: hasil.tanggal,
@@ -160,10 +165,12 @@ class SupplierPenerimaan extends Component {
         kode_barcode: hasil.kode_barcode,
         qty: parseInt(hasil.qty) + parseFloat(local[filtered].qty),
         harga_satuan: parseFloat(hasil.harga_satuan),
+        kode_lokasi_shelving: hasil.kode_lokasi_shelving,
         harga_total:
           parseFloat(hasil.total) + parseFloat(local[filtered].harga_total),
       };
       let dataTable = {
+        kode_lokasi_shelving: hasil.kode_lokasi_shelving,
         harga_satuan: hasil.harga_satuan,
         kode_barcode: hasil.kode_barcode,
         nama_barang: hasil.nama_barang,
@@ -183,12 +190,14 @@ class SupplierPenerimaan extends Component {
       this.props.dispatch(getListReturnSupplier());
     } else {
       let data = {
+        kode_lokasi_shelving: hasil.kode_lokasi_shelving,
         kode_barcode: hasil.kode_barcode,
         qty: parseInt(hasil.qty),
         harga_satuan: parseFloat(hasil.harga_satuan),
         harga_total: parseFloat(hasil.total),
       };
       let dataTable = {
+        kode_lokasi_shelving: hasil.kode_lokasi_shelving,
         harga_satuan: hasil.harga_satuan,
         kode_barcode: hasil.kode_barcode,
         nama_barang: hasil.nama_barang,

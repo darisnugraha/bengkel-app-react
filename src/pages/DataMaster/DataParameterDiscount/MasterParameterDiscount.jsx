@@ -88,7 +88,7 @@ class MasterParameterDiscount extends React.Component {
               diskon: row.diskon,
               status_diskon: row.status_diskon,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -143,25 +143,25 @@ class MasterParameterDiscount extends React.Component {
   handleSubmit(hasil) {
     this.state.isEdit
       ? AxiosMasterPut(
-          "kategori/update-diskon/" + hasil.jenis_kategori || "-",
-          {
-            status_diskon: hasil.jenis_discount || "-",
-            diskon: hasil.nominal_discount || "-",
-          }
-        )
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => NotifSucces("Diskon Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(getDiskon()))
+        "kategori/update-diskon/" + hasil.jenis_kategori || "-",
+        {
+          status_diskon: hasil.jenis_discount || "-",
+          diskon: hasil.nominal_discount || "-",
+        }
+      )
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => NotifSucces("Diskon Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(getDiskon()))
       : AxiosMasterPut(
-          "kategori/update-diskon/" + hasil.jenis_kategori || "-",
-          {
-            status_diskon: hasil.jenis_discount || "-",
-            diskon: hasil.nominal_discount || "-",
-          }
-        )
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => NotifSucces("Diskon Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(getDiskon()));
+        "kategori/update-diskon/" + hasil.jenis_kategori || "-",
+        {
+          status_diskon: hasil.jenis_discount || "-",
+          diskon: hasil.nominal_discount || "-",
+        }
+      )
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => NotifSucces("Diskon Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(getDiskon()));
   }
 
   render() {

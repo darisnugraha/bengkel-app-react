@@ -123,7 +123,7 @@ class MasterSupplier extends React.Component {
               npwp_nama: row.npwp_nama,
               npwp_alamat: row.npwp_alamat,
             };
-            this.setState({});
+
             return (
               <div className="row text-center">
                 <div className="col-12">
@@ -189,7 +189,6 @@ class MasterSupplier extends React.Component {
     });
   }
   handleSubmit(hasil) {
-    let type = hasil.type_pembayaran === "cash" ? true : false;
     let data = {
       kode_supplier: hasil.kode_supplier || "-",
       nama_supplier: hasil.nama_supplier || "-",
@@ -233,30 +232,30 @@ class MasterSupplier extends React.Component {
     };
     this.state.isEdit
       ? AxiosMasterPut(
-          "supplier/update/by-kode-supplier/" + hasil.kode_supplier,
-          dataEdit
-        )
-          .then(() => NotifSucces("Berhasil Dirubah"))
-          .then(() => this.props.dispatch(reset("dataBarang")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getSupplier()))
-          .catch((err) =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi \n" +
-                `Error Detail : \n ${err.response.data}`
-            )
+        "supplier/update/by-kode-supplier/" + hasil.kode_supplier,
+        dataEdit
+      )
+        .then(() => NotifSucces("Berhasil Dirubah"))
+        .then(() => this.props.dispatch(reset("dataBarang")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getSupplier()))
+        .catch((err) =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi \n" +
+            `Error Detail : \n ${err.response.data}`
           )
+        )
       : AxiosMasterPost("supplier/add", data)
-          .then(() => NotifSucces("Berhasil Ditambahkan"))
-          .then(() => this.props.dispatch(reset("dataBarang")))
-          .then(() => this.props.dispatch(hideModal()))
-          .then(() => this.props.dispatch(getSupplier()))
-          .catch((err) =>
-            NotifError(
-              "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi\n" +
-                `${err && err.response && err.response.data}`
-            )
-          );
+        .then(() => NotifSucces("Berhasil Ditambahkan"))
+        .then(() => this.props.dispatch(reset("dataBarang")))
+        .then(() => this.props.dispatch(hideModal()))
+        .then(() => this.props.dispatch(getSupplier()))
+        .catch((err) =>
+          NotifError(
+            "Sepertinya ada gangguan, Mohon ulang beberapa saat lagi\n" +
+            `${err && err.response && err.response.data}`
+          )
+        );
   }
 
   render() {

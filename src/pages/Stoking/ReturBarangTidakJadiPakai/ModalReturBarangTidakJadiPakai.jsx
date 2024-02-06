@@ -6,28 +6,17 @@ import { createNumberMask } from "redux-form-input-masks";
 import {
   getIDBarang,
   getInfoBarang,
-  hideModal,
   onFinish,
   onProgress,
 } from "../../../actions/datamaster_action";
+import { AxiosMasterGet } from "../../../axios";
 import {
-  AxiosMasterGet,
-  AxiosMasterPost,
-  AxiosMasterPut,
-} from "../../../axios";
-import {
+  NotifError,
   ReanderField,
   ReanderSelect,
 } from "../../../components/notification/notification";
 import Tabel from "../../../components/Tabel/tabel";
 
-const validate = (values) => {
-  const errors = {};
-  if (parseInt(values.stock) < parseInt(values.qty)) {
-    errors.qty = "Jumlah Melebihi stock, mohon kuragi";
-  }
-  return errors;
-};
 const currencyMask = createNumberMask({
   prefix: "Rp. ",
   suffix: " ,-",
@@ -82,38 +71,26 @@ class ModalReturBarang extends Component {
           formatter: (list) => list.toLocaleString("id-ID"),
         },
         {
-          dataField: "supplier",
-          text: "Kode Supplier",
-          // formatter: (list) => list.toLocaleString("id-ID"),
-        },
-        {
           dataField: "action",
           text: "Action",
           csvExport: false,
           headerClasses: "text-center",
           formatter: (rowcontent, row) => {
-            let data = {
-              // kode_supplier: row.supplier,
-              kode_barcode: row.kode_barcode,
-              kode_barang: row.kode_barang,
-              nama_barang: row.nama_barang,
-              kode_kategori: row.kode_kategori,
-              kode_jenis: row.kode_jenis,
-              // kode_merk_barang: row.kode_merk_barang,
-              // kode_kwalitas: row.kode_kwalitas,
-              kode_lokasi_rak: row.kode_lokasi_rak,
-              kode_lokasi_selving: row.kode_lokasi_selving,
-              // kode_ukuran: row.kode_ukuran,
-              kode_satuan: row.kode_satuan,
-              type: row.type,
-              harga_jual: row.harga_jual,
-            };
             return (
               <div className="row text-center">
                 <div className="col-12">
                   <button
                     className="btn btn-teal mr-3"
                     onClick={() => {
+                      var listAvailable = JSON.parse(
+                        localStorage.getItem("PermintaanBarang_temp")
+                      );
+                      var index = listAvailable.findIndex(
+                        (elm) => elm.kode === row.kode_barcode
+                      );
+                      if (index !== -1) {
+                        return NotifError("Barang Sudah Berada Di Tabel");
+                      }
                       localStorage.setItem("kode_barcode", row.kode_barcode);
                       this.props.change("kode_barcode", row.kode_barcode);
                       this.props.change("nama_barang", row.nama_barang);
@@ -340,11 +317,17 @@ class ModalReturBarang extends Component {
                   </div>
                   <div className="col-lg-3">
                     <Field
-                      name="kode_supplier"
-                      component={ReanderField}
+                      name="kode_lokasi_shelving"
+                      component={ReanderSelect}
+                      options={this.props.listSelfing.map((data) => {
+                        return {
+                          value: data.kode_lokasi_selving,
+                          name: data.nama_lokasi_selving,
+                        };
+                      })}
                       type="text"
-                      label="Kode Supplier"
-                      placeholder="Masukan Kode Supplier"
+                      label="Kode Shelving"
+                      placeholder="Masukan Kode Shelving"
                     />
                   </div>
                   <div className="col-lg-3">
@@ -366,6 +349,15 @@ class ModalReturBarang extends Component {
                       label="Qty"
                       placeholder="Masukan Qty"
                       onChange={this.setTotal()}
+                    />
+                  </div>
+                  <div className="col-lg-3">
+                    <Field
+                      name="keterangan"
+                      component={ReanderField}
+                      type="text"
+                      label="Keterangan"
+                      placeholder="Masukan Keterangan"
                     />
                   </div>
                   <div className="col-lg-3">
@@ -441,5 +433,6 @@ export default connect((state) => {
     listBarang: state.datamaster.listbarang,
     listkategoriservice: state.datamaster.listkategoriservice,
     listinfobarang: state.datamaster.listInfoBarang,
+    listSelfing: state.datamaster.listselfing,
   };
 })(ModalReturBarang);

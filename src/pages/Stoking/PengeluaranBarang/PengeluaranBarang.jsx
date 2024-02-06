@@ -57,10 +57,7 @@ class PengeluaranBarang extends React.Component {
           dataField: "kode_barcode",
           text: "Kode Barcode",
         },
-        {
-          dataField: "kode_supplier",
-          text: "Kode Supplier",
-        },
+
         {
           dataField: "nama_barang",
           text: "Nama Barang",
@@ -87,7 +84,7 @@ class PengeluaranBarang extends React.Component {
         //   csvExport: false,
         //   headerClasses: "text-center",
         //   formatter: (rowcontent, row) => {
-        //     this.setState({});
+        //
         //     return (
         //       <div className="row text-center">
         //         <div className="col-12">
@@ -110,11 +107,7 @@ class PengeluaranBarang extends React.Component {
           dataField: "kode_barcode",
           text: "Kode Barcode",
         },
-        {
-          dataField: "kode_supplier",
-          text: "Kode Supplier",
-          sort: true,
-        },
+
         {
           dataField: "qty",
           text: "Qty",
@@ -143,14 +136,17 @@ class PengeluaranBarang extends React.Component {
   componentDidMount() {
     localStorage.setItem("FakturTerpilih", "[]");
     localStorage.setItem("FakturTerpilih_detail", "[]");
+    this.props.dispatch(getPengeluaranBarangSelected());
+    this.fetchNoPengeluaran();
+  }
+
+  fetchNoPengeluaran() {
     AxiosMasterGet("pengeluaran-barang/generate/no-trx").then((res) =>
       this.setState({
         listPengeluaran: res.data[0].no_pengeluaran,
         tanggal: getToday(),
       })
     );
-
-    this.props.dispatch(getPengeluaranBarangSelected());
   }
   nextStep() {
     switch (this.state.step) {
@@ -240,6 +236,7 @@ class PengeluaranBarang extends React.Component {
       )
       .then(() => this.props.dispatch(getPengeluaranBarang()))
       .then(() => this.prevStep())
+      .then(() => this.fetchNoPengeluaran())
       .then(() =>
         this.setState({
           step: 0,
@@ -257,7 +254,6 @@ class PengeluaranBarang extends React.Component {
     if (filtered !== -1) {
       let data = {
         kode_barcode: hasil.kode_barcode,
-        kode_supplier: hasil.kode_supplier,
         nama_barang: hasil.nama_barang,
         // merk_barang: hasil.merk,
         // kwalitas: hasil.kwalitas,
@@ -274,7 +270,6 @@ class PengeluaranBarang extends React.Component {
     } else {
       let data = {
         kode_barcode: hasil.kode_barcode,
-        kode_supplier: hasil.kode_supplier,
         nama_barang: hasil.nama_barang,
         // merk_barang: hasil.merk,
         // kwalitas: hasil.kwalitas,
@@ -297,14 +292,14 @@ class PengeluaranBarang extends React.Component {
         let array_detail =
           JSON.parse(localStorage.getItem("FakturTerpilih_detail")) || [];
         const data = {
-          kode_supplier: row.kode_supplier,
           kode_barcode: row.kode_barcode,
           qty: row.qty,
+          kode_lokasi_shelving: row.kode_lokasi_shelving,
         };
         const data_detail = {
           kode_barcode: row.kode_barcode,
-          kode_supplier: row.kode_supplier,
           nama_barang: row.nama_barang,
+          kode_lokasi_shelving: row.kode_lokasi_shelving,
           // merk_barang: row.merk_barang,
           // kwalitas: row.kwalitas,
           // ukuran: row.ukuran,
@@ -350,18 +345,18 @@ class PengeluaranBarang extends React.Component {
         var array_detail = [];
         rows.forEach(function (list) {
           const data = {
-            kode_supplier: list.kode_supplier,
             kode_barcode: list.kode_barcode,
             qty: list.qty,
+            kode_lokasi_shelving: list.kode_lokasi_shelving,
           };
           const data_detail = {
             kode_barcode: list.kode_barcode,
-            kode_supplier: list.kode_supplier,
             nama_barang: list.nama_barang,
             // merk_barang: list.merk_barang,
             // kwalitas: list.kwalitas,
             // ukuran: list.ukuran,
             qty: list.qty,
+            kode_lokasi_shelving: list.kode_lokasi_shelving,
           };
           array.push(data);
           array_detail.push(data_detail);
